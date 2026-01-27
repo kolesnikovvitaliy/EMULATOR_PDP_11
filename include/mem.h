@@ -6,8 +6,8 @@ typedef unsigned char byte_t;
 typedef unsigned short int word_t;
 typedef word_t address_t;
 
-//byte_t mem[MEMSIZE];
-word_t mem[MEMSIZE];
+byte_t mem_b[MEMSIZE];
+word_t mem_w[MEMSIZE];
 
 void b_write(address_t adr, byte_t val); //пишем  значение (byte_t)val по адресу adr;
 byte_t b_read(address_t adr);            // читаем байт по adr и возвращаем его;
