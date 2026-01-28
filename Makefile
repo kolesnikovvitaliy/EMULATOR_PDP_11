@@ -1,11 +1,29 @@
-pdp11.out: main.o test.o mem.o
-	gcc -Wall -Wextra -pedantic -I./include/ test.o mem.o main.o -o pdp11.out
-main.o: main.c
-	gcc -O0 -g3 -Wall -Wextra -pedantic -I./include/ -c main.c
-test.o: test/test.c
-	gcc -O0 -g3 -Wall -Wextra -pedantic -I./include/ -c test/test.c
-mem.o: mem/mem.c
-	gcc -O0 -g3 -Wall -Wextra -pedantic -I./include/ -c mem/mem.c
+TARGET = pdp.exe
+
+CC = gcc
+
+CFLAGS = -O2 -g3 -Wall -Wextra -pedantic -std=c11 -Iinclude
+
+SRC_DIR = src
+OBJ_DIR = build
+INC_DIR = include
+
+SRC_DIRS := $(shell find $(SRC_DIR) -type d)
+SRC_FILES := $(shell find . -type f -name "*.c")
+
+OBJS = $(patsubst $(SRC_DIRS)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
+DEPS = $(wildcard $(INC_DIR)/*.h)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f .o
+	rm -rf $(OBJ_DIR) $(TARGET)
+
+.PHONY: all clean
