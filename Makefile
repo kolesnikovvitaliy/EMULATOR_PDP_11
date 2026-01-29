@@ -11,10 +11,11 @@ INC_DIR = include
 SRC_DIRS := $(shell find $(SRC_DIR) -type d)
 SRC_FILES := $(shell find . -type f -name "*.c")
 
-OBJS = $(patsubst $(SRC_DIRS)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
-DEPS = $(wildcard $(INC_DIR)/*.h)
 
-all: $(TARGET)
+
+OBJS = $(patsubst $(SRC_DIRS)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
+#DEPS = $(wildcard $(INC_DIR)/*.h)
+DEPS = $(shell find . -type f -name "*.h")
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
