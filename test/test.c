@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "mem.h"
+#include "memory/mem.h"
 
 typedef int bool_t;
 

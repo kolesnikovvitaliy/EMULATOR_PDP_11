@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "mem.h"
-#include "test.h"
+#include "memory/mem.h"
+#include "tests/test.h"
 
 int main(int argc, char **argv)
 {
