@@ -1,8 +1,8 @@
-TARGET = pdp.exe
+TARGET = pdp.out
 
 CC = gcc
 
-CFLAGS = -O2 -g3 -Wall -Wextra -pedantic -std=c11 -Iinclude
+CFLAGS = -O2 -g3 -Wall -Wextra -Wpedantic -std=c11 -Iinclude
 
 SRC_DIR = src
 OBJ_DIR = build
