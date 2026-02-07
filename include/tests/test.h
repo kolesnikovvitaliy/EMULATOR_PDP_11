@@ -1,7 +1,4 @@
 #ifndef TEST_H
 #define TEST_H
-#include "memory/mem.h"
-
-void test_mem();
-
+void test_mem(struct pdp_11_t*) ;
 #endif
