@@ -2,15 +2,16 @@
 #define MEM_WORD_P_H
 
 #include "types/types.h"
+#include "memory/type_func_p.h"
 
 typedef struct {
         word_t* buf_w;
         size_word_buffer size_w;
 
-        read_byte_funk_t read_byte_funk;
-        write_byte_funk_t write_word_funk;
-        read_word_funk_t read_word_funk;
-        write_word_funk_t write_word_funk;
+        read_byte_t read_byte;
+        write_byte_t write_byte;
+        read_word_t read_word;
+        write_word_t write_word;
 } mem_word_t;
 
 #endif
