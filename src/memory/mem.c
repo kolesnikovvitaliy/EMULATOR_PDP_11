@@ -25,6 +25,8 @@ void mem_destroy(mem_t* memory)
 {
         mem_byte_destroy((struct mem_byte_t*)memory->mem_byte);
         mem_word_destroy((struct mem_word_t*)memory->mem_word);
+        free(memory->mem_byte);
+        free(memory->mem_word);
 }
 
 void byte_write(mem_t* memory,

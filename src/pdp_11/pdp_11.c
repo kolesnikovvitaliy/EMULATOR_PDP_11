@@ -19,6 +19,7 @@ void pdp_create(pdp_11_t* pdp)
 void pdp_destroy(pdp_11_t* pdp)
 {
         mem_destroy((struct mem_t*)pdp->memory);
+        free(pdp->memory);
 }
 
 void b_write(pdp_11_t* pdp, address_byte_t addr, byte_t data)

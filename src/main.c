@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "pdp_11/pdp_11.h"
 
 #include "tests/test.h"
@@ -12,6 +13,7 @@ int main(int argc, char **argv)
         test_mem(pdp);
 
         pdp_destroy(pdp);
+        free(pdp);
 
         return 0;
 }
