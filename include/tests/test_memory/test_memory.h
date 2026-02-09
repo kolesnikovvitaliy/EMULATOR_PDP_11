@@ -1,7 +1,6 @@
-#ifndef TEST_H
-#define TEST_H
+#ifndef TEST_MEMORY_H
+#define TEST_MEMORY_H
 #include "pdp_11/pdp_11.h"
-#include "types/types.h"
 
 void test_memory(struct pdp_11_t*);
 
