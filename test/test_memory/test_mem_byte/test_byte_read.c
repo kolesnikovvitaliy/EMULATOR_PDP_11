@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "types/types.h"
+#include "tests/test_memory/test_memory_byte/test_memory_byte.h"
 // Start created TESTS
 // Список тестов
 //-------------------------------------------------------------------
