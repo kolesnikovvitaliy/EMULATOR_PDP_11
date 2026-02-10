@@ -1,7 +1,7 @@
 #ifndef MEM_P_H
 #define MEM_P_H
-
-enum {size_buffer_default = 65536, default_memory = 1};
+#include "types/types.h"
+//enum {size_buffer_default = 65536, default_memory = 1};
 
 #include "buf_byte/mem_byte_p.h"
 #include "buf_word/mem_word_p.h"

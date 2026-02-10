@@ -2,6 +2,7 @@
 #define TYPES_H
 
 
+enum {size_buffer_default = 65536, default_memory = 1};
 typedef unsigned char byte_t;
 typedef unsigned short int word_t;
 
@@ -12,6 +13,7 @@ typedef unsigned int address_byte_t;
 
 typedef unsigned int size_byte_buffer;
 typedef unsigned int size_word_buffer;
+address_byte_t __get_size_buffer();
 
 
 #endif
