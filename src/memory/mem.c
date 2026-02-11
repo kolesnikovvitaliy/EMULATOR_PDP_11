@@ -16,13 +16,11 @@ void mem_create(mem_t* memory)
         memory->default_memory = default_memory;
 
         if (memory->default_memory) {
-                fprintf(stdout, "MEMORY_BYTE\n");
                 memory->mem_byte = (mem_byte_t*)mem_byte_new();
                 mem_byte_create((struct mem_byte_t*)memory->mem_byte,
                         __get_size_buffer());
                 return;
         }
-        fprintf(stdout, "MEMORY_WORD\n");
         memory->mem_word = (mem_word_t*)mem_word_new();
         mem_word_create((struct mem_word_t*)memory->mem_word,
                         __get_size_buffer());
@@ -34,12 +32,10 @@ void mem_destroy(mem_t* memory)
         if (memory->default_memory) {
                  mem_byte_destroy((struct mem_byte_t*)memory->mem_byte);
                  free(memory->mem_byte);
-                 fprintf(stdout, "MEMORY_BYTE_DELETED\n");
                  return;
         }
         mem_word_destroy((struct mem_word_t*)memory->mem_word);
         free(memory->mem_word);
-        fprintf(stdout, "MEMORY_WORD_DELETED\n");
 }
 
 void byte_write(mem_t* memory,
