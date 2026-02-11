@@ -12,7 +12,7 @@ void test_memory(struct pdp_11_t* pdp)
         byte_t b0, b1, bres;
         word_t w, wrest;
 
-        adr = 65536;
+        adr = 0xFFFE;
         b0 = 0x12;
         //return (b_read(pdp, addr) == data);
         test_byte_write(pdp, adr, b0);
