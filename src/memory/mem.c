@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "memory/mem_p.h"
 #include "types/types.h"
@@ -37,45 +38,75 @@ void mem_destroy(mem_t* memory)
         mem_word_destroy((struct mem_word_t*)memory->mem_word);
         free(memory->mem_word);
 }
+//----------------------------------------------------------------------
+
+static inline bool_t __is_valid_addr(mem_t* memory,
+                address_word_t addr,
+                 word_t len)
+{
+        if (memory->default_memory) {
+                if ((addr + len) > memory->mem_byte->size_b) {
+                        abort();
+                }
+                return 1;
+        }
+
+        if ((addr + len) > memory->mem_word->size_w) {
+                abort();
+        }
+        return 1;
+}
+//----------------------------------------------------------------------
 
 void byte_write(mem_t* memory,
                 address_byte_t addr, byte_t data)
 {
+        assert(__is_valid_addr(memory, addr, 1));
         if (memory->default_memory) {
                 memory->mem_byte->write_byte(
                                 memory->mem_byte,addr, data);
                 return;
         }
-        memory->mem_word->write_word(memory->mem_word,addr, data);
+        assert(__is_valid_addr(memory, addr, 1));
+        memory->mem_word->write_byte(memory->mem_word,addr, data);
 }
 
 
 byte_t byte_read(mem_t* memory, address_byte_t addr)
 {
+        assert(__is_valid_addr(memory, addr, 1));
         if (memory->default_memory) {
-                 return (byte_t)memory->mem_byte->read_byte(memory->mem_byte, addr);
+                 return (byte_t)memory->mem_byte->read_byte(
+                                 memory->mem_byte, addr);
         }
-        return (word_t)memory->mem_word->read_word(
+        assert(__is_valid_addr(memory, addr, 1));
+        return (byte_t)memory->mem_word->read_byte(
                         memory->mem_word, addr);
 }
 //#######################################################
 void word_write(mem_t* memory,
                 address_word_t addr, word_t data)
 {
+        assert(__is_valid_addr(memory, addr, 2));
         if (memory->default_memory) {
-                memory->mem_byte->write_byte(memory->mem_byte,
+                memory->mem_byte->write_word(memory->mem_byte,
                                 addr, data);
                 return;
         }
+        assert(__is_valid_addr(memory, addr, 2));
         memory->mem_word->write_word(memory->mem_word,addr, data);
 }
 
 
 word_t word_read(mem_t* memory, address_word_t addr)
 {
+        assert(__is_valid_addr(memory, addr, 2));
         if (memory->default_memory) {
-                 return (byte_t)memory->mem_byte->read_byte(memory->mem_byte,addr);
+                 return (word_t)memory->mem_byte->read_word(
+                                 memory->mem_byte,addr);
         }
-        return (word_t)memory->mem_word->read_word(memory->mem_word,addr);
+        assert(__is_valid_addr(memory, addr, 2));
+        return (word_t)memory->mem_word->read_word(
+                        memory->mem_word,addr);
 }
 
