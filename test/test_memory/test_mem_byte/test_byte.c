@@ -6,31 +6,51 @@
 /* Записать байт по адресу */
 /* Прочитать байт по адресу t*/
 
-void test_write_read_byte(struct pdp_11_t* pdp)
+void test_rw_byte(struct pdp_11_t* pdp)
 {
-        address_byte_t adr;
-        byte_t b0, b1, bres;
-        word_t w, wrest;
-
-
         //пишем байт, читаем байт
 
-        fprintf(stderr,"Пишем и читаем байт по четному адресу\r\n");
+        address_byte_t adr;
+        byte_t b0, bres;
+
         adr = 0;
         b0 = 0x12;
+
+        fprintf(stderr,"Пишем и читаем байт по четному адресу\r\n");
+
         b_write(pdp, adr, b0);
         bres = b_read(pdp, adr);
-        fprintf(stderr,"a = %08o\t b0 = %hhx\t bres = %hhx\r\n", adr, b0, bres);
-        assert(bres == b0);
 
+        fprintf(stderr,"a = %06o\t b0 = %hhx\t bres = %hhx\r\n", adr, b0, bres);
+        assert(bres == b0);
 }
 
+void test_rw_word(struct pdp_11_t* pdp)
+{
+        // пишем слово, читаем слово.
+
+        address_word_t adr;
+        word_t w, wres;
+
+        adr = 2;
+        w = 0x3456;
+
+        fprintf(stderr, "Пишем и читаем слово\r\n");
+
+        w_write(pdp, adr, w);
+        wres = w_read(pdp, adr);
+
+        fprintf(stderr, "a = %06o\t w = %04x\t wres = %04x\n", adr, w, wres);
+        assert(w == wres);
+
+}
 //--------------------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////
 void test_byte_buffer(struct pdp_11_t* pdp)
 {
 
-        test_write_read_byte(pdp);
+        test_rw_byte(pdp);
+        test_rw_word(pdp);
 }
 //////////////////////////////////////////////////////////////////////
