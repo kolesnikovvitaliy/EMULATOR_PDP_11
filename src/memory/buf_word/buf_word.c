@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "memory/buf_word/mem_word_p.h"
 #include "memory/type_func_p.h"
 
@@ -9,14 +10,17 @@ void __word_write_w(void* mem_word,
                 word_t data)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
-        *(ptr->buf_w + addr) = data;
+
+        *(ptr->buf_w + addr) = data & 0xFF;
+        *(ptr->buf_w + addr + 1) =  (data >> 8) & 0xFF;
 }
 
 word_t
 __word_read_w(void* mem_word, address_word_t addr)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
-        return *(ptr->buf_w + addr);
+
+        return (*(ptr->buf_w + addr) | *(ptr->buf_w + addr + 1) << 8);
 }
 /////////////////////////////////////////////////////////////////////
 void __byte_write_w(void* mem_word,
@@ -24,6 +28,7 @@ void __byte_write_w(void* mem_word,
                byte_t data)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
+
         *(ptr->buf_w + addr) = data;
 }
 
@@ -31,6 +36,7 @@ byte_t
 __byte_read_w(void* mem_word, address_byte_t addr)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
+
         return *(ptr->buf_w + addr);
 }
 
