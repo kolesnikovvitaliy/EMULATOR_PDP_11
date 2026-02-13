@@ -32,15 +32,16 @@ void test_rw_word(struct pdp_11_t* pdp)
         address_word_t adr;
         word_t w, wres;
 
-        adr = 2;
+        adr = 8;
         w = 0x3456;
 
         fprintf(stderr, "Пишем и читаем слово\r\n");
 
         w_write(pdp, adr, w);
         wres = w_read(pdp, adr);
+        if (adr & 1) (adr--);
 
-        fprintf(stderr, "a = %06o\t w = %04x\t wres = %04x\n", adr, w, wres);
+        fprintf(stderr, "a = %06x\t w = %04x\t wres = %04x\n", adr, w, wres);
         assert(w == wres);
 
 }
