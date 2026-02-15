@@ -5,3 +5,4 @@ void all_tests(struct pdp_11_t*);
 
 
 #endif
+#pragma once

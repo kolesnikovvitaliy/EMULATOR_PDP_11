@@ -18,3 +18,4 @@ void word_write(struct mem_t*, address_word_t, word_t); // пишем значе
 word_t word_read(struct mem_t*, address_word_t);            // читаем слово по адрессу adr и возвращаем его;
 
 #endif
+#pragma once

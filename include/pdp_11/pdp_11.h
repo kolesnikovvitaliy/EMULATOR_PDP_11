@@ -19,3 +19,4 @@ word_t w_read(struct pdp_11_t* , address_word_t);
 // читаем слово по адрессу adr и возвращаем его;
 
 #endif
+#pragma once

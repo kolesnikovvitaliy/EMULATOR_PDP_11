@@ -23,11 +23,11 @@ void pdp_destroy(pdp_11_t* pdp)
         free(pdp->memory);
 }
 
-int __is_valid_address(address_byte_t addr)
+int __is_valid_address(const address_byte_t addr)
 {
-        unsigned char zero = 0;
+        unsigned char size = 0x0;
         if((addr > (__get_size_buffer() - 1)) ||
-                        (addr < zero)) {
+                        (addr < size)) {
                return 0;
        }
         return 1;

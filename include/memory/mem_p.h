@@ -14,4 +14,5 @@ typedef struct {
 
 
 #endif
+#pragma once
 

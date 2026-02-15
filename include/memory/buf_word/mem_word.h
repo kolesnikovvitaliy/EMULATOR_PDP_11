@@ -10,3 +10,4 @@ void mem_word_create(struct mem_word_t*, size_word_buffer);
 void mem_word_destroy(struct mem_word_t*);
 
 #endif
+#pragma once

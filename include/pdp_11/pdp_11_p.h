@@ -6,4 +6,5 @@ typedef struct {
 } pdp_11_t;
 
 #endif
+#pragma once
 

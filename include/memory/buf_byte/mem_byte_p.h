@@ -15,5 +15,6 @@ typedef struct {
 } mem_byte_t;
 
 #endif
+#pragma once
 
 

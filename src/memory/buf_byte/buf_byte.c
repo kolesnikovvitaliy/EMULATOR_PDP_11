@@ -19,7 +19,7 @@ mem_byte_t* mem_byte_new()
        return (mem_byte_t*)malloc(sizeof(mem_byte_t));
 }
 
-void mem_byte_create(mem_byte_t* mem_byte, size_byte_buffer size)
+void mem_byte_create(mem_byte_t* mem_byte, const size_byte_buffer size)
 {
         mem_byte->buf_b = (byte_t*)calloc(size, sizeof(byte_t));
         mem_byte->size_b = size;

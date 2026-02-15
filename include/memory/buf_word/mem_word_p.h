@@ -15,4 +15,5 @@ typedef struct {
 } mem_word_t;
 
 #endif
+#pragma once
 

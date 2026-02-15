@@ -6,3 +6,4 @@
 void test_byte_buffer(struct pdp_11_t*);
 
 #endif
+#pragma once

@@ -4,5 +4,5 @@
 
 void test_memory(struct pdp_11_t*);
 
-
 #endif
+#pragma once

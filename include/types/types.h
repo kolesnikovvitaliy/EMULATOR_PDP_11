@@ -17,4 +17,4 @@ address_byte_t __get_size_buffer();
 
 
 #endif
-
+#pragma once
