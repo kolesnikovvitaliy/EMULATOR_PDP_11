@@ -6,7 +6,7 @@
 #include "types/types.h"
 #include "memory/buf_byte/mem_byte.h"
 #include "memory/buf_word/mem_word.h"
-
+byte_t g_default_memory;
 mem_t* mem_new()
 {
         return (mem_t*)malloc(sizeof(mem_t));
@@ -14,9 +14,9 @@ mem_t* mem_new()
 
 void mem_create(mem_t* memory)
 {
-        memory->default_memory = default_memory;
+        memory->default_memory = g_default_memory;
 
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                 memory->mem_byte = (mem_byte_t*)mem_byte_new();
                 mem_byte_create((struct mem_byte_t*)memory->mem_byte,
                         __get_size_buffer());
@@ -30,7 +30,7 @@ void mem_create(mem_t* memory)
 
 void mem_destroy(mem_t* memory)
 {
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                  mem_byte_destroy((struct mem_byte_t*)memory->mem_byte);
                  free(memory->mem_byte);
                  return;
@@ -44,7 +44,8 @@ static inline bool_t __is_valid_addr(mem_t* memory,
                 address_word_t addr,
                  word_t len)
 {
-        if (memory->default_memory) {
+
+        if (!(memory->default_memory)) {
                 if ((addr + len) > memory->mem_byte->size_b) {
                         abort();
                 }
@@ -72,7 +73,7 @@ void byte_write(mem_t* memory,
                 address_byte_t addr, byte_t data)
 {
         assert(__is_valid_addr(memory, addr, 1));
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                 memory->mem_byte->write_byte(
                                 memory->mem_byte,addr, data);
                 return;
@@ -89,7 +90,7 @@ void byte_write(mem_t* memory,
 byte_t byte_read(mem_t* memory, address_byte_t addr)
 {
         assert(__is_valid_addr(memory, addr, 1));
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                  return (byte_t)memory->mem_byte->read_byte(
                                  memory->mem_byte, addr);
         }
@@ -107,7 +108,7 @@ void word_write(mem_t* memory,
         addr = __corect_addr_for_write_word(addr);
         assert(__is_valid_addr(memory, addr, 2));
 
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                 memory->mem_byte->write_word(memory->mem_byte,
                                 addr, data);
                 return;
@@ -126,7 +127,7 @@ word_t word_read(mem_t* memory, address_word_t addr)
                 addr--;
         }
         assert(__is_valid_addr(memory, addr, 2));
-        if (memory->default_memory) {
+        if (!(memory->default_memory)) {
                  return (word_t)memory->mem_byte->read_word(
                                  memory->mem_byte,addr);
         }

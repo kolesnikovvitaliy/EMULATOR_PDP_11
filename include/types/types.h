@@ -1,8 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-
-enum {size_buffer_default = 0xFFFF, default_memory = 0};
+enum {size_buffer_default = 0xFFFF};
 typedef unsigned char byte_t;
 typedef unsigned short int word_t;
 

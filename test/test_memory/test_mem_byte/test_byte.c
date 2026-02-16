@@ -6,7 +6,7 @@
 /* Записать байт по адресу */
 /* Прочитать байт по адресу t*/
 
-void test_rw_byte(struct pdp_11_t* pdp)
+void test_rw_byte_b(struct pdp_11_t* pdp)
 {
         //пишем байт, читаем байт
 
@@ -25,7 +25,7 @@ void test_rw_byte(struct pdp_11_t* pdp)
         assert(bres == b0);
 }
 
-void test_rw_word(struct pdp_11_t* pdp)
+void test_rw_word_b(struct pdp_11_t* pdp)
 {
         // пишем слово, читаем слово.
 
@@ -51,7 +51,7 @@ void test_rw_word(struct pdp_11_t* pdp)
 void test_byte_buffer(struct pdp_11_t* pdp)
 {
 
-        test_rw_byte(pdp);
-        test_rw_word(pdp);
+        test_rw_byte_b(pdp);
+        test_rw_word_b(pdp);
 }
 //////////////////////////////////////////////////////////////////////

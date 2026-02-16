@@ -3,10 +3,13 @@
 #include <assert.h>
 #include "pdp_11/pdp_11.h"
 #include "run/run.h"
+#include "tests/test_pdp/test_pdp.h"
 
 
 int main(int argc, char **argv)
 {
+        test_pdp();
+
         struct pdp_11_t* pdp = pdp_new();
         assert(pdp);
 
