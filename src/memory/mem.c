@@ -79,7 +79,7 @@ void byte_write(mem_t* memory,
                 return;
         }
 
-        addr = __corect_addr_for_write_word(addr);
+        //addr = __corect_addr_for_write_word(addr);
         assert(__is_valid_addr(memory, addr, 1));
 
         memory->mem_word->write_byte(memory->mem_word,addr, data);
@@ -95,7 +95,7 @@ byte_t byte_read(mem_t* memory, address_byte_t addr)
                                  memory->mem_byte, addr);
         }
 
-        addr = __corect_addr_for_write_word(addr);
+        //addr = __corect_addr_for_write_word(addr);
         assert(__is_valid_addr(memory, addr, 1));
 
         return (byte_t)memory->mem_word->read_byte(
@@ -120,16 +120,16 @@ void word_write(mem_t* memory,
 
 word_t word_read(mem_t* memory, address_word_t addr)
 {
-        if (addr & 0) {
-                addr++;
-        }
-        if (addr & 1) {
-                addr--;
-        }
         assert(__is_valid_addr(memory, addr, 2));
         if (!(memory->default_memory)) {
                  return (word_t)memory->mem_byte->read_word(
                                  memory->mem_byte,addr);
+        }
+        //if (addr & 0) {
+        //        addr++;
+        //}
+        if (addr & 1) {
+                addr--;
         }
 
         addr = __corect_addr_for_write_word(addr);

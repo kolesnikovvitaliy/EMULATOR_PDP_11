@@ -51,8 +51,7 @@ word_t
 __word_read_w(void* mem_word, address_word_t addr)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
-
-        return (*(ptr->buf_w + addr) | *(ptr->buf_w + addr + 1) << 8);
+        return (*(ptr->buf_w + addr) | *(ptr->buf_w + addr+1) << 8);
 }
 //------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////
@@ -64,6 +63,8 @@ void __byte_write_w(void* mem_word,
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
         *(ptr->buf_w + addr) = data;
+
+
 }
 
 //------------------------------------------------------------------
