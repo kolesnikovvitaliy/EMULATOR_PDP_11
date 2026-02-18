@@ -13,6 +13,8 @@ void test_memory(struct pdp_11_t* pdp)
 
 
         test_byte_buffer(pdp);
+        test_word_buffer(pdp);
+
 
 }
 //////////////////////////////////////////////////////////////////////
