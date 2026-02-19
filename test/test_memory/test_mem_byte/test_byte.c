@@ -73,7 +73,7 @@ void test_wword_r2b_b(struct pdp_11_t* pdp)
     address_word_t a;
     byte_t b0, b1, res_b0, res_b1;
     word_t w;
-    fprintf(stderr, "Пишем слово читаем 2 байтита\n");
+    fprintf(stderr, "Пишем слово читаем 2 байта\n");
     a = 4;        // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу

@@ -62,7 +62,7 @@ void __byte_write_w(void* mem_word,
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
-        *(ptr->buf_w + addr) = data;
+        *(ptr->buf_w + addr) = data & 0xFF;
 
 
 }
