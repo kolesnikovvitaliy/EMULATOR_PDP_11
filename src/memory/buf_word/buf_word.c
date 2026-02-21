@@ -46,12 +46,11 @@ void __word_write_w(void* mem_word,
 }
 
 //------------------------------------------------------------------
-
 word_t
 __word_read_w(void* mem_word, address_word_t addr)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
-        return (*(ptr->buf_w + addr) | *(ptr->buf_w + addr+1) << 8);
+        return ((*(ptr->buf_w + addr) & 0xFF) | *(ptr->buf_w + addr+1) << 8);
 }
 //------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////
@@ -73,7 +72,7 @@ __byte_read_w(void* mem_word, address_byte_t addr)
 {
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
-        return *(ptr->buf_w + addr);
+        return *(ptr->buf_w + addr) & 0xFF;
 }
 //------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////

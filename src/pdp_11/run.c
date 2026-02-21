@@ -12,7 +12,7 @@ int run(struct pdp_11_t* pdp, int argc, char **argv)
         pdp_create(pdp);
         ////////////////////////////////////////////////////////////////////////
         // run PDP_EMULATOR
-        all_tests(pdp);
+        all_tests(pdp, argc, argv);
         ////////////////////////////////////////////////////////////////////////
         pdp_destroy(pdp);
         return 0;

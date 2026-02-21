@@ -6,7 +6,7 @@ typedef unsigned char byte_t;
 typedef unsigned short int word_t;
 
 typedef int bool_t;
-
+typedef FILE file_t;
 typedef unsigned int address_word_t;
 typedef unsigned int address_byte_t;
 

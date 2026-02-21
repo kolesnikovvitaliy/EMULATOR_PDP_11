@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-        test_pdp();
+        test_pdp(argc, argv);
 
         struct pdp_11_t* pdp = pdp_new();
         assert(pdp);

@@ -3,7 +3,7 @@
 
 enum {type_memory_byte, type_memory_word};
 
-int test_pdp();
+int test_pdp(int, char**);
 
 #endif
 #pragma once

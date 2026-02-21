@@ -54,7 +54,7 @@ __word_read_b(void* mem_byte, address_word_t addr)
 {
         mem_byte_t *ptr = (mem_byte_t*)mem_byte;
 
-        return (*(ptr->buf_b + addr) | *(ptr->buf_b + addr + 1) << 8);
+        return ((*(ptr->buf_b + addr) & 0xFF) | *(ptr->buf_b + addr + 1) << 8);
 }
 //-----------------------------------------------------------------------
 
@@ -73,6 +73,6 @@ byte_t
 __byte_read_b(void* mem_byte, address_byte_t addr)
 {
         mem_byte_t *ptr = (mem_byte_t*)mem_byte;
-        return *(ptr->buf_b + addr);
+        return *(ptr->buf_b + addr) & 0xFF;
 }
 //-----------------------------------------------------------------------

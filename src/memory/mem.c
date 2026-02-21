@@ -125,9 +125,6 @@ word_t word_read(mem_t* memory, address_word_t addr)
                  return (word_t)memory->mem_byte->read_word(
                                  memory->mem_byte,addr);
         }
-        //if (addr & 0) {
-        //        addr++;
-        //}
         if (addr & 1) {
                 addr--;
         }
