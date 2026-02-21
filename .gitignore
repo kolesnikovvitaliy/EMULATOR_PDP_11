@@ -41,7 +41,9 @@
 *.su
 *.idb
 *.pdb
-./test/test_repo/
+./test/test_repo/*
+/test/test_repo/
+!test/test_repo/**
 # Kernel Module Compile Results
 *.mod*
 *.cmd
