@@ -5,7 +5,7 @@
 
 #include "pdp_11/pdp_11_p.h"
 #include "memory/mem.h"
-
+////////////////////////////////////////////////////////////////////////
 pdp_11_t* pdp_new()
 {
         return (pdp_11_t*)malloc(sizeof(pdp_11_t));
@@ -24,6 +24,8 @@ void pdp_destroy(pdp_11_t* pdp)
         free(pdp->memory);
 }
 
+////////////////////////////////////////////////////////////////////////
+//---------------------------------------------------------------------
 int __is_valid_address(const address_byte_t addr)
 {
         unsigned char size = 0x0;
@@ -34,12 +36,16 @@ int __is_valid_address(const address_byte_t addr)
         return 1;
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 void b_write(pdp_11_t* pdp, address_byte_t addr, byte_t data)
 {
         assert(__is_valid_address(addr));
         byte_write((struct mem_t*)pdp->memory, addr, data);
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 byte_t b_read(pdp_11_t* pdp, address_byte_t addr)
 {
         assert(__is_valid_address(addr));
@@ -47,6 +53,7 @@ byte_t b_read(pdp_11_t* pdp, address_byte_t addr)
 }
 
 //------------------------------------------------------------------;
+//---------------------------------------------------------------------
 void w_write(pdp_11_t* pdp,
                 address_word_t addr, word_t data)
 {
@@ -54,11 +61,15 @@ void w_write(pdp_11_t* pdp,
         word_write((struct mem_t*)pdp->memory, addr, data);
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 word_t w_read(pdp_11_t* pdp, address_word_t addr)
 {
         assert(__is_valid_address(addr));
         return (word_t)word_read((struct mem_t*)pdp->memory, addr);
 }
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 file_t *pdp_file_open(const byte_t *filename, const byte_t *mode)
 {
         file_t *fd;
@@ -69,13 +80,19 @@ file_t *pdp_file_open(const byte_t *filename, const byte_t *mode)
         return fd;
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 void pdp_file_close(const file_t *fd) {
         fclose((file_t*)fd);
 }
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 void usage(const byte_t* progname) {
         fprintf(stderr, "USAGE: %s [-t] filename - input data\n", progname);
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 void pdp_load_data(pdp_11_t *pdp, const byte_t *filename) {
         file_t * fp = pdp_file_open((byte_t*)filename,(byte_t*)"rb");
         word_t addr, count_str, data;
@@ -91,6 +108,8 @@ void pdp_load_data(pdp_11_t *pdp, const byte_t *filename) {
         pdp_file_close(fp);
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 void pdp_mem_dump(pdp_11_t *pdp, address_word_t addr, word_t size) {
         for(word_t ind= 0x0; ind < size; ind++) {
                 word_t ch = w_read(pdp, addr + ind);
@@ -100,4 +119,6 @@ void pdp_mem_dump(pdp_11_t *pdp, address_word_t addr, word_t size) {
         }
 }
 
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
