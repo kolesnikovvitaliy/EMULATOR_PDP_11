@@ -7,6 +7,7 @@
 #include "pdp_11/pdp_11.h"
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
+#include "utils/utils.h"
 //-------------------------------------------------------------------
 extern byte_t g_default_memory;
 void memory_type(byte_t type_memory)
@@ -24,19 +25,21 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         pdp_create(pdp);
         assert(pdp);
 
-        if (argc == 1) {
-                usage((byte_t*)argv[0]);
-                exit(1);
-        }
+        pdp_load_data(pdp,(byte_t*)"./data/test.txt");
+        //if (argc == 1) {
 
-        if (argc >= 3) {
-                for(int i = 1; i < argc; i++) {
-                        if (strcmp(argv[i], "-t")) {
-                                 pdp_load_data(pdp,
-                                        (const byte_t*)argv[i]);
-                        }
-                }
-        }
+        //        usage((byte_t*)argv[0]);
+        //        exit(1);
+        //}
+
+        //if (argc >= 3) {
+        //        for(int i = 1; i < argc; i++) {
+        //                if (strcmp(argv[i], "-t")) {
+        //                         pdp_load_data(pdp,
+        //                                (const byte_t*)argv[i]);
+        //                }
+        //        }
+        //}
         fprintf(stdout, "\r\n\n");
         pdp_mem_dump(pdp, 0x40, 20);
         fprintf(stdout, "\r\n");

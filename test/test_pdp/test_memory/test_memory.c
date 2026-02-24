@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "tests/test_memory/test_memory_byte/test_memory_byte.h"
-#include "tests/test_memory/test_memory_word/test_memory_word.h"
+#include "tests/test_pdp/test_memory/test_memory_byte/test_memory_byte.h"
+#include "tests/test_pdp/test_memory/test_memory_word/test_memory_word.h"
 //-------------------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////

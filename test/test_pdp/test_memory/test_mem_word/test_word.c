@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <assert.h>
-#include "tests/test_memory/test_memory_byte/test_memory_byte.h"
+#include "tests/test_pdp/test_memory/test_memory_word/test_memory_word.h"
 
 //--------------------------------------------------------------------
 /* Записать байт по адресу */
 /* Прочитать байт по адресу t*/
 
-void test_rw_byte_b(struct pdp_11_t* pdp)
+void test_rw_byte_w(struct pdp_11_t* pdp)
 {
         //пишем байт, читаем байт
 
-        address_byte_t adr;
-        byte_t b0, bres;
+        address_word_t adr;
+        word_t b0, bres;
 
         adr = 0;
         b0 = 0x12;
@@ -25,7 +25,7 @@ void test_rw_byte_b(struct pdp_11_t* pdp)
         assert(bres == b0);
 }
 
-void test_rw_word_b(struct pdp_11_t* pdp)
+void test_rw_word_w(struct pdp_11_t* pdp)
 {
         // пишем слово, читаем слово.
 
@@ -46,7 +46,7 @@ void test_rw_word_b(struct pdp_11_t* pdp)
 
 }
 
-void test_w2b_rword_b(struct pdp_11_t* pdp)
+void test_w2b_rword_w(struct pdp_11_t* pdp)
 {
         // пишем 2 байта, читаем 1 слов;
     address_word_t a;
@@ -66,14 +66,13 @@ void test_w2b_rword_b(struct pdp_11_t* pdp)
     assert(w == wres);
 }
 
-//--------------------------------------------------------------------
-void test_wword_r2b_b(struct pdp_11_t* pdp)
+void test_wword_r2b_w(struct pdp_11_t* pdp)
 {
 
     address_word_t a;
     byte_t b0, b1, res_b0, res_b1;
     word_t w;
-    fprintf(stderr, "Пишем слово читаем 2 байта\n");
+    fprintf(stderr, "Пишем слово читаем 2 байтита\n");
     a = 4;        // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
@@ -87,14 +86,17 @@ void test_wword_r2b_b(struct pdp_11_t* pdp)
     assert(b1 == res_b1);
     assert(b0 == res_b0);
 }
-//////////////////////////////////////////////////////////////////////
-void test_byte_buffer(struct pdp_11_t* pdp)
-{
-        fprintf(stderr, "\r\n\t\t TEST_BYTE_BUFFER\r\n\n");
 
-        test_rw_byte_b(pdp);
-        test_rw_word_b(pdp);
-        test_w2b_rword_b(pdp);
-        test_wword_r2b_b(pdp);
+//--------------------------------------------------------------------
+
+//////////////////////////////////////////////////////////////////////
+void test_word_buffer(struct pdp_11_t* pdp)
+{
+        fprintf(stderr, "\r\n\t\t TEST_WORD_BUFFER\r\n\n");
+
+        test_rw_word_w(pdp);
+        test_rw_word_w(pdp);
+        test_w2b_rword_w(pdp);
+        test_wword_r2b_w(pdp);
 }
 //////////////////////////////////////////////////////////////////////
