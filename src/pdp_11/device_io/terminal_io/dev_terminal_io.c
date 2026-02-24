@@ -1,0 +1,30 @@
+#include <errno.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include "types/types.h"
+#include "pdp_11/device_io/device_io.h"
+#include "pdp_11/pdp_11.h"
+
+
+void load_data_term(struct pdp_11_t* pdp)
+{
+        enum {res_input_data = 2};
+
+        word_t addr, count_str, data, res_input;
+
+        addr = count_str = data = res_input= 0x0;
+        res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
+        if (!(res_input == res_input_data)) {
+                fprintf(stderr,"Error Readeng Files\r\n");
+                assert((res_input == res_input_data));
+                abort();
+        }
+        do {
+                for(byte_t ind = 0x0; ind < count_str; ind++) {
+                        fscanf(stdin, "%hx", &data);
+                        b_write(pdp, (addr+ind), data);
+                }
+                res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
+        }while(res_input == res_input_data);
+}

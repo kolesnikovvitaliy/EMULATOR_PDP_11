@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "memory/buf_byte/mem_byte_p.h"
-#include "memory/type_func_p.h"
+#include "pdp_11/memory/buf_byte/mem_byte_p.h"
+#include "pdp_11/memory/type_func_p.h"
 
 
 //--------------------------------------------------------------

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "pdp_11/pdp_11.h"
-#include "run/run.h"
+#include "pdp_11/run.h"
 #include "tests/test_pdp/test_pdp.h"
 
 
