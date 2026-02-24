@@ -3,6 +3,7 @@
 
 typedef struct {
        struct mem_t* memory;
+       struct dev_io_t* device_io;
 } pdp_11_t;
 
 #endif

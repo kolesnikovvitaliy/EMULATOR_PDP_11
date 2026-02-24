@@ -2,7 +2,7 @@
 #define MEM_BYTE_P_H
 
 #include "types/types.h"
-#include "memory/type_func_p.h"
+#include "pdp_11/memory/type_func_p.h"
 
 typedef struct {
         byte_t* buf_b;
