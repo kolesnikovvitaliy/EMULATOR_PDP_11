@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "types/types.h"
 #include "utils/utils.h"
@@ -22,6 +23,7 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
         if (!(res_input == res_input_data)) {
                 pdp_file_close(fp);
                 fprintf(stderr,"Error Readeng Files\r\n");
+                assert(res_input == res_input_data);
                 abort();
         }
         do {
