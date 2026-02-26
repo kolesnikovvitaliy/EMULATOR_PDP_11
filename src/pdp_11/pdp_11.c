@@ -7,6 +7,7 @@
 #include "pdp_11/memory/mem.h"
 #include "pdp_11/device_io/device_io.h"
 #include "utils/utils.h"
+#include "types/types.h"
 
 //////////////////////////////////////////////////////
 pdp_11_t* pdp_new()
@@ -66,12 +67,12 @@ word_t w_read(pdp_11_t* pdp, address_word_t addr)
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
 void pdp_load_data(pdp_11_t* pdp, byte_t* filename) {
-        dev_io_load_data(pdp,(struct dev_io_t*)pdp->device_io, (byte_t*)filename);
+        dev_io_load_data((struct pdp_11_t*)pdp,(struct dev_io_t*)pdp->device_io, (byte_t*)filename);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
 void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size) {
-        dev_io_mem_dump(pdp, addr, size);
+        dev_io_mem_dump((struct pdp_11_t*)pdp, addr, size);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;

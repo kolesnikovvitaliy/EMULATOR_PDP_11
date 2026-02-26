@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pdp_11/pdp_11.h"
-
+#include "types/types.h"
 #include "tests/test.h"
 
 

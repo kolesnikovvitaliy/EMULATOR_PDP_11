@@ -1,7 +1,8 @@
-#ifndef MEM_P_H
-#define MEM_P_H
+#ifndef DEVICE_IO_H_P
+#define DEVICE_IO_H_P
 #include "types/types.h"
-#include "pdp_11/pdp_11.h"
+//#include "pdp_11/pdp_11.h"
+struct pdp_11_t;
 
 typedef void (*load_files_t)(struct pdp_11_t*, byte_t*);
 typedef void (*load_term_t)(struct pdp_11_t*);

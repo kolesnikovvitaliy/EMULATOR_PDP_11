@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "types/types.h"
-#include "pdp_11/device_io/device_io.h"
+//#include "pdp_11/device_io/device_io.h"
 #include "pdp_11/pdp_11.h"
 
 
