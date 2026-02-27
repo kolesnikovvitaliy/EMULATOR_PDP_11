@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "types/types.h"
-//#include "pdp_11/device_io/device_io.h"
 #include "pdp_11/pdp_11.h"
 
 
@@ -15,8 +13,10 @@ void load_data_term(struct pdp_11_t* pdp)
 
         addr = count_str = data = res_input= 0x0;
         res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
+        printf("RES INPUT DATA = %d\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
+                        res_input, addr, count_str);
         if (!(res_input == res_input_data)) {
-                fprintf(stderr,"Error Readeng Files\r\n");
+                fprintf(stderr,"Error Readeng Files TERM\r\n");
                 assert((res_input == res_input_data));
                 abort();
         }
@@ -27,4 +27,6 @@ void load_data_term(struct pdp_11_t* pdp)
                 }
                 res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);
+        fprintf(stdout, "READ TERMINAL EXIT\r\n");
+        return;
 }

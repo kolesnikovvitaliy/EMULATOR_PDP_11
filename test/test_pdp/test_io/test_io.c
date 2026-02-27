@@ -10,7 +10,7 @@
  int test_io(struct pdp_11_t* pdp, int argc, char** argv)
 {
         assert(pdp);
-        if (argc >= 1) {
+        if (argc <= 1) {
                 test_io_terminal((struct pdp_11_t*)pdp);
                 return 0;
         }
