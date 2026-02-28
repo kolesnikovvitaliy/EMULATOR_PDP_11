@@ -4,9 +4,9 @@
 
 #include "pdp_11/memory/mem_p.h"
 #include "utils/utils.h"
-//#include "types/types.h"
 #include "pdp_11/memory/buf_byte/mem_byte.h"
 #include "pdp_11/memory/buf_word/mem_word.h"
+
 byte_t g_default_memory;
 mem_t* mem_new()
 {

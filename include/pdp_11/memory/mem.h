@@ -1,9 +1,6 @@
 #ifndef MEM_H
 #define MEM_H
 
-//#include "types/types.h"
-
-
 struct mem_t;
 
 struct mem_t* mem_new();

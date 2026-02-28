@@ -7,7 +7,6 @@
 #include "pdp_11/memory/mem.h"
 #include "pdp_11/device_io/device_io.h"
 #include "utils/utils.h"
-#include "types/types.h"
 
 //////////////////////////////////////////////////////
 pdp_11_t* pdp_new()

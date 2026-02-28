@@ -5,7 +5,6 @@
 #include "pdp_11/device_io/terminal_io/dev_terminal_io_p.h"
 #include "pdp_11/device_io/files_io/dev_files_io_p.h"
 #include "pdp_11/pdp_11.h"
-//#include "types/types.h"
 
 byte_t g_default_device;
 

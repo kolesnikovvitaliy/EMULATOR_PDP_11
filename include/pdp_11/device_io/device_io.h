@@ -1,8 +1,6 @@
 #ifndef DEVICE_IO_H
 #define DEVICE_IO_H
 
-//#include "types/types.h"
-//#include "pdp_11/pdp_11_p.h"
 struct pdp_11_t;
 
 

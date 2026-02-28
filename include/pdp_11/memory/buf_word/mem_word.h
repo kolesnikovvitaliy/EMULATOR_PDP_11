@@ -1,6 +1,5 @@
 #ifndef MEM_WORD_H
 #define MEM_WORD_H
-//#include "types/types.h"
 
 struct mem_word_t;
 

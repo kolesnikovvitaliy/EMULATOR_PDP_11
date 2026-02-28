@@ -1,6 +1,5 @@
 #ifndef MEM_BYTE_H
 #define MEM_BYTE_H
-//#include "types/types.h"
 
 struct mem_byte_t;
 
