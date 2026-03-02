@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "pdp_11/pdp_11.h"
-
-
+// Загрузка данных из терминала
 void load_data_term(struct pdp_11_t* pdp)
 {
         enum {res_input_data = 2};

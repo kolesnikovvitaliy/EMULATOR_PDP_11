@@ -6,10 +6,11 @@
 #include "types/types.h"
 #include "utils/utils.h"
 #include "pdp_11/pdp_11.h"
-
+// Загрузка данных из файла
 void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
 {
-        enum {res_input_data = 2};
+        enum {res_input_data = 2}; // Введены два параметра addr,
+                                   // и количество байт
 
         file_t * fp;
         word_t addr, count_str, data, res_input;
