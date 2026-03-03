@@ -38,6 +38,7 @@ void mem_byte_destroy(mem_byte_t* mem_byte)
 
 /////////////////////////////////////////////////////////////////////
 //-----------------------------------------------------------------------
+// Записывает слово по адресу
 void __word_write_b(void* mem_byte,
                 address_word_t addr,
                 word_t data)
@@ -49,6 +50,7 @@ void __word_write_b(void* mem_byte,
 }
 
 //-----------------------------------------------------------------------
+// Читает слово по адресу
 word_t
 __word_read_b(void* mem_byte, address_word_t addr)
 {
