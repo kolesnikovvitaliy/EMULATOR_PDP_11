@@ -17,8 +17,10 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
 
         addr = count_str = data = res_input= 0x0;
         fp  = pdp_file_open(filename,(byte_t*)"rb");
+        assert(fp);
 
         res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
+        assert(res_input);
         if (!(res_input == res_input_data)) {
                 pdp_file_close(fp);
                 fprintf(stderr,"Error Readeng Files file\r\n");
