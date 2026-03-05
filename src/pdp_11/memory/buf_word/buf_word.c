@@ -39,6 +39,7 @@ void __word_write_w(void* mem_word,
                 address_word_t addr,
                 word_t data)
 {
+        // Записываем слово по адресу;
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
         *(ptr->buf_w + addr) = data & 0xFF;
@@ -49,6 +50,7 @@ void __word_write_w(void* mem_word,
 word_t
 __word_read_w(void* mem_word, address_word_t addr)
 {
+        // Читаем слово по адресу;
         mem_word_t *ptr = (mem_word_t*)mem_word;
         return ((*(ptr->buf_w + addr) & 0xFF) | *(ptr->buf_w + addr+1) << 8);
 }
@@ -59,6 +61,7 @@ void __byte_write_w(void* mem_word,
                address_byte_t addr,
                byte_t data)
 {
+        // Записываем байт в слово по адресу;
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
         *(ptr->buf_w + addr) = data & 0xFF;
@@ -70,6 +73,7 @@ void __byte_write_w(void* mem_word,
 byte_t
 __byte_read_w(void* mem_word, address_byte_t addr)
 {
+        // Читаем байт из слова по адресу;
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
         return *(ptr->buf_w + addr) & 0xFF;
