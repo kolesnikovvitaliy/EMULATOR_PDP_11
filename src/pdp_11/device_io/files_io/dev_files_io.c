@@ -15,7 +15,7 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
         file_t * fp;
         word_t addr, count_str, data, res_input;
 
-        addr = count_str = data = res_input= 0x0;
+        addr = count_str = data = res_input = 0x00;
         fp  = pdp_file_open(filename,(byte_t*)"rb");
         assert(fp);
 
@@ -34,6 +34,8 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
                 }
                 res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);
+        fprintf(stdout, "READ READ_FILE EXIT\r\n");
         pdp_file_close(fp);
+        return;
 }
 
