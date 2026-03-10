@@ -66,7 +66,10 @@ word_t w_read(pdp_11_t* pdp, address_word_t addr)
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
 void pdp_load_data(pdp_11_t* pdp, byte_t* filename) {
-        dev_io_load_data((struct pdp_11_t*)pdp,(struct dev_io_t*)pdp->device_io, (byte_t*)filename);
+        dev_io_load_data((struct pdp_11_t*)pdp,
+                        (struct dev_io_t*)pdp->device_io,
+                        (byte_t*)filename
+                        );
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
