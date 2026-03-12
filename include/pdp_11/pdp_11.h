@@ -19,6 +19,7 @@ word_t w_read(struct pdp_11_t* , const address_word_t);// читаем слов�
 
 void pdp_load_data(struct pdp_11_t* pdp, byte_t* filename);
 void pdp_mem_dump(struct pdp_11_t* pdp, address_word_t addr, word_t size);
+byte_t* pdp_parse_filename(int argc, char **argv);
 
 #endif
 #pragma once

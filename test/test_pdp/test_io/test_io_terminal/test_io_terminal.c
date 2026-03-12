@@ -5,7 +5,7 @@
 int test_io_terminal(struct pdp_11_t* pdp)
 {
 
-    fprintf(stdout, "TEST LOSD DATA FROM TERMINAL\n");
-    //pdp_load_data((struct pdp_11_t*)pdp, NULL);
+    fprintf(stdout, "TEST LOAD DATA FROM TERMINAL\n");
+    pdp_load_data((struct pdp_11_t*)pdp, NULL);
     return 0;
 }

@@ -27,6 +27,6 @@ void load_data_term(struct pdp_11_t* pdp)
                 }
                 res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);
-        fprintf(stdout, "READ TERMINAL EXIT\r\n");
+        fprintf(stdout, "\nREAD TERMINAL EXIT\r\n\n");
         return;
 }

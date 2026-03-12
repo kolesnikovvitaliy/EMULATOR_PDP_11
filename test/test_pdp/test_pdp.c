@@ -25,26 +25,12 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         pdp_create(pdp);
         assert(pdp);
 
-        pdp_load_data(pdp,(byte_t*)"./data/test.txt");
-        //if (argc == 1) {
+        //pdp_load_data(pdp,(byte_t*)"./data/test.txt");
+        // byte_t* filename = pdp_parse_filename(argc, argv);
+        // pdp_load_data(pdp, (byte_t*)filename);
+        // pdp_mem_dump(pdp, 0x40, 0x20);
+        // pdp_mem_dump(pdp, 0x200, 0x26);
 
-        //        usage((byte_t*)argv[0]);
-        //        exit(1);
-        //}
-
-        //if (argc >= 3) {
-        //        for(int i = 1; i < argc; i++) {
-        //                if (strcmp(argv[i], "-t")) {
-        //                         pdp_load_data(pdp,
-        //                                (const byte_t*)argv[i]);
-        //                }
-        //        }
-        //}
-        fprintf(stdout, "\r\n\n");
-        pdp_mem_dump(pdp, 0x40, 20);
-        fprintf(stdout, "\r\n");
-        pdp_mem_dump(pdp, 0x200, 0x26);
-        fprintf(stdout, "\r\n\n");
         all_tests(pdp, argc, argv);
         pdp_destroy(pdp);
         free(pdp);
@@ -58,6 +44,11 @@ int test_pdp(int argc, char **argv)
                         создания и использования функций\r\n\n");
         ////////////////////////////////////////////
         fprintf(stdout, "MEMORY BYTE CREATED !!! \r\n\n");
+        if (1 == argc) {
+                test_pdp_memory(type_memory_byte, argc, argv);
+                fprintf(stdout, "\nMEMORY BYTE DESTROY !!! \r\n\n");
+                return 0;
+        }
 
         test_pdp_memory(type_memory_byte, argc, argv);
 

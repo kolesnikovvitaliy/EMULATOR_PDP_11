@@ -16,8 +16,6 @@ dev_io_t* dev_io_new()
 void dev_io_create(dev_io_t* device_io)
 {
         device_io->default_device = g_default_device;
-        device_io->load_data_terminal = load_data_term;
-        device_io->load_data_files = load_data_file;
 }
 
 void dev_io_destroy(dev_io_t* device_io)
@@ -30,10 +28,11 @@ void dev_io_destroy(dev_io_t* device_io)
 void dev_io_load_data(struct pdp_11_t* pdp,dev_io_t* device_io, byte_t *filename)
 {
         if (filename == NULL) {
-                device_io->load_data_terminal(pdp);
+                device_io->load_data = load_data_term;
         } else {
-                device_io->load_data_files(pdp, (byte_t*)filename);
+                device_io->load_data = load_data_file;
         }
+        device_io->load_data((struct pdp_11_t*)pdp, (byte_t*)filename);
 
 }
 void dev_io_mem_dump(struct pdp_11_t* pdp, address_word_t addr, word_t size)
@@ -44,5 +43,6 @@ void dev_io_mem_dump(struct pdp_11_t* pdp, address_word_t addr, word_t size)
                         "%06o: %06o %04hx\r\n",
                         (addr + ind++), ch,  ch);
         }
+    fprintf(stdout, "\r\n\n");
 }
 

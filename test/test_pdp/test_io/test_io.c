@@ -10,13 +10,11 @@
  int test_io(struct pdp_11_t* pdp, int argc, char** argv)
 {
         assert(pdp);
-        if (argc <= 1) {
-                test_io_terminal((struct pdp_11_t*)pdp);
-                return 0;
-        }
-        test_io_files((struct pdp_11_t*)pdp, (byte_t*)argv[2]);
-        return 1;
-
+        byte_t* filename = pdp_parse_filename(argc, argv);
+        pdp_load_data(pdp, (byte_t*)filename);
+        pdp_mem_dump(pdp, 0x40, 0x20);
+        pdp_mem_dump(pdp, 0x200, 0x26);
+        return 0;
 
 }
 //////////////////////////////////////////////////////////////////////

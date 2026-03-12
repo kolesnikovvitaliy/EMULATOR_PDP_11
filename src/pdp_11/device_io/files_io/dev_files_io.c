@@ -34,7 +34,7 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
                 }
                 res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);
-        fprintf(stdout, "READ READ_FILE EXIT\r\n");
+        fprintf(stdout, "\nREAD FILE EXIT\n\n");
         pdp_file_close(fp);
         return;
 }

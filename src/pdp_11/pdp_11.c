@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <errno.h>
 
@@ -34,7 +35,6 @@ void pdp_destroy(pdp_11_t* pdp)
 //////////////////////////////////////////////////////
 
 //------------------------------------------------------------------;
-// Функции работы с памятью PDP_11;
 //------------------------------------------------------------------;
 void b_write(pdp_11_t* pdp, address_byte_t addr, byte_t data)
 {
@@ -65,7 +65,6 @@ word_t w_read(pdp_11_t* pdp, address_word_t addr)
         return (word_t)word_read((struct mem_t*)pdp->memory, addr);
 }
 //------------------------------------------------------------------;
-// Чтение файла или терминала
 //------------------------------------------------------------------;
 void pdp_load_data(pdp_11_t* pdp, byte_t* filename) {
         dev_io_load_data((struct pdp_11_t*)pdp,
@@ -79,4 +78,22 @@ void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size) {
         dev_io_mem_dump((struct pdp_11_t*)pdp, addr, size);
 }
 //------------------------------------------------------------------;
+//------------------------------------------------------------------;
+byte_t*
+pdp_parse_filename(int argc, char **argv) {
+        if (1 == argc) {
+                usage((byte_t*)argv[0]);
+                return (byte_t*)0;
+        }
+        if (3 >= argc) {
+                for(int i = 1; i < argc; i++) {
+                        if (strcmp(argv[i], "-t")) {
+                                return (byte_t*)argv[i];
+                        }
+                }
+        }
+        usage((byte_t*)argv[0]);
+        assert(!argv[0]);
+        exit(1);
+}
 //------------------------------------------------------------------;
