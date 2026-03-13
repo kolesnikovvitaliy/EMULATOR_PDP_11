@@ -10,10 +10,11 @@ int main(int argc, char **argv)
 {
         //test_pdp(argc, argv);
 
-        struct pdp_11_t* pdp = pdp_new();
+        // Перед запуском тестов закоментировать;
+        struct pdp_11_t* pdp = pdp_new(); // Создание эмулятора
         assert(pdp);
 
-        run(pdp, argc, argv);
+        run(pdp, argc, argv); // Запуск
 
         free(pdp);
 

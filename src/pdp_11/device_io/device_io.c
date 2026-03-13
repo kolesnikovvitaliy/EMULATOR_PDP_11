@@ -21,16 +21,17 @@ void dev_io_create(dev_io_t* device_io)
 void dev_io_destroy(dev_io_t* device_io)
 {
         device_io->default_device = 0;
+        device_io->load_data = load_data_term;
         return;
 
 }
 
 void dev_io_load_data(struct pdp_11_t* pdp,dev_io_t* device_io, byte_t *filename)
 {
-        if (filename == NULL) {
-                device_io->load_data = load_data_term;
-        } else {
+        if (filename) {
                 device_io->load_data = load_data_file;
+        } else {
+                device_io->load_data = load_data_term;
         }
         device_io->load_data((struct pdp_11_t*)pdp, (byte_t*)filename);
 

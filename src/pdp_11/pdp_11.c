@@ -17,12 +17,12 @@ pdp_11_t* pdp_new()
 //------------------------------------------------------------------;
 void pdp_create(pdp_11_t* pdp)
 {
-        pdp->memory = (struct mem_t*)mem_new();
-        pdp->device_io = (struct dev_io_t*)dev_io_new();
+        pdp->memory = (struct mem_t*)mem_new(); // Создание обЬектов  памяти типа byte и word
+        pdp->device_io = (struct dev_io_t*)dev_io_new(); // Создание обЬекта ввода вывода
         assert(pdp->memory);
         assert(pdp->device_io);
-        mem_create(pdp->memory);
-        dev_io_create(pdp->device_io);
+        mem_create(pdp->memory); // Инициализация памяти
+        dev_io_create(pdp->device_io); // Инициализация ввода вывода
 }
 //------------------------------------------------------------------;
 void pdp_destroy(pdp_11_t* pdp)
