@@ -12,25 +12,25 @@
 //////////////////////////////////////////////////////
 pdp_11_t* pdp_new()
 {
-        return (pdp_11_t*)malloc(sizeof(pdp_11_t));
+        return (pdp_11_t*)malloc(sizeof(pdp_11_t)); // Выделение памяти под обЬетк PDP_11;
 }
 //------------------------------------------------------------------;
 void pdp_create(pdp_11_t* pdp)
 {
-        pdp->memory = (struct mem_t*)mem_new(); // Создание обЬектов  памяти типа byte и word
-        pdp->device_io = (struct dev_io_t*)dev_io_new(); // Создание обЬекта ввода вывода
-        assert(pdp->memory);
-        assert(pdp->device_io);
-        mem_create(pdp->memory); // Инициализация памяти
-        dev_io_create(pdp->device_io); // Инициализация ввода вывода
+        pdp->memory = (struct mem_t*)mem_new(); // Выделение памяти под обЬетк  памяти типа byte и word;
+        pdp->device_io = (struct dev_io_t*)dev_io_new(); // Выделение памяти под обЬетк ввода вывода;
+        assert(pdp->memory); // проверка
+        assert(pdp->device_io); // проверка
+        mem_create(pdp->memory); // Инициализация обЬекта памяти
+        dev_io_create(pdp->device_io); // Инициализация обЬекта ввода вывода
 }
 //------------------------------------------------------------------;
 void pdp_destroy(pdp_11_t* pdp)
 {
-        mem_destroy((struct mem_t*)pdp->memory);
-        free(pdp->memory);
-        dev_io_destroy((struct dev_io_t*)pdp->device_io);
-        free(pdp->device_io);
+        mem_destroy((struct mem_t*)pdp->memory); // Уничтожение оБьекта память;
+        free(pdp->memory); // Высвобождение памяти;
+        dev_io_destroy((struct dev_io_t*)pdp->device_io); // Уничтожение оБьекта Ввода-Вывода;
+        free(pdp->device_io); // Высвобождение памяти;
 }
 //////////////////////////////////////////////////////
 
@@ -38,6 +38,7 @@ void pdp_destroy(pdp_11_t* pdp)
 //------------------------------------------------------------------;
 void b_write(pdp_11_t* pdp, address_byte_t addr, byte_t data)
 {
+        /* Записывает байт по указанному адрессу */
         assert(__is_valid_address(addr));
         byte_write((struct mem_t*)pdp->memory, addr, data);
 }
@@ -45,6 +46,7 @@ void b_write(pdp_11_t* pdp, address_byte_t addr, byte_t data)
 //------------------------------------------------------------------;
 byte_t b_read(pdp_11_t* pdp, address_byte_t addr)
 {
+        /* Читает байт из указанного адреса */
         assert(__is_valid_address(addr));
         return (byte_t)byte_read((struct mem_t*)pdp->memory, addr);
 }
@@ -54,6 +56,7 @@ byte_t b_read(pdp_11_t* pdp, address_byte_t addr)
 void w_write(pdp_11_t* pdp,
                 address_word_t addr, word_t data)
 {
+        /* Записывает слово по указанному адрессу */
         assert(__is_valid_address(addr));
         word_write((struct mem_t*)pdp->memory, addr, data);
 }
@@ -61,12 +64,20 @@ void w_write(pdp_11_t* pdp,
 //------------------------------------------------------------------;
 word_t w_read(pdp_11_t* pdp, address_word_t addr)
 {
+        /* Читает слово из указанного адреса */
         assert(__is_valid_address(addr));
         return (word_t)word_read((struct mem_t*)pdp->memory, addr);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
-void pdp_load_data(pdp_11_t* pdp, byte_t* filename) {
+void pdp_load_data(pdp_11_t* pdp, byte_t* filename)
+{
+        /**
+         * Чтение потока данных из
+         * Терминала или Файла
+         * в зависимости от наличия
+         * пути к файлу
+         **/
         dev_io_load_data((struct pdp_11_t*)pdp,
                         (struct dev_io_t*)pdp->device_io,
                         (byte_t*)filename
@@ -74,15 +85,28 @@ void pdp_load_data(pdp_11_t* pdp, byte_t* filename) {
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
-void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size) {
+void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size)
+{
+        /**
+         * Форматированный вывод данных из памяти
+         * из указанного адресса
+         * определенного количества байт
+         **/
         dev_io_mem_dump((struct pdp_11_t*)pdp, addr, size);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
 byte_t*
 pdp_parse_filename(int argc, char **argv) {
+        // Проверка наличия пути к файлу;
         if (1 == argc) {
+
                 usage((byte_t*)argv[0]);
+                /**
+                 * Указание о возможности
+                 * использовать программы с префиксом -t:
+                 * "USAGE: ./pdp.out [-t] filename - input data:
+                 **/
                 return (byte_t*)0;
         }
         if (3 >= argc) {

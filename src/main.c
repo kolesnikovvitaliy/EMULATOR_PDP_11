@@ -8,15 +8,15 @@
 
 int main(int argc, char **argv)
 {
-        //test_pdp(argc, argv);
+        //test_pdp(argc, argv); // ЗАПУСК ТЕСТОВ;
 
         // Перед запуском тестов закоментировать;
-        struct pdp_11_t* pdp = pdp_new(); // Создание эмулятора
-        assert(pdp);
+        struct pdp_11_t* pdp = pdp_new(); // Выделение памяти под обЬетк PDP_11;
+        assert(pdp); // проверка
 
-        run(pdp, argc, argv); // Запуск
+        run(pdp, argc, argv); // Запуск ЭМУЛЯТОРА;
 
-        free(pdp);
+        free(pdp); // Высвобождение памяти;
 
         return 0;
 }
