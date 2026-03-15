@@ -10,7 +10,7 @@ byte_t g_default_device;
 
 dev_io_t* dev_io_new()
 {
-        return (dev_io_t*)malloc(sizeof(dev_io_t));
+        return (dev_io_t*)malloc(sizeof(dev_io_t)); // Выделение паамяти для обЪекта dev_io_t
 }
 
 void dev_io_create(dev_io_t* device_io)
