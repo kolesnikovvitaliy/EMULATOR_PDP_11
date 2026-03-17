@@ -5,6 +5,7 @@
 
 #include "types/types.h"
 #include "utils/utils.h"
+#include "utils/logger/logger.h"
 #include "pdp_11/pdp_11.h"
 // Загрузка данных из файла
 void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
@@ -23,7 +24,8 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
         assert(res_input);
         if (!(res_input == res_input_data)) {
                 pdp_file_close(fp);
-                fprintf(stderr,"Error Readeng Files file\r\n");
+                //fprintf(stderr,"Error Readeng Files file\r\n");
+                ERROR("Error Readeng File [%s]\r\n", filename);
                 assert(res_input == res_input_data);
                 abort();
         }
@@ -34,7 +36,8 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
                 }
                 res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);
-        fprintf(stdout, "\nREAD FILE EXIT\n\n");
+        //fprintf(stdout, "\nREAD FILE EXIT\n\n");
+        INFO("\nREAD FILE EXIT\n\n", "");
         pdp_file_close(fp);
         return;
 }

@@ -4,7 +4,7 @@
 #include "utils/logger/logger.h"
 
 
-log_level_t current_log_level = INFO;
+log_level_t current_log_level = DEBUG;
 void log_message(log_level_t level, const char* file, int line,
                 const char* func, const char* fmt, ...)
 {

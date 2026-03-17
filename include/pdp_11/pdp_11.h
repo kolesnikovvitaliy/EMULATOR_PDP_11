@@ -2,7 +2,7 @@
 #define PDP_11_H
 
 #include "types/types.h"
-
+#include "utils/logger/logger.h"
 struct pdp_11_t;
 
 struct pdp_11_t* pdp_new();

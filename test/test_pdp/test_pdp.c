@@ -8,6 +8,7 @@
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
 #include "utils/utils.h"
+
 //-------------------------------------------------------------------
 extern byte_t g_default_memory;
 void memory_type(byte_t type_memory)
@@ -19,7 +20,7 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
 {
 
         memory_type(type_memory);
-        fprintf(stdout, "DEFAULT MEMORY FOR CREATE PDP_11 \
+        DEBUG( "DEFAULT MEMORY FOR CREATE PDP_11 \
                         \t%d\r\n", g_default_memory);
         struct pdp_11_t* pdp = pdp_new();
         pdp_create(pdp);
@@ -40,27 +41,27 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
 /////////////////////////////////////////////////////////////////////
 int test_pdp(int argc, char **argv)
 {
-        fprintf(stdout,"\nСтартовый тест для проверки правильности\n \
-                        создания и использования функций\r\n\n");
+        DEBUG("\nСтартовый тест для проверки правильности\n \
+                        создания и использования функций", "\r\n\n");
         ////////////////////////////////////////////
-        fprintf(stdout, "MEMORY BYTE CREATED !!! \r\n\n");
+        DEBUG( "\nMEMORY BYTE CREATED !!!","\r\n\n");
         if (1 == argc) {
                 test_pdp_memory(type_memory_byte, argc, argv);
-                fprintf(stdout, "\nMEMORY BYTE DESTROY !!! \r\n\n");
+                DEBUG( "\nMEMORY BYTE DESTROY !!! ","\r\n\n");
                 return 0;
         }
 
         test_pdp_memory(type_memory_byte, argc, argv);
 
-        fprintf(stdout, "\nMEMORY BYTE DESTROY !!! \r\n\n");
+        DEBUG( "\nMEMORY BYTE DESTROY !!! ","\r\n\n");
         ////////////////////////////////////////////
 
         ////////////////////////////////////////////
-        fprintf(stdout, "MEMORY WORD CREATED !!! \r\n\n");
+        DEBUG( "\nMEMORY WORD CREATED !!! ","\r\n\n");
 
         test_pdp_memory(type_memory_word, argc, argv);
 
-        fprintf(stdout, "\nMEMORY WORD DESTROY !!! \r\n\n");
+        DEBUG( "\nMEMORY WORD DESTROY !!! ","\r\n\n");
         ////////////////////////////////////////////
 
         return 1;
