@@ -47,7 +47,7 @@ static inline bool_t __is_valid_addr(mem_t* memory,
 {
 
         if (!(memory->default_memory)) {
-                if ((addr + len) > memory->mem_byte->size_b) {
+                if ((addr | len) > memory->mem_byte->size_b) {
                         abort();
                 }
                 return 1;
@@ -127,7 +127,7 @@ word_t word_read(mem_t* memory, address_word_t addr)
                                  memory->mem_byte,addr);
         }
         if (addr & 1) {
-                addr--;
+                addr &= -1;
         }
 
         addr = __corect_addr_for_write_word(addr);

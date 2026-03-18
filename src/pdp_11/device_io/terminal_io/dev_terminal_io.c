@@ -20,14 +20,14 @@ void load_data_term(struct pdp_11_t* pdp)
                         res_input, addr, count_str);
 
         if (!(res_input == res_input_data)) {
-                fprintf(stderr,"Error Readeng Files TERM\r\n");
+                ERROR("\nError Readeng With TERMINAL\r\n", "");
                 assert((res_input == res_input_data));
                 abort();
         }
         do {
                 for(byte_t ind = 0x0; ind < count_str; ind++) {
                         fscanf(stdin, "%hx", &data);
-                        b_write(pdp, (addr+ind), data);
+                        b_write(pdp, (addr | ind), data);
                 }
                 res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);

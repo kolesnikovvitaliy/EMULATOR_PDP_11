@@ -32,7 +32,7 @@ void load_data_file(struct pdp_11_t* pdp, byte_t* filename)
         do {
                 for(byte_t ind = 0x0; ind < count_str; ind++) {
                         fscanf(fp, "%hx", &data);
-                        b_write(pdp, (addr+ind), data);
+                        b_write(pdp, (addr | ind), data);
                 }
                 res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
         }while(res_input == res_input_data);

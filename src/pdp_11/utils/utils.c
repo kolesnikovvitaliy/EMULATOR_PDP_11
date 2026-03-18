@@ -11,9 +11,9 @@
 int __is_valid_address(const address_byte_t addr)
 {
         unsigned char size = 0x0;
-        if((addr > (__get_size_buffer() - 1)) ||
+        if((addr > ~(-__get_size_buffer())) ||
                         (addr < size)) {
-               return 0;
+               return 0; // замена (__get_size_buffer() - 1)  на ~(-);
        }
         return 1;
 }
