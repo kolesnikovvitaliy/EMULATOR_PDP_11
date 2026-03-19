@@ -10,6 +10,7 @@ void test_rw_byte_b(struct pdp_11_t* pdp)
 {
         //пишем байт, читаем байт
 
+
         address_byte_t adr;
         byte_t b0, bres;
 

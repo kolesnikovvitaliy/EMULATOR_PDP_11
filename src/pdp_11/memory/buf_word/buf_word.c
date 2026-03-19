@@ -3,6 +3,7 @@
 
 #include "pdp_11/memory/buf_word/mem_word_p.h"
 #include "pdp_11/memory/type_func_p.h"
+#
 
 
 //--------------------------------------------------------------
@@ -42,7 +43,6 @@ void __word_write_w(void* mem_word,
         // Записываем слово по адресу;
         mem_word_t *ptr = (mem_word_t*)mem_word;
 
-        //*((mem_word_t*)((unsigned long)ptr->buf_w | addr)->buf_w = data & 0xFF;
         *(ptr->buf_w + addr) = data & 0xFF;
         *(ptr->buf_w + addr + 1) =  (data >> 8) & 0xFF;
 }

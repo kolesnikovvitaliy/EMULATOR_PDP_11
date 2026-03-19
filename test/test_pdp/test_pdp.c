@@ -5,6 +5,8 @@
 
 #include "types/types.h"
 #include "pdp_11/pdp_11.h"
+#include "pdp_11/pdp_11_p.h"
+#include "pdp_11/register/register_p.h"
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
 #include "utils/utils.h"
@@ -26,6 +28,16 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         pdp_create(pdp);
         assert(pdp);
 
+        INFO("\n\nTEST REGISTER\n", "");
+        *(((pdp_11_t*)pdp)->R0) = 0xfe;
+        INFO("\n\n*(pdp->R0) = 0xfe;\n", "");
+        pdp_11_t* ptr_pdp = (pdp_11_t*)pdp;
+        register_t* ptr_regist = (register_t*)ptr_pdp->regist;
+        assert(*(ptr_pdp->R0) == ptr_regist->R0);
+        INFO("\n\npdp->regist->R0 = %X;\n\n", ptr_regist->R0);
+        INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
+
+
         //pdp_load_data(pdp,(byte_t*)"./data/test.txt");
         // byte_t* filename = pdp_parse_filename(argc, argv);
         // pdp_load_data(pdp, (byte_t*)filename);
@@ -33,6 +45,12 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         // pdp_mem_dump(pdp, 0x200, 0x26);
 
         all_tests(pdp, argc, argv);
+        INFO("\n\nTEST REGISTER - 2\n", "");
+        *(((pdp_11_t*)pdp)->R0) = 0xdeef;
+        INFO("\n\n*(pdp->R0) = 0xdeef;\n", "");
+        assert(*(ptr_pdp->R0) == ptr_regist->R0);
+        INFO("\n\npdp->regist->R0 = 0x%X;\n\n", ptr_regist->R0);
+        INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
         pdp_destroy(pdp);
         free(pdp);
         memory_type((byte_t)0);
