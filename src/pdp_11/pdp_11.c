@@ -8,6 +8,7 @@
 #include "pdp_11/memory/mem.h"
 #include "pdp_11/register/register.h"
 #include "pdp_11/device_io/device_io.h"
+#include "pdp_11/command/command.h"
 #include "utils/utils.h"
 
 //////////////////////////////////////////////////////
@@ -20,13 +21,18 @@ void pdp_create(pdp_11_t* pdp)
 {
         pdp->memory = (struct mem_t*)mem_new(); // Выделение памяти под обЬетк  памяти типа byte и word;
         pdp->device_io = (struct dev_io_t*)dev_io_new(); // Выделение памяти под обЬетк ввода вывода;
-        pdp->regist = (struct register_t*)register_new();
-        assert(pdp->regist);
+        pdp->regist = (struct register_t*)register_new(); // Выделение памяти под обЬетк Регистры;
+        pdp->command = (struct command_t*)command_new();
+        // Выделение памяти под обЬетк машинные Команды;
+        assert(pdp->regist); // проверка
         assert(pdp->memory); // проверка
         assert(pdp->device_io); // проверка
+        assert(pdp->command); // проверка
+
         mem_create(pdp->memory); // Инициализация обЬекта памяти
         dev_io_create(pdp->device_io); // Инициализация обЬекта ввода вывода
-        reg_create((struct pdp_11_t*)pdp, pdp->regist);
+        reg_create((struct pdp_11_t*)pdp, pdp->regist);// Инициализация обЬекта Регистры
+        command_create(pdp->command);// Инициализация обЬекта машинные Команды;
 
 }
 //------------------------------------------------------------------;
@@ -36,8 +42,10 @@ void pdp_destroy(pdp_11_t* pdp)
         free(pdp->memory); // Высвобождение памяти;
         dev_io_destroy((struct dev_io_t*)pdp->device_io); // Уничтожение оБьекта Ввода-Вывода;
         free(pdp->device_io); // Высвобождение памяти;
-        reg_destroy((struct pdp_11_t*)pdp);
+        reg_destroy((struct pdp_11_t*)pdp); // Уничтожение оБьекта Регистры;
         free(pdp->regist);
+        command_destroy((struct command_t*)pdp->command); // Уничтожение оБьекта машинные команды;
+        free(pdp->command);
 
 }
 //////////////////////////////////////////////////////

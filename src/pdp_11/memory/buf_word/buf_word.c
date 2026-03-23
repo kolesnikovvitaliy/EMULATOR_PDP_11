@@ -25,8 +25,8 @@ void mem_word_create(mem_word_t* mem_word, size_word_buffer size)
 {
         // Выделение памяти для работы PDP_11 в режие типа WORD;
         TRACE("\nALLOCAT MEMORY  < WORD > SIZE =\t%zu\n", size);
-        mem_word->buf_w = (word_t*)calloc(size, sizeof(word_t));
-        mem_word->size_w = size;
+        mem_word->buf_w = (word_t*)calloc(size / 2, sizeof(word_t));
+        mem_word->size_w = size / 2;
 
         // Полморфные функции работы с памятью типа WORD или BYTE;
         TRACE("\nACTIVATED POLIMORPHIC FUNCTIONS FOR WORKING PDP_11 WITH MEMORY WORD OR BYTE", "");

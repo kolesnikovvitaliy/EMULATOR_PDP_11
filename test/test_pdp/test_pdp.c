@@ -10,6 +10,7 @@
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
 #include "utils/utils.h"
+#include "utils/logger/logger.h"
 
 //-------------------------------------------------------------------
 extern byte_t g_default_memory;
@@ -51,9 +52,26 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         assert(*(ptr_pdp->R0) == ptr_regist->R0);
         INFO("\n\npdp->regist->R0 = 0x%X;\n\n", ptr_regist->R0);
         INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
-        pdp_destroy(pdp);
-        free(pdp);
-        memory_type((byte_t)0);
+
+
+        word_t *pc = ((pdp_11_t*)pdp)->R7;
+        *pc = 01000;
+
+
+        word_t w;     // текущее слово, которое содержит команду
+        // главный цикл выполнения программы
+        int i = 0;
+        while(i++ <= 10) {
+                // читаем текущее слово
+                w = w_read(pdp, *pc);
+                // печатаем адрес и слово по этому адресу, как в листинге
+                TRACE("%06o %06o: ", *pc, w);
+                // pc сразу же указывает на следующее неразобранное слово
+                *pc += 2;
+        }
+                pdp_destroy(pdp);
+                free(pdp);
+                memory_type((byte_t)0);
 
 }
 /////////////////////////////////////////////////////////////////////

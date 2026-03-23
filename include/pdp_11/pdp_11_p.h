@@ -5,6 +5,7 @@ typedef struct {
        struct mem_t* memory;
        struct dev_io_t* device_io;
        struct register_t* regist;
+       struct command_t* command;
        word_t *R0;
        word_t *R1;
        word_t *R2;
@@ -12,7 +13,7 @@ typedef struct {
        word_t *R4;
        word_t *R5;
        word_t *R6;
-       word_t *R7;
+       word_t *R7; // PC
 } pdp_11_t;
 
 #endif

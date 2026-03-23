@@ -7,6 +7,6 @@ typedef struct {
        word_t R4;
        word_t R5;
        word_t R6;
-       word_t R7;
+       word_t R7; // pc
 } register_t;
 
