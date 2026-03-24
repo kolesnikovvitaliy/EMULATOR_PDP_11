@@ -3,6 +3,7 @@
 
 #include "pdp_11/command/command_p.h"
 #include "pdp_11/pdp_11.h"
+#include "utils/logger/logger.h"
 
 
 command_t* command_new()
@@ -28,3 +29,12 @@ void command_destroy(command_t* command)
     return;
 
 }
+
+// COMMANDS
+
+void do_halt()
+{
+        INFO("\n THE END!!!\n", "");
+        exit(0);
+}
+

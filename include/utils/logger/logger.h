@@ -17,16 +17,22 @@ typedef enum {
 #define CLR_RESET "\x1b[0m"
 
 
-void log_message(log_level_t, const char*, int,
-                const char*, const char*, ...);
+//void log_message(log_level_t, const char*, int,
+//                const char*, const char*, ...);
+void log_message(log_level_t, const char*, ...);
 log_level_t set_log_level(log_level_t);
 
 // Макросы для удобного вызова
-#define ERROR(fmt, ...) log_message(ERROR, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
-#define INFO(fmt, ...) log_message(INFO, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
-#define WARNING(fmt, ...)  log_message(WARNING,  __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
-#define TRACE(fmt, ...) log_message(TRACE, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
-#define DEBUG(fmt, ...) log_message(DEBUG, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+//#define ERROR(fmt, ...) log_message(ERROR, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+//#define INFO(fmt, ...) log_message(INFO, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+//#define WARNING(fmt, ...)  log_message(WARNING,  __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+//#define TRACE(fmt, ...) log_message(TRACE, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+//#define DEBUG(fmt, ...) log_message(DEBUG, __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
 
+#define ERROR(fmt, ...) log_message(ERROR, fmt,##__VA_ARGS__)
+#define INFO(fmt, ...) log_message(INFO, fmt,##__VA_ARGS__)
+#define WARNING(fmt, ...)  log_message(WARNING, fmt,##__VA_ARGS__)
+#define TRACE(fmt, ...) log_message(TRACE, fmt,##__VA_ARGS__)
+#define DEBUG(fmt, ...) log_message(DEBUG, fmt,##__VA_ARGS__)
 #endif
 #pragma once

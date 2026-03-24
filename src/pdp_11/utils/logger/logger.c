@@ -5,8 +5,9 @@
 
 
 log_level_t current_log_level = DEBUG;
-void log_message(log_level_t level, const char* file, int line,
-                const char* func, const char* fmt, ...)
+//void log_message(log_level_t level, const char* file, int line,
+//                const char* func, const char* fmt, ...)
+void log_message(log_level_t level, const char* fmt, ...)
 {
 
         const char* levels[] = {"ERROR","INFO",
@@ -27,8 +28,11 @@ void log_message(log_level_t level, const char* file, int line,
 
         // Печать префикса уровня
         //printf("[%s] ", levels[level]);
-        printf("%s[%s]\t[%s] [%s:%d] %s(): ", level_colors[level], levels[level],
-                        time_str, file, line, func);
+        //printf("%s[%s]\t[%s] [%s:%d] %s(): ", level_colors[level], levels[level],
+        //                time_str, file, line, func);
+        printf("\n%s[%s]: ",
+                        level_colors[level], levels[level]);
+
 
         // Обработка переменного числа аргументов
         va_list args;

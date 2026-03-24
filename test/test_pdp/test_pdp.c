@@ -6,6 +6,7 @@
 #include "types/types.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
+#include "pdp_11/command/command.h"
 #include "pdp_11/register/register_p.h"
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
@@ -69,9 +70,13 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
                 // pc сразу же указывает на следующее неразобранное слово
                 *pc += 2;
         }
-                pdp_destroy(pdp);
-                free(pdp);
-                memory_type((byte_t)0);
+        if (w == 0) {
+                TRACE("\nHALT\n", "");
+                do_halt();
+        }
+        pdp_destroy(pdp);
+        free(pdp);
+        memory_type((byte_t)0);
 
 }
 /////////////////////////////////////////////////////////////////////
