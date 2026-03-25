@@ -10,8 +10,9 @@
 #include "pdp_11/device_io/device_io.h"
 #include "pdp_11/command/command.h"
 #include "utils/utils.h"
+#include "utils/logger/logger.h"
 
-//////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 pdp_11_t* pdp_new()
 {
         return (pdp_11_t*)malloc(sizeof(pdp_11_t)); // Выделение памяти под обЬетк PDP_11;
@@ -137,3 +138,33 @@ pdp_parse_filename(int argc, char **argv) {
         exit(1);
 }
 //------------------------------------------------------------------;
+void do_halt(pdp_11_t* pdp) {
+
+        TRACE("\nHALT\n", "");
+        command_do_halt();
+        pdp_destroy(pdp);
+        free(pdp);
+        exit(0);
+}
+//------------------------------------------------------------------;
+word_t* do_command(pdp_11_t* pdp, const address_word_t addr)
+{
+        word_t *ptr_pc = pdp->R7;
+        *ptr_pc = addr;
+        word_t w;     // текущее слово, которое содержит команду
+        // читаем текущее слово
+        w = w_read(pdp, *ptr_pc);
+        switch (w) {
+                case 0:
+                        do_halt(pdp);
+        }
+
+
+        // печатаем адрес и слово по этому адресу, как в листинге
+        TRACE("%06o %06o: ", *ptr_pc, w);
+        // pc сразу же указывает на следующее неразобранное слово
+        *ptr_pc += 2;
+        return ptr_pc;
+}
+//------------------------------------------------------------------;
+

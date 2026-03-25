@@ -32,9 +32,8 @@ void command_destroy(command_t* command)
 
 // COMMANDS
 
-void do_halt()
+void command_do_halt()
 {
         INFO("\n THE END!!!\n", "");
-        exit(0);
 }
 

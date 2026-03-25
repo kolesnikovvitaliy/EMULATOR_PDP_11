@@ -55,25 +55,25 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
 
 
-        word_t *pc = ((pdp_11_t*)pdp)->R7;
-        *pc = 01000;
 
+        address_word_t addr = 01000;
+        word_t *ptr_pc = ptr_pdp->R7;
+        *ptr_pc = addr;
 
-        word_t w;     // текущее слово, которое содержит команду
+        //word_t w;     // текущее слово, которое содержит команду
         // главный цикл выполнения программы
         int i = 0;
         while(i++ <= 10) {
                 // читаем текущее слово
-                w = w_read(pdp, *pc);
+               ptr_pc = do_command(pdp, *ptr_pc);
+
+                //w = w_read(pdp, *pc);
                 // печатаем адрес и слово по этому адресу, как в листинге
-                TRACE("%06o %06o: ", *pc, w);
+                //TRACE("%06o %06o: ", *ptr_pc, w);
                 // pc сразу же указывает на следующее неразобранное слово
-                *pc += 2;
+               // *pc += 2;
         }
-        if (w == 0) {
-                TRACE("\nHALT\n", "");
-                do_halt();
-        }
+        INFO("\nTEST_OUTPUT \n\n%d\t%d\n\n", ptr_pc, *ptr_pc);
         pdp_destroy(pdp);
         free(pdp);
         memory_type((byte_t)0);

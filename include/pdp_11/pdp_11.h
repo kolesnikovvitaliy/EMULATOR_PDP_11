@@ -21,5 +21,14 @@ void pdp_load_data(struct pdp_11_t* pdp, byte_t* filename);
 void pdp_mem_dump(struct pdp_11_t* pdp, address_word_t addr, word_t size);
 byte_t* pdp_parse_filename(int argc, char **argv);
 
+void do_halt(struct pdp_11_t* pdp);
+void do_add();
+void do_mov();
+void do_nothing();
+
+
+
+word_t* do_command(struct pdp_11_t*, const address_word_t);
+
 #endif
 #pragma once
