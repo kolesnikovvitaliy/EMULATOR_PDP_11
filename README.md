@@ -80,7 +80,7 @@ make
 ```bash
 git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
 cd EMULATOR_PDP_11
-mingw32-gcc -O2 -g3 -Wall -Wextra -Wpedantic -std=c11 -Iinclude -o pdp.out src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test.c
+mingw32-gcc -O2 -g3 -Wall -Wextra -Wpedantic -std=c11 -Iinclude -o pdp.out src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test.c
 ```
 
 
