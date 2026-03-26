@@ -7,6 +7,7 @@
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
 #include "pdp_11/command/command.h"
+//#include "pdp_11/command/command_p.h"
 #include "pdp_11/register/register_p.h"
 #include "tests/test.h"
 #include "tests/test_pdp/test_pdp.h"
@@ -61,11 +62,13 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         *ptr_pc = addr;
 
         //word_t w;     // текущее слово, которое содержит команду
-        // главный цикл выполнения программы
+        // главный цикл выполне:w
+        // ния программы
         int i = 0;
-        while(i++ <= 10) {
+        while(i <= 10) {
                 // читаем текущее слово
-               ptr_pc = do_command(pdp, *ptr_pc);
+               ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);
+               i++;
 
                 //w = w_read(pdp, *pc);
                 // печатаем адрес и слово по этому адресу, как в листинге

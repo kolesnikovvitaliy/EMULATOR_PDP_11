@@ -9,6 +9,7 @@
 #include "pdp_11/register/register.h"
 #include "pdp_11/device_io/device_io.h"
 #include "pdp_11/command/command.h"
+#include "pdp_11/command/command_p.h"
 #include "utils/utils.h"
 #include "utils/logger/logger.h"
 
@@ -23,7 +24,7 @@ void pdp_create(pdp_11_t* pdp)
         pdp->memory = (struct mem_t*)mem_new(); // Выделение памяти под обЬетк  памяти типа byte и word;
         pdp->device_io = (struct dev_io_t*)dev_io_new(); // Выделение памяти под обЬетк ввода вывода;
         pdp->regist = (struct register_t*)register_new(); // Выделение памяти под обЬетк Регистры;
-        pdp->command = (struct command_t*)command_new();
+        pdp->command = (struct command_t**)command_new();
         // Выделение памяти под обЬетк машинные Команды;
         assert(pdp->regist); // проверка
         assert(pdp->memory); // проверка
@@ -45,7 +46,7 @@ void pdp_destroy(pdp_11_t* pdp)
         free(pdp->device_io); // Высвобождение памяти;
         reg_destroy((struct pdp_11_t*)pdp); // Уничтожение оБьекта Регистры;
         free(pdp->regist);
-        command_destroy((struct command_t*)pdp->command); // Уничтожение оБьекта машинные команды;
+        command_destroy((struct command_t**)pdp->command); // Уничтожение оБьекта машинные команды;
         free(pdp->command);
 
 }
@@ -138,30 +139,28 @@ pdp_parse_filename(int argc, char **argv) {
         exit(1);
 }
 //------------------------------------------------------------------;
-void do_halt(pdp_11_t* pdp) {
-
-        TRACE("\nHALT\n", "");
-        command_do_halt();
-        pdp_destroy(pdp);
-        free(pdp);
-        exit(0);
-}
-//------------------------------------------------------------------;
-word_t* do_command(pdp_11_t* pdp, const address_word_t addr)
+word_t* do_command(pdp_11_t* pdp, command_t** commands,
+                const address_word_t addr)
 {
+        extern byte_t count_commands;
         word_t *ptr_pc = pdp->R7;
         *ptr_pc = addr;
-        word_t w;     // текущее слово, которое содержит команду
+        word_t word_command;     // текущее слово, которое содержит команду
         // читаем текущее слово
-        w = w_read(pdp, *ptr_pc);
-        switch (w) {
-                case 0:
-                        do_halt(pdp);
+        byte_t flag = 0;
+        word_command = w_read(pdp, *ptr_pc);
+        for (int i = 1; i < count_commands; i++) {
+                 if ((word_command & commands[i]->mask) == commands[i]->opcode) {
+                         commands[i]->do_commands_command((struct pdp_11_t*)pdp, addr, word_command);
+                         flag = 1;
+                         break;
+                }
         }
-
-
+        if (!flag) {
+                commands[0]->do_commands_command((struct pdp_11_t*)pdp, addr, word_command);
+        }
         // печатаем адрес и слово по этому адресу, как в листинге
-        TRACE("%06o %06o: ", *ptr_pc, w);
+        //TRACE("%06o %06o: ", *ptr_pc, w);
         // pc сразу же указывает на следующее неразобранное слово
         *ptr_pc += 2;
         return ptr_pc;
