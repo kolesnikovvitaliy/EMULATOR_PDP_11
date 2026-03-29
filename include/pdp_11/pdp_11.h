@@ -5,12 +5,6 @@
  * @version 0.1
  * @date 2026-03-29
  */
-/**
- * @name  API PDP_11
- * @{ pdp_create
- * pdp_destroy
- * */}
- /**  @} */
 
 #ifndef PDP_11_H
 #define PDP_11_H
