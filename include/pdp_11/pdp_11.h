@@ -15,7 +15,7 @@ struct pdp_11_t;
 struct command_t;
 struct pdp_11_t* pdp_new();
 
-void pdp_create(struct pdp_11_t*); /** < Создание объекта PDP_11*/
+void pdp_create(struct pdp_11_t*); /**< Создание объекта PDP_11*/
 void pdp_destroy(struct pdp_11_t*);
 
 
