@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['dev_5fio_5fcreate_284',['dev_io_create',['../device__io_8h.html#a350bcf49920dd444ac2ec2db0bd99501',1,'dev_io_create(struct dev_io_t *):&#160;device_io.c'],['../device__io_8c.html#a135cf5af0707ebeacbb8db541cca45f6',1,'dev_io_create(dev_io_t *device_io):&#160;device_io.c']]],
-  ['dev_5fio_5fdestroy_285',['dev_io_destroy',['../device__io_8h.html#ad50efafbd0f022c2d2d551cf28277886',1,'dev_io_destroy(struct dev_io_t *):&#160;device_io.c'],['../device__io_8c.html#a83141dfb4922961a6ae53763f5da1cfd',1,'dev_io_destroy(dev_io_t *device_io):&#160;device_io.c']]],
-  ['dev_5fio_5fload_5fdata_286',['dev_io_load_data',['../device__io_8h.html#ae637b7383efcb80ba555bebe31828503',1,'dev_io_load_data(struct pdp_11_t *, struct dev_io_t *, byte_t *):&#160;device_io.c'],['../device__io_8c.html#a91b1a8acba7450df24f638e31fd521e4',1,'dev_io_load_data(struct pdp_11_t *pdp, dev_io_t *device_io, byte_t *filename):&#160;device_io.c']]],
-  ['dev_5fio_5fmem_5fdump_287',['dev_io_mem_dump',['../device__io_8h.html#ace430ac3ea216cd53a5c7c750a9e755c',1,'dev_io_mem_dump(struct pdp_11_t *, address_word_t, word_t):&#160;device_io.c'],['../device__io_8c.html#a5723f6edcaf3bd927ed4bc24e30c73be',1,'dev_io_mem_dump(struct pdp_11_t *pdp, address_word_t addr, word_t size):&#160;device_io.c']]],
-  ['dev_5fio_5fnew_288',['dev_io_new',['../device__io_8h.html#a4bf9d50e88e63bafdb1da2be105f904a',1,'dev_io_new():&#160;device_io.c'],['../device__io_8c.html#ae9c43bdb54df6c9878beb0af40f5a889',1,'dev_io_new():&#160;device_io.c']]],
-  ['do_5fcommand_289',['do_command',['../pdp__11_8h.html#acfa8b24e621b9d7a6d7f10b4b48abc40',1,'do_command(struct pdp_11_t *, struct command_t **, const address_word_t):&#160;pdp_11.c'],['../pdp__11_8c.html#aa1f72d54ce3fd20c6f7984e47b47e038',1,'do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr):&#160;pdp_11.c']]]
-];
