@@ -1,3 +1,17 @@
+/**
+ * @file pdp_11.h
+ * @brief Заголовочный файл PDP_11
+ * @author Vitaliy Kolesnikov
+ * @version 0.1
+ * @date 2026-03-29
+ */
+/**
+ * @name  API PDP_11
+ * @{ pdp_create
+ * pdp_destroy
+ * */}
+ /**  @} */
+
 #ifndef PDP_11_H
 #define PDP_11_H
 
@@ -7,7 +21,7 @@ struct pdp_11_t;
 struct command_t;
 struct pdp_11_t* pdp_new();
 
-void pdp_create(struct pdp_11_t*);
+void pdp_create(struct pdp_11_t*); /** < Создание объекта PDP_11*/
 void pdp_destroy(struct pdp_11_t*);
 
 
