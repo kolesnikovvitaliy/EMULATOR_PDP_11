@@ -1,5 +1,4 @@
-# documents
-./doc/html/*
+
 
 # Prerequisites
 *.d
@@ -44,6 +43,15 @@
 *.su
 *.idb
 *.pdb
+
+# documents
+./doc/html/*
+/doc/html/
+./test/test_repo/*
+/test/test_repo/
+!test/test_repo/**
+
+
 ./test/test_repo/*
 /test/test_repo/
 !test/test_repo/**
