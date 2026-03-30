@@ -1,4 +1,8 @@
 TARGET = pdp.out
+all: $(TARGET) doxygen
+
+DOXYFILE = Doxyfile
+DOC_DIR = doc/html/
 
 CC = gcc
 
@@ -21,8 +25,11 @@ $(TARGET): $(OBJS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
+	rm -rf $(DOC_DIR)
 
-.PHONY: all clean
+doxygen:
+	doxygen $(DOXYFILE)
+
+.PHONY: all clean doxygen

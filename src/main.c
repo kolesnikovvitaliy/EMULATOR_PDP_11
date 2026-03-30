@@ -31,5 +31,4 @@ int main(int argc, char **argv)
         //free(pdp); // Высвобождение памяти;
 
         return 0;
-/doc/html/
 }
