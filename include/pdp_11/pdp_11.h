@@ -1,11 +1,3 @@
-/**
- * @file pdp_11.h
- * @brief Заголовочный файл PDP_11
- * @author Vitaliy Kolesnikov
- * @version 0.1
- * @date 2026-03-29
- */
-
 #ifndef PDP_11_H
 #define PDP_11_H
 
@@ -15,7 +7,7 @@ struct pdp_11_t;
 struct command_t;
 struct pdp_11_t* pdp_new();
 
-void pdp_create(struct pdp_11_t*); /**< Создание объекта PDP_11*/
+void pdp_create(struct pdp_11_t*);
 void pdp_destroy(struct pdp_11_t*);
 
 
@@ -29,10 +21,7 @@ void pdp_load_data(struct pdp_11_t* pdp, byte_t* filename);
 void pdp_mem_dump(struct pdp_11_t* pdp, address_word_t addr, word_t size);
 byte_t* pdp_parse_filename(int argc, char **argv);
 
-
-
-
-
+// Выполнение команды
 word_t* do_command(struct pdp_11_t*, struct command_t**,
                 const address_word_t);
 

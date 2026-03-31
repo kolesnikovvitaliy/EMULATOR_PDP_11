@@ -20,8 +20,8 @@ void reg_create(pdp_11_t* pdp, register_t* regist)
         pdp->R3 = &regist->R3;
         pdp->R4 = &regist->R4;
         pdp->R5 = &regist->R5;
-        pdp->R6 = &regist->R6;
-        pdp->R7 = &regist->R7;
+        pdp->SP = &regist->SP;
+        pdp->PC = &regist->PC;
         return;
 
 }
@@ -34,8 +34,8 @@ void reg_destroy(pdp_11_t* pdp)
         pdp->R3 = NULL;
         pdp->R4 = NULL;
         pdp->R5 = NULL;
-        pdp->R6 = NULL;
-        pdp->R7 = NULL;
+        pdp->SP = NULL;
+        pdp->PC = NULL;
         return;
 
 }

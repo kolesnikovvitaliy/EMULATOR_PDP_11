@@ -95,7 +95,7 @@ void pdp_load_data(pdp_11_t* pdp, byte_t* filename)
          * Терминала или Файла
          * в зависимости от наличия
          * пути к файлу
-         **/
+         */
         dev_io_load_data((struct pdp_11_t*)pdp,
                         (struct dev_io_t*)pdp->device_io,
                         (byte_t*)filename
@@ -109,7 +109,7 @@ void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size)
          * Форматированный вывод данных из памяти
          * из указанного адресса
          * определенного количества байт
-         **/
+         */
         dev_io_mem_dump((struct pdp_11_t*)pdp, addr, size);
 }
 //------------------------------------------------------------------;
@@ -124,17 +124,25 @@ pdp_parse_filename(int argc, char **argv) {
                  * Указание о возможности
                  * использовать программы с префиксом -t:
                  * "USAGE: ./pdp.out [-t] filename - input data:
-                 **/
+                 */
                 return (byte_t*)0;
         }
-        if (3 >= argc) {
-                for(int i = 1; i < argc; i++) {
-                        if (strcmp(argv[i], "-t")) {
-                                return (byte_t*)argv[i];
+        if (2 == argc) {
+                if (!strcmp("-d", argv[1])) {
+                        return (byte_t*)0;
+                }
+        }
+        if (3 <=  argc) {
+                for(int i = 0; i < argc; i++) {
+                        if (!strcmp("-t", argv[i])) {
+                                for (int j = (i + 1); j < argc; j++) {
+                                        if (strlen(argv[j]) > 4) {
+                                                return (byte_t*)argv[j];
+                                        }
+                                }
                         }
                 }
         }
-        usage((byte_t*)argv[0]);
         assert(!argv[0]);
         exit(1);
 }
@@ -143,7 +151,7 @@ word_t* do_command(pdp_11_t* pdp, command_t** commands,
                 const address_word_t addr)
 {
         extern byte_t count_commands;
-        word_t *ptr_pc = pdp->R7;
+        word_t *ptr_pc = pdp->PC;
         *ptr_pc = addr;
         word_t word_command;     // текущее слово, которое содержит команду
         // читаем текущее слово

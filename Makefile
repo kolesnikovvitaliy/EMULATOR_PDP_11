@@ -30,6 +30,6 @@ clean:
 	rm -rf $(DOC_DIR)
 
 doxygen:
-	doxygen $(DOXYFILE)
+	doxygen $(DOXYFILE) > /dev/null 2>&1
 
 .PHONY: all clean doxygen

@@ -58,7 +58,7 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
 
 
         address_word_t addr = 01000;
-        word_t *ptr_pc = ptr_pdp->R7;
+        word_t *ptr_pc = ptr_pdp->PC;
         *ptr_pc = addr;
 
         //word_t w;     // текущее слово, которое содержит команду
@@ -89,11 +89,13 @@ int test_pdp(int argc, char **argv)
                         создания и использования функций", "\r\n\n");
         ////////////////////////////////////////////
         DEBUG( "\nMEMORY BYTE CREATED !!!","\r\n\n");
-        if (1 == argc) {
+        // Если путь к файлу отсутствует запускается BYTE_TEST
+        if (2 == argc) {
                 test_pdp_memory(type_memory_byte, argc, argv);
                 DEBUG( "\nMEMORY BYTE DESTROY !!! ","\r\n\n");
                 return 0;
         }
+        // Если есть путь к файлу запускаются BYTE_TEST и WORD_TEST
 
         test_pdp_memory(type_memory_byte, argc, argv);
 

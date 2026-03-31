@@ -4,6 +4,7 @@
 
 #include "types/types.h"
 #include "utils/utils.h"
+#include "utils/logger/logger.h"
 
 
 //------------------------------------------------------------------;
@@ -27,6 +28,7 @@ void usage(const byte_t* progname) {
 file_t *pdp_file_open(const byte_t *filename, const byte_t *mode)
 {
         file_t *fd;
+        DEBUG("\nFILENAME = %s\n", filename);
         if((fd = fopen((char*)filename, (char*)mode)) == NULL) {
                 perror((char*)filename);
                 exit(errno);

@@ -10,9 +10,9 @@ log_level_t current_log_level = DEBUG;
 void log_message(log_level_t level, const char* fmt, ...)
 {
 
-        const char* levels[] = {"ERROR","INFO",
+        const char* levels[] = {"PRINT_RESULT","ERROR","INFO",
                 "WARNING", "TRACE", "DEBUG"};
-        const char* level_colors[] = {CLR_ERROR, CLR_INFO, CLR_WARNING,
+        const char* level_colors[] = {CLR_PRINT_RESULT, CLR_ERROR, CLR_INFO, CLR_WARNING,
                 CLR_TRACE, CLR_DEBUG};
 
         // Если уровень сообщения выше текущего
