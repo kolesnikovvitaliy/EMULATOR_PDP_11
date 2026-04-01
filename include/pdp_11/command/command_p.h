@@ -15,6 +15,6 @@ void command_do_add(struct pdp_11_t*, address_word_t, word_t);
 void command_do_mov(struct pdp_11_t*, address_word_t, word_t);
 void command_do_nothing(struct pdp_11_t*, address_word_t, word_t);
 
-extern byte_t count_commands;
+extern byte_t commands_list;
 #endif
 #pragma once

@@ -23,7 +23,7 @@ void pdp_create(pdp_11_t* pdp)
 {
         pdp->memory = (struct mem_t*)mem_new(); // Выделение памяти под обЬетк  памяти типа byte и word;
         pdp->device_io = (struct dev_io_t*)dev_io_new(); // Выделение памяти под обЬетк ввода вывода;
-        pdp->regist = (struct register_t*)register_new(); // Выделение памяти под обЬетк Регистры;
+        pdp->regist = (struct reg_t*)register_new(); // Выделение памяти под обЬетк Регистры;
         pdp->command = (struct command_t**)command_new();
         // Выделение памяти под обЬетк машинные Команды;
         assert(pdp->regist); // проверка
@@ -90,7 +90,7 @@ word_t w_read(pdp_11_t* pdp, address_word_t addr)
 //------------------------------------------------------------------;
 void pdp_load_data(pdp_11_t* pdp, byte_t* filename)
 {
-        /**
+        /*
          * Чтение потока данных из
          * Терминала или Файла
          * в зависимости от наличия
@@ -105,7 +105,7 @@ void pdp_load_data(pdp_11_t* pdp, byte_t* filename)
 //------------------------------------------------------------------;
 void pdp_mem_dump(pdp_11_t* pdp, address_word_t addr, word_t size)
 {
-        /**
+        /*
          * Форматированный вывод данных из памяти
          * из указанного адресса
          * определенного количества байт
@@ -120,7 +120,7 @@ pdp_parse_filename(int argc, char **argv) {
         if (1 == argc) {
 
                 usage((byte_t*)argv[0]);
-                /**
+                /*
                  * Указание о возможности
                  * использовать программы с префиксом -t:
                  * "USAGE: ./pdp.out [-t] filename - input data:
@@ -150,14 +150,14 @@ pdp_parse_filename(int argc, char **argv) {
 word_t* do_command(pdp_11_t* pdp, command_t** commands,
                 const address_word_t addr)
 {
-        extern byte_t count_commands;
+        extern byte_t commands_list;
         word_t *ptr_pc = pdp->PC;
         *ptr_pc = addr;
         word_t word_command;     // текущее слово, которое содержит команду
         // читаем текущее слово
         byte_t flag = 0;
         word_command = w_read(pdp, *ptr_pc);
-        for (int i = 1; i < count_commands; i++) {
+        for (int i = 1; i < commands_list; i++) {
                  if ((word_command & commands[i]->mask) == commands[i]->opcode) {
                          commands[i]->do_commands_command((struct pdp_11_t*)pdp, addr, word_command);
                          flag = 1;

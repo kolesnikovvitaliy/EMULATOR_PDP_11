@@ -30,8 +30,13 @@ void log_message(log_level_t level, const char* fmt, ...)
         //printf("[%s] ", levels[level]);
         //printf("%s[%s]\t[%s] [%s:%d] %s(): ", level_colors[level], levels[level],
         //                time_str, file, line, func);
-        printf("\n%s[%s]: ",
+        if (level == 0) {
+                printf("%s",
+                        level_colors[level]);
+        } else {
+                printf("\n%s[%s]: ",
                         level_colors[level], levels[level]);
+        }
 
 
         // Обработка переменного числа аргументов

@@ -32,12 +32,12 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
         assert(pdp);
 
         INFO("\n\nTEST REGISTER\n", "");
-        *(((pdp_11_t*)pdp)->R0) = 0xfe;
-        INFO("\n\n*(pdp->R0) = 0xfe;\n", "");
+        *(((pdp_11_t*)pdp)->R0) = 01000;
+        INFO("\n\n*(pdp->R0) = 1000;\n", "");
         pdp_11_t* ptr_pdp = (pdp_11_t*)pdp;
-        register_t* ptr_regist = (register_t*)ptr_pdp->regist;
+        reg_t* ptr_regist = (reg_t*)ptr_pdp->regist;
         assert(*(ptr_pdp->R0) == ptr_regist->R0);
-        INFO("\n\npdp->regist->R0 = %X;\n\n", ptr_regist->R0);
+        INFO("\n\npdp->regist->R0 = %o;\n\n", ptr_regist->R0);
         INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
 
 
@@ -49,10 +49,10 @@ void test_pdp_memory(byte_t type_memory, int argc, char **argv)
 
         all_tests(pdp, argc, argv);
         INFO("\n\nTEST REGISTER - 2\n", "");
-        *(((pdp_11_t*)pdp)->R0) = 0xdeef;
-        INFO("\n\n*(pdp->R0) = 0xdeef;\n", "");
+        *(((pdp_11_t*)pdp)->R0) = 01000;
+        INFO("\n\n*(pdp->R0) = 1000;\n", "");
         assert(*(ptr_pdp->R0) == ptr_regist->R0);
-        INFO("\n\npdp->regist->R0 = 0x%X;\n\n", ptr_regist->R0);
+        INFO("\n\npdp->regist->R0 = %o;\n\n", ptr_regist->R0);
         INFO("\n\n(*(pdp->R0) == pdp->regist->R0)\n", "SUCCES");
 
 

@@ -4,7 +4,7 @@
 typedef struct {
        struct mem_t* memory;
        struct dev_io_t* device_io;
-       struct register_t* regist;
+       struct reg_t* regist;
        struct command_t** command;
        word_t *R0;
        word_t *R1;

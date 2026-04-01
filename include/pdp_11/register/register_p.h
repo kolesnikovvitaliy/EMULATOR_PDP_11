@@ -6,7 +6,7 @@ typedef struct {
        word_t R3;
        word_t R4;
        word_t R5;
-       word_t SP;
+       word_t SP; // sp
        word_t PC; // pc
-} register_t;
+} reg_t;
 
