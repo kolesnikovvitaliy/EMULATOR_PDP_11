@@ -9,10 +9,11 @@
 #include "pdp_11/register/register_p.h"
 
 command_t template_commands[] = {
-    {0000000, 011111, (byte_t*)"unknown", command_do_nothing},
-    {0177777, 000000, (byte_t*)"halt", command_do_halt},
-    {0170000, 010000, (byte_t*)"mov", command_do_mov},
-    {0170000, 060000, (byte_t*)"add", command_do_add},
+    {0000000, 0111111, (byte_t*)"unknown", command_do_unknown},
+    {0177777, 0000000, (byte_t*)"halt", command_do_halt},
+    {0170000, 0010000, (byte_t*)"mov", command_do_mov},
+    {0170000, 0060000, (byte_t*)"add", command_do_add},
+    {0107700, 0005200, (byte_t*)"inc", command_do_inc}
 
     // добавить остальные команды
 };
@@ -99,7 +100,15 @@ void command_do_mov(struct pdp_11_t* pdp,
        print_command(addr, word_command, (byte_t*)"mov");
 }
 
-void command_do_nothing(struct pdp_11_t* pdp,
+void command_do_inc(struct pdp_11_t* pdp,
+        address_word_t addr,  word_t word_command)
+{
+        struct pdp_11_t *ptr_pdp = pdp;
+        if (ptr_pdp) printf("\b");
+       print_command(addr, word_command, (byte_t*)"inc");
+}
+
+void command_do_unknown(struct pdp_11_t* pdp,
         address_word_t addr,  word_t word_command)
 {
         struct pdp_11_t *ptr_pdp = pdp;

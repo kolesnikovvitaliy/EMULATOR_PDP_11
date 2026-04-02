@@ -14,5 +14,6 @@ void all_tests(struct pdp_11_t* pdp, int argc, char** argv)
 
         test_memory(pdp, argc, argv);
         test_io(pdp, argc, argv);
+        // TODO test registers
 }
 //////////////////////////////////////////////////////////////////////

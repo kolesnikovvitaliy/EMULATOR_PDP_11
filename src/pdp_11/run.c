@@ -19,8 +19,8 @@ int run(struct pdp_11_t* pdp, int argc, char **argv)
         pdp_load_data(pdp, (byte_t*)filename);
 
 
-        pdp_mem_dump(pdp, 0x40, 0x20); // тестовый вывод 32 байта данных с адресса 0x40;
-        pdp_mem_dump(pdp, 0x200, 0x26); // тестовый вывод 38 байт данных с адресса 0x200;
+        //pdp_mem_dump(pdp, 0x40, 0x20); // тестовый вывод 32 байта данных с адресса 0x40;
+        //pdp_mem_dump(pdp, 0x200, 0x26); // тестовый вывод 38 байт данных с адресса 0x200;
 
 
         // Прогармма стартует из адресса 01000
