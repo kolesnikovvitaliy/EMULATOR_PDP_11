@@ -1,22 +1,20 @@
 #ifndef PDP_P_H
-#define PDP_P_H
-#include "types/types.h"
+#    define PDP_P_H
+#    include "types/types.h"
 typedef struct {
-       struct mem_t* memory;
-       struct dev_io_t* device_io;
-       struct reg_t* regist;
-       struct command_t** command;
-       word_t *R0;
-       word_t *R1;
-       word_t *R2;
-       word_t *R3;
-       word_t *R4;
-       word_t *R5;
-       word_t *SP; // SP
-       word_t *PC; // PC
+    struct mem_t *     memory;
+    struct dev_io_t *  device_io;
+    struct reg_t *     regist;
+    struct command_t **command;
+    word_t *           R0;
+    word_t *           R1;
+    word_t *           R2;
+    word_t *           R3;
+    word_t *           R4;
+    word_t *           R5;
+    word_t *           SP; // SP
+    word_t *           PC; // PC
 } pdp_11_t;
-
 
 #endif
 #pragma once
-

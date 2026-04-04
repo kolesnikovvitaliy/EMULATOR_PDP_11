@@ -1,44 +1,48 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+#include "utils/utils.h"
 
 #include "types/types.h"
-#include "utils/utils.h"
 #include "utils/logger/logger.h"
 
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
-int __is_valid_address(const address_byte_t addr)
+int
+__is_valid_address(const address_byte_t addr)
 {
-        unsigned char size = 0x0;
-        if((addr > ~(-__get_size_buffer())) ||
-                        (addr < size)) {
-               return 0; // замена (__get_size_buffer() - 1)  на ~(-);
-       }
-        return 1;
+    unsigned char size = 0x0;
+    if ((addr > ~(-__get_size_buffer())) || (addr < size)) {
+        return 0; // замена (__get_size_buffer() - 1)  на ~(-);
+    }
+    return 1;
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
-void usage(const byte_t* progname) {
-        fprintf(stderr, "USAGE: %s [-t] filename - input data\n", progname);
-}
-//------------------------------------------------------------------;
-//------------------------------------------------------------------;
-file_t *pdp_file_open(const byte_t *filename, const byte_t *mode)
+void
+usage(const byte_t *progname)
 {
-        file_t *fd;
-        DEBUG("\nFILENAME = %s\n", filename);
-        if((fd = fopen((char*)filename, (char*)mode)) == NULL) {
-                perror((char*)filename);
-                exit(errno);
-        }
-        return fd;
+    fprintf(stderr, "USAGE: %s [-t] filename - input data\n", progname);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
-void pdp_file_close(const file_t *fd) {
-        fclose((file_t*)fd);
+file_t *
+pdp_file_open(const byte_t *filename, const byte_t *mode)
+{
+    file_t *fd;
+    DEBUG("\nFILENAME = %s\n", filename);
+    if ((fd = fopen((char *) filename, (char *) mode)) == NULL) {
+        perror((char *) filename);
+        exit(errno);
+    }
+    return fd;
 }
 //------------------------------------------------------------------;
-
+//------------------------------------------------------------------;
+void
+pdp_file_close(const file_t *fd)
+{
+    fclose((file_t *) fd);
+}
+//------------------------------------------------------------------;

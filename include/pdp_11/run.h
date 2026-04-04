@@ -1,5 +1,5 @@
 #ifndef RUN_H
-#define RUN_H
-int run(struct pdp_11_t*, int, char**);
+#    define RUN_H
+int run(struct pdp_11_t *, int, char **);
 #endif
 #pragma once

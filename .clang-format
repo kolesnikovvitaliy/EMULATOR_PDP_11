@@ -1,0 +1,69 @@
+# .clang-format для проекта на C в стиле WebKit
+# ---
+# Основа стиля — WebKit (известен своей чистотой и читаемостью)
+BasedOnStyle: WebKit
+
+# Настройки отступов и форматирования
+IndentWidth: 4
+ColumnLimit: 79
+TabWidth: 4
+UseTab: Never
+
+# Управление скобками и пробелами
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeElse: false
+  IndentBraces: false
+
+# Пробелы вокруг операторов и ключевых слов
+SpaceAfterCStyleCast: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+
+# Работа с указателями и ссылками (традиционный C-стиль)
+PointerAlignment: Right
+
+# Сортировка инклудов для идеального порядка в коде
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^"(.*)"'
+    Priority:        1
+  - Regex:           '^<(.*)>'
+    Priority:        2
+
+# Дополнительные визуальные улучшения
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands: true
+AlignTrailingComments: true
+
+# Обработка длинных строк и вызовов
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+
+# Специфические правила для макросов и длинных имён
+# ---
+# Выравнивание обратных косых черт в макросах (делает их блочными и красивыми)
+AlignEscapedNewlines: Right
+
+# Выравнивание макросов по вертикали, если они идут подряд
+AlignConsecutiveMacros: true
+
+# Обработка длинных имен функций и аргументов
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakAfterReturnType: AllDefinitions
+BinPackArguments: false
+BinPackParameters: false
+
+# Чтобы макросы-условия не слипались с кодом
+IndentPPDirectives: AfterHash
