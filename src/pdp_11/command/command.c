@@ -75,6 +75,9 @@ command_reg_dump(struct pdp_11_t *pdp)
 void
 command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    word_t *  ptr_pc  = ptr_pdp->PC;
+    *ptr_pc += 2;
     print_command(addr, word_command, (byte_t *) "halt");
     command_reg_dump(pdp);
     PRINT_RESULT("THE END!!!", "");

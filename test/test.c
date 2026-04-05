@@ -5,6 +5,7 @@
 
 #include "tests/test_pdp/test_io/test_io.h"
 #include "tests/test_pdp/test_memory/test_memory.h"
+#include "tests/test_pdp/test_reg/test_reg.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -41,5 +42,8 @@ all_tests(struct pdp_11_t *pdp, int argc, char **argv)
     /* Верификация подсистемы обмена данными (IO) */
     test_io(pdp, argc, argv);
 
-    // TODO: Добавить тесты регистров (R0-R7)
+    /* Верификация подсистемы регистров (R0-R7) */
+    test_reg(pdp);
+
+    // TODO Слздать тесты выполнения команд с разными модами
 }

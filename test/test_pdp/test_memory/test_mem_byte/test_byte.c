@@ -96,7 +96,7 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
 void
 test_byte_buffer(struct pdp_11_t *pdp)
 {
-    DEBUG("\n\r\n\t\t TEST_BYTE_BUFFER\r\n\n", "\n");
+    TRACE("\n\r\n\t\t TEST_BYTE\r\n\n", "\n");
 
     test_rw_byte_b(pdp);
     test_rw_word_b(pdp);
