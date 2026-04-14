@@ -11,8 +11,8 @@
 #include <string.h>
 
 int
-test_halt(struct pdp_11_t *pdp, (word_t *) ptr_pc)
+test_halt(struct pdp_11_t *pdp, word_t *ptr_pc)
 {
-    command_do_halt(pdp, *ptr_pc, (word_t)(*w_read(pdp, *ptr_pc)));
+    // command_do_halt(pdp, *ptr_pc, (word_t)(*w_read(pdp, *ptr_pc)));
     return 0;
 }

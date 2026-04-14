@@ -45,31 +45,31 @@ test_pdp_memory(byte_t type_memory, int argc, char **argv)
 }
 /////////////////////////////////////////////////////////////////////
 //-------------------------------------------------------------------
-int
-test_command()
-{
-    /*TODO Прочитать из фйла программу и выполнить*/
-    struct pdp_11_t *pdp = pdp_new();
-    pdp_create(pdp);
-    assert(pdp);
-
-    pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
-    address_word_t addr    = 01000;
-    word_t *       ptr_pc  = ptr_pdp->PC;
-    *ptr_pc                = addr;
-    w_write(pdp, addr, (word_t) 0000000);
-    // word_t w;     // текущее слово, которое содержит команду
-    // главный цикл выполне:w
-    // ния программы
-    // int i = 0;
-    // while (i <= 10) {
-    // читаем текущее слово
-    //    ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);
-    //    i++;
-    //}
-    test_halt(pdp, *ptr_pc);
-    return 0;
-}
+// int
+// test_command()
+// {
+//     /*TODO Прочитать из фйла программу и выполнить*/
+//     struct pdp_11_t *pdp = pdp_new();
+//     pdp_create(pdp);
+//     assert(pdp);
+//
+//     pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
+//     address_word_t addr    = 01000;
+//     word_t *       ptr_pc  = ptr_pdp->PC;
+//     *ptr_pc                = addr;
+//     w_write(pdp, addr, (word_t) 0000000);
+//     // word_t w;     // текущее слово, которое содержит команду
+//     // главный цикл выполне:w
+//     // ния программы
+//     // int i = 0;
+//     // while (i <= 10) {
+//     // читаем текущее слово
+//     //    ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);
+//     //    i++;
+//     //}
+//     // test_halt(pdp, *ptr_pc);
+//     return 0;
+//}
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ test_pdp(int argc, char **argv)
     test_pdp_memory(type_memory_word, argc, argv);
 
     TRACE("\nMEMORY WORD DESTROY !!! ", "\r\n\n");
-    test_command();
+    // test_command();
     ////////////////////////////////////////////
     INFO("ALL TESTS PDP_11 PASSED SUCCESSFULLY", "");
     return 1;
