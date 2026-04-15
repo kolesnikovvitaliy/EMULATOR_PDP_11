@@ -1,19 +1,19 @@
+#include "tests/test_pdp/test_pdp.h"
+
 #include "pdp_11/command/command.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
+#include "pdp_11/register/register_p.h"
+#include "tests/test.h"
+#include "tests/test_pdp/test_command/test_command.h"
 #include "types/types.h"
+#include "utils/logger/logger.h"
+#include "utils/utils.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "pdp_11/command/command_p.h"
-#include "pdp_11/register/register_p.h"
-#include "tests/test.h"
-#include "tests/test_pdp/test_command/test_command.h"
-#include "tests/test_pdp/test_pdp.h"
-#include "utils/logger/logger.h"
-#include "utils/utils.h"
 
 //-------------------------------------------------------------------
 extern byte_t g_default_memory;
@@ -43,36 +43,6 @@ test_pdp_memory(byte_t type_memory, int argc, char **argv)
     free(pdp);
     memory_type((byte_t) 0);
 }
-/////////////////////////////////////////////////////////////////////
-//-------------------------------------------------------------------
-// int
-// test_command()
-// {
-//     /*TODO Прочитать из фйла программу и выполнить*/
-//     struct pdp_11_t *pdp = pdp_new();
-//     pdp_create(pdp);
-//     assert(pdp);
-//
-//     pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
-//     address_word_t addr    = 01000;
-//     word_t *       ptr_pc  = ptr_pdp->PC;
-//     *ptr_pc                = addr;
-//     w_write(pdp, addr, (word_t) 0000000);
-//     // word_t w;     // текущее слово, которое содержит команду
-//     // главный цикл выполне:w
-//     // ния программы
-//     // int i = 0;
-//     // while (i <= 10) {
-//     // читаем текущее слово
-//     //    ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);
-//     //    i++;
-//     //}
-//     // test_halt(pdp, *ptr_pc);
-//     return 0;
-//}
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-//////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 int
 test_pdp(int argc, char **argv)
@@ -103,7 +73,6 @@ test_pdp(int argc, char **argv)
     test_pdp_memory(type_memory_word, argc, argv);
 
     TRACE("\nMEMORY WORD DESTROY !!! ", "\r\n\n");
-    // test_command();
     ////////////////////////////////////////////
     INFO("ALL TESTS PDP_11 PASSED SUCCESSFULLY", "");
     return 1;

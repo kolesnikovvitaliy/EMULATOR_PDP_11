@@ -3,6 +3,7 @@
  * @brief Агрегатор модульных тестов эмулятора.
  */
 
+#include "tests/test_pdp/test_command/test_command.h"
 #include "tests/test_pdp/test_io/test_io.h"
 #include "tests/test_pdp/test_memory/test_memory.h"
 #include "tests/test_pdp/test_reg/test_reg.h"
@@ -45,5 +46,8 @@ all_tests(struct pdp_11_t *pdp, int argc, char **argv)
     /* Верификация подсистемы регистров (R0-R7) */
     test_reg(pdp);
 
-    // TODO Слздать тесты выполнения команд с разными модами
+    /* Верификация подсистемы выполнения команд */
+    test_command(pdp);
+
+    // TODO
 }
