@@ -15,6 +15,11 @@ typedef struct {
     byte_t params;
 } command_t;
 
+typedef struct {
+    word_t          value;
+    address_word_t *addr;
+} arg_t;
+
 void command_do_halt(struct pdp_11_t *, address_word_t, word_t);
 void command_do_add(struct pdp_11_t *, address_word_t, word_t);
 void command_do_mov(struct pdp_11_t *, address_word_t, word_t);

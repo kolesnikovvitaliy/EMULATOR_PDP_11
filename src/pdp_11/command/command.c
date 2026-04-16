@@ -87,38 +87,47 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     exit(0);
 }
 
-int
-__get_mr(word_t word_command)
+arg_t
+__get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
     // TODO: Получить значения мод;
-    return 0;
+    pdp_11_t *ptr_pdp      = (pdp_11_t *) pdp;
+    arg_t     res          = { 0, 0 };
+    word_t    num_register = word_command & 7;
+    byte_t    num_mode     = (word_command >> 3) & 7;
+
+    switch (num_mode) {
+    case 0:
+        res.addr  = (address_word_t *) ptr_pdp->R0 + num_register;
+        res.value = *(ptr_pdp->R0 + num_register);
+        TRACE("R%d\t ADDR = %06o\t VALUE = %06o\t ",
+              num_register,
+              res.addr,
+              res.value);
+        break;
+    }
+    return res;
 }
 
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    struct pdp_11_t *ptr_pdp = pdp;
-    if (ptr_pdp)
-        printf("\b");
-    print_command(addr, word_command, (byte_t *) "add");
+    if (pdp)
+        __get_mr(pdp, word_command);
 }
 
 void
 command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    struct pdp_11_t *ptr_pdp = pdp;
-    if (ptr_pdp)
-        printf("\b");
-    print_command(addr, word_command, (byte_t *) "mov");
+    if (pdp)
+        __get_mr(pdp, word_command);
 }
 
 void
 command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    struct pdp_11_t *ptr_pdp = pdp;
-    if (ptr_pdp)
-        printf("\b");
-    print_command(addr, word_command, (byte_t *) "inc");
+    if (pdp)
+        __get_mr(pdp, word_command);
 }
 
 void
@@ -126,8 +135,6 @@ command_do_unknown(struct pdp_11_t *pdp,
                    address_word_t   addr,
                    word_t           word_command)
 {
-    struct pdp_11_t *ptr_pdp = pdp;
-    if (ptr_pdp)
-        printf("\b");
-    print_command(addr, word_command, (byte_t *) "unknown");
+    if (pdp)
+        print_command(addr, word_command, (byte_t *) "unknown");
 }
