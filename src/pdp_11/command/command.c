@@ -98,13 +98,38 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 
     switch (num_mode) {
     case 0:
-        res.addr  = (address_word_t *) ptr_pdp->R0 + num_register;
+        res.addr  = num_register;
         res.value = *(ptr_pdp->R0 + num_register);
         TRACE("R%d\t ADDR = %06o\t VALUE = %06o\t ",
               num_register,
               res.addr,
               res.value);
         break;
+        // мода 1, (R1)
+        ////    case 1:
+        //        res.addr = ;           // в регистре адрес
+        //        res.val = w_read(res.adr);  // по адресу - значение
+        //        trace(TRACE, "(R%d) ", r);
+        //        break;
+        //
+        //
+        //    // мода 2, (R1)+ или #3
+        //    case 2:
+        //        res.adr = reg[r];           // в регистре адрес
+        //        res.val = w_read(res.adr);  // по адресу - значение
+        //        reg[r] += 2;                // TODO: +1
+        //        // печать разной мнемоники для PC и других регистров
+        //        if (r == 7)
+        //            trace(TRACE, "#%o ", res.val);
+        //        else
+        //            trace(TRACE, "(R%d)+ ", r);
+        //        break;
+        //
+        //
+        //    // мы еще не дописали другие моды
+        //    default:
+        //        trace(ERROR, "Mode %d not implemented yet!\n", m);
+        //        exit(1);
     }
     return res;
 }
@@ -112,15 +137,24 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    arg_t     res;
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
-        __get_mr(pdp, word_command);
+        res = __get_mr(pdp, word_command);
+    w_write(pdp, (ptr_pdp->R0 + res.addr), res.value);
 }
 
 void
 command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    arg_t res;
     if (pdp)
-        __get_mr(pdp, word_command);
+        res = __get_mr(pdp, word_command);
+
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    w_write(pdp, (ptr_pdp->R0 + res.addr), res.value);
+
+    // w_write(pdp, , res.value);
 }
 
 void

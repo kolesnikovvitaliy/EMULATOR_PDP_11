@@ -42,6 +42,11 @@ test_command(struct pdp_11_t *pdp)
     TRACE("\n\nTHE COMMAND TEST STARTED\n", "");
     WARNING("TEST HALT\n", "");
 
+    // Тест команды mov;
+    *ptr_pc = addr;
+    w_write(pdp, addr, (word_t) 0010503);
+    test_mov(pdp, ptr_pc);
+
     // Запись команды HALT (000000) по адресу addr и запуск теста
     w_write(pdp, addr, (word_t) 0000000);
     test_halt(pdp, ptr_pc);
