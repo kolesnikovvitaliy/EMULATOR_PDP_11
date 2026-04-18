@@ -40,15 +40,17 @@ test_command(struct pdp_11_t *pdp)
 
     /* TESTS COMMAND */
     TRACE("\n\nTHE COMMAND TEST STARTED\n", "");
-    WARNING("TEST HALT\n", "");
 
+    WARNING("TEST MOV\n", "");
     // Тест команды mov;
     *ptr_pc = addr;
     w_write(pdp, addr, (word_t) 0010503);
     test_mov(pdp, ptr_pc);
 
+    WARNING("TEST HALT\n", "");
     // Запись команды HALT (000000) по адресу addr и запуск теста
-    w_write(pdp, addr, (word_t) 0000000);
+    *ptr_pc = addr;
+    w_write(pdp, addr, (word_t) 0000001);
     test_halt(pdp, ptr_pc);
 
     // ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);

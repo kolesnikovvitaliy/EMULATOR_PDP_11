@@ -13,6 +13,6 @@
 int
 test_mov(struct pdp_11_t *pdp, word_t *ptr_pc)
 {
-    command_do_mov(pdp, *ptr_pc, (word_t)(w_read(pdp, *ptr_pc)));
+    command_do_mov(pdp, *ptr_pc, w_read(pdp, *ptr_pc));
     return 0;
 }

@@ -78,7 +78,7 @@ pdp_destroy(pdp_11_t *pdp)
 void
 b_write(pdp_11_t *pdp, address_byte_t addr, byte_t data)
 {
-    assert(__is_valid_address(addr));
+    assert(__is_valid_address(pdp, addr));
     byte_write((struct mem_t *) pdp->memory, addr, data);
 }
 
@@ -91,7 +91,7 @@ b_write(pdp_11_t *pdp, address_byte_t addr, byte_t data)
 byte_t
 b_read(pdp_11_t *pdp, address_byte_t addr)
 {
-    assert(__is_valid_address(addr));
+    assert(__is_valid_address(pdp, addr));
     return (byte_t) byte_read((struct mem_t *) pdp->memory, addr);
 }
 
@@ -104,7 +104,7 @@ b_read(pdp_11_t *pdp, address_byte_t addr)
 void
 w_write(pdp_11_t *pdp, address_word_t addr, word_t data)
 {
-    assert(__is_valid_address(addr));
+    assert(__is_valid_address(pdp, addr));
     word_write((struct mem_t *) pdp->memory, addr, data);
 }
 
@@ -117,7 +117,7 @@ w_write(pdp_11_t *pdp, address_word_t addr, word_t data)
 word_t
 w_read(pdp_11_t *pdp, address_word_t addr)
 {
-    assert(__is_valid_address(addr));
+    assert(__is_valid_address(pdp, addr));
     return (word_t) word_read((struct mem_t *) pdp->memory, addr);
 }
 

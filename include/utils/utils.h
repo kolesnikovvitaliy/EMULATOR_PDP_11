@@ -1,8 +1,9 @@
 #ifndef UTILS_H
 #    define UTILS_H
+#    include "pdp_11/pdp_11_p.h"
 #    include "types/types.h"
 
-int __is_valid_address(const address_byte_t); //проверка адресса
+int  __is_valid_address(pdp_11_t *pdp, const address_byte_t); //проверка адресса
 void usage(const byte_t *progname); // сообщение об неоходимости использывать
                                     // перфикс [-t];
 address_byte_t

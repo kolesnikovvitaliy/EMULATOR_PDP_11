@@ -1,5 +1,6 @@
 #include "utils/utils.h"
 
+#include "pdp_11/pdp_11_p.h"
 #include "types/types.h"
 #include "utils/logger/logger.h"
 
@@ -10,9 +11,13 @@
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
 int
-__is_valid_address(const address_byte_t addr)
+__is_valid_address(pdp_11_t *pdp, const address_byte_t addr)
 {
     unsigned char size = 0x0;
+
+    if (addr <= *pdp->PC && addr >= *pdp->R0) {
+        return 1;
+    }
     if ((addr > ~(-__get_size_buffer())) || (addr < size)) {
         return 0; // замена (__get_size_buffer() - 1)  на ~(-);
     }
