@@ -92,14 +92,13 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
     // TODO: Получить значения мод;
     pdp_11_t *ptr_pdp      = (pdp_11_t *) pdp;
-    reg_t *   ptr_reg      = (reg_t *) ptr_pdp->regist;
     arg_t     res          = { 0, 0 };
     word_t    num_register = word_command & 7;
     byte_t    num_mode     = (word_command >> 3) & 7;
 
     switch (num_mode) {
     case 0:
-        res.addr  = ptr_pdp->R5;
+        res.addr  = num_register;
         res.value = *(ptr_pdp->R0 + ((word_command >> 6) & 7));
         TRACE("R%d\t ADDR = %06o\t VALUE = %06o\t ",
               num_register,
@@ -138,27 +137,27 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    arg_t     res;
+    arg_t     res     = { 0, 0 };
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
         res = __get_mr(pdp, word_command);
-    w_write(pdp, *(ptr_pdp->R0 + res.addr), res.value);
-    print_command(addr, word_command, (byte_t *) "mov");
+    *(ptr_pdp->R0 + res.addr) = res.value;
+    // print_command(addr, word_command, (byte_t *) "mov");
     command_reg_dump(pdp);
 }
 
 void
 command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    arg_t res;
+    arg_t res = { 0, 0 };
     if (pdp)
         res = __get_mr(pdp, word_command);
 
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
     PRINT_RESULT("RES.ADDR = %06o,\t RES.VALUE = %06o\n", res.addr, res.value);
-    w_write(pdp, res.addr, res.value);
-    print_command(addr, word_command, (byte_t *) "mov");
+    *(ptr_pdp->R0 + res.addr) = (word_t) res.value;
+    // print_command(addr, word_command, (byte_t *) "mov");
     command_reg_dump(pdp);
 
     // w_write(pdp, , res.value);
