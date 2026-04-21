@@ -141,7 +141,7 @@ command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
         res = __get_mr(pdp, word_command);
-    *(ptr_pdp->R0 + res.addr) = res.value;
+    *(ptr_pdp->R0 + res.addr) += *(ptr_pdp->R0);
     // print_command(addr, word_command, (byte_t *) "mov");
     command_reg_dump(pdp);
 }
