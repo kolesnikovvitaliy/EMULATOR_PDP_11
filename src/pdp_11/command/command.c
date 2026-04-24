@@ -96,7 +96,7 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
     word_t    num_register_ss = word_command & 7;
     byte_t    num_mode        = (word_command >> 3) & 7;
     word_t    num_register_dd = (word_command >> 6) & 7;
-
+    //ss -откуда, dd - куда;
     switch (num_mode) {
     case 0:
         opcode.dd.addr  = num_register_dd;
