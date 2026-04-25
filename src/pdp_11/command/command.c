@@ -93,24 +93,23 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
     // TODO: Получить значения мод;
     pdp_11_t *ptr_pdp         = (pdp_11_t *) pdp;
     op_code_t opcode          = { { 0, 0 }, { 0, 0 } };
-    word_t    num_register_ss = word_command & 7;
+    word_t    num_register_dd = word_command & 7;
     byte_t    num_mode        = (word_command >> 3) & 7;
-    word_t    num_register_dd = (word_command >> 6) & 7;
-    //ss -откуда, dd - куда;
+    word_t    num_register_ss = (word_command >> 6) & 7;
+    // ss -откуда, dd - куда;
     switch (num_mode) {
     case 0:
         opcode.dd.addr  = num_register_dd;
         opcode.ss.addr  = num_register_ss;
-        opcode.dd.value = *(ptr_pdp->R0 + opcode.dd.addr);
+        opcode.dd.value = *(ptr_pdp->R0 + opcode.ss.addr);
         TRACE("In register R%d\t FROM register R%d\t VALUE = %06o\t ",
-              opcode.ss.addr,
               opcode.dd.addr,
-              opcode.dd.value);
+              opcode.ss.addr,
+              opcode.ss.value);
         break;
         // мода 1, (R1)
     case 1:
-        opcode.ss.addr
-            = *(ptr_pdp->R0 + ((word_command >> 6) & 7)); // в регистре адрес
+        opcode.ss.addr = *(ptr_pdp->R0 + num_register_ss); // в регистре адрес
         opcode.ss.value = opcode.ss.addr; // по адресу - значение
         TRACE("CASE 1\tR%d\t ADDR = %06o\t VALUE = %06o\t ",
               num_register_ss,
