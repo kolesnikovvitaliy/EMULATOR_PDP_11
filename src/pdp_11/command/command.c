@@ -91,30 +91,41 @@ op_code_t
 __get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
     // TODO: Получить значения мод;
-    pdp_11_t *ptr_pdp         = (pdp_11_t *) pdp;
-    op_code_t opcode          = { { 0, 0 }, { 0, 0 } };
-    word_t    num_register_dd = word_command & 7;
-    byte_t    num_mode        = (word_command >> 3) & 7;
-    word_t    num_register_ss = (word_command >> 6) & 7;
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     // ss -откуда, dd - куда;
+    byte_t num_mode = (word_command >> 3) & 7;
+
+    word_t num_register_dd = word_command & 7;
+    word_t num_register_ss = (word_command >> 6) & 7;
+
+    word_t ss_value = (word_command >> 9) & 7;
+
     switch (num_mode) {
     case 0:
         opcode.dd.addr  = num_register_dd;
+        opcode.dd.value = *(ptr_pdp->R0 + opcode.dd.addr);
         opcode.ss.addr  = num_register_ss;
-        opcode.dd.value = *(ptr_pdp->R0 + opcode.ss.addr);
-        TRACE("In register R%d\t FROM register R%d\t VALUE = %06o\t ",
+        opcode.ss.value = ss_value;
+        // ss -откуда, dd - куда;
+        /*TRACE("In register R%d\t VALUE = %06o\t ",
               opcode.dd.addr,
-              opcode.ss.addr,
               opcode.ss.value);
+        */
+        TRACE("R%d ", opcode.dd.addr);
         break;
         // мода 1, (R1)
     case 1:
         opcode.ss.addr = *(ptr_pdp->R0 + num_register_ss); // в регистре адрес
         opcode.ss.value = opcode.ss.addr; // по адресу - значение
-        TRACE("CASE 1\tR%d\t ADDR = %06o\t VALUE = %06o\t ",
+        /*TRACE("CASE 1\tR%d\t ADDR = %06o\t VALUE = %06o\t ",
               num_register_ss,
               opcode.ss.addr,
               opcode.ss.value);
+        */
+
+        TRACE("(R%d) ", opcode.dd.addr);
         break;
         // мода 2, (R1)+ или #3
         // case 2:
@@ -142,12 +153,14 @@ command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
         opcode = __get_mr(pdp, word_command);
-    *(ptr_pdp->R0 + opcode.ss.addr) += *(ptr_pdp->R0);
-    PRINT_RESULT("[ADD] RES.ADDR = %06o,\t RES.VALUE = %06o\n",
-                 opcode.ss.addr,
-                 opcode.ss.value);
-    // print_command(addr, word_command, (byte_t *) "mov");
-    command_reg_dump(pdp);
+    *(ptr_pdp->R0 + opcode.dd.addr) += opcode.ss.value + opcode.dd.value;
+
+    /*PRINT_RESULT("[ADD] IN Regist R%d = Value_ss %06o + VALUE_dd = %06o\n",
+                 opcode.dd.addr,
+                 opcode.ss.value,
+                 opcode.dd.value);
+    */// print_command(addr, word_command, (byte_t *) "mov");
+    // command_reg_dump(pdp);
 }
 
 void
@@ -159,14 +172,14 @@ command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
-    PRINT_RESULT("[MOV] FROM RES.ADDR = %06o,\t i IN REGISTER = %06o,\t "
+    /*PRINT_RESULT("[MOV] IN REGISTER = %06o,\t "
                  "RES.VALUE = %06o\n",
                  opcode.dd.addr,
-                 opcode.ss.addr,
-                 opcode.dd.value);
-    *(ptr_pdp->R0 + opcode.ss.addr) = (word_t) opcode.dd.value;
+                 opcode.ss.value);
+    */
+    *(ptr_pdp->R0 + opcode.dd.addr) = (word_t) opcode.ss.value;
     // print_command(addr, word_command, (byte_t *) "mov");
-    command_reg_dump(pdp);
+    // command_reg_dump(pdp);
 
     // w_write(pdp, , res.value);
 }
