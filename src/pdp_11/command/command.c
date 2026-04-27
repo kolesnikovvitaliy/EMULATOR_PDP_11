@@ -59,7 +59,7 @@ command_reg_dump(struct pdp_11_t *pdp)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
 
-    PRINT_RESULT("r0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o",
+    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o",
                  ptr_reg->R0,
                  ptr_reg->R1,
                  ptr_reg->R2,
@@ -75,10 +75,12 @@ command_reg_dump(struct pdp_11_t *pdp)
 void
 command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    (void) addr;
+    (void) word_command;
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
     *ptr_pc += 2;
-    print_command(addr, word_command, (byte_t *) "halt");
+    // print_command(addr, word_command, (byte_t *) "halt");
     command_reg_dump(pdp);
     PRINT_RESULT("THE END!!!", "");
 
@@ -86,109 +88,94 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     free(pdp);
     exit(0);
 }
+arg_t
+get_args(struct pdp_11_t *pdp, word_t word_command)
+{
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
+    arg_t  res          = { 0, 0 };
+    word_t num_register = word_command & 7;
+    byte_t mode         = (word_command >> 3) & 7;
+
+    switch (mode) {
+    case 0:
+        res.addr  = num_register;
+        res.value = *(ptr_pdp->R0 + res.addr);
+
+        // ss -откуда, dd - куда;
+
+        printf("R%d ", res.addr);
+        break;
+        // мода 1, (R1)
+    case 1:
+        res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
+        res.value = w_read(pdp, res.addr); // по адресу - значение
+        // ss -откуда, dd - куда;
+
+        printf("(R%d) ", num_register);
+        break;
+        // мода 2, (R1)+ или #3
+    case 2:
+        *(ptr_pdp->R0 + num_register) += 2;       // TODO: +1
+        res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
+        res.value = w_read(pdp, res.addr); // по адресу - значение
+        //*(ptr_pdp->R0 + num_register) += 2; // TODO: +1
+        // печать разной мнемоники для PC и других регистров
+        if (num_register == 7)
+            printf("#%o ", res.value);
+        else
+            printf("(R%d)+ ", num_register);
+        break;
+    //мы еще не дописали другие моды
+    default:
+        ERROR("Mode %d not implemented yet!\n", mode);
+        exit(1);
+    }
+    return res;
+}
 op_code_t
 __get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
     // TODO: Получить значения мод;
-    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     // ss -откуда, dd - куда;
-    byte_t num_mode = (word_command >> 3) & 7;
-
-    word_t num_register_dd = word_command & 7;
-    word_t num_register_ss = (word_command >> 6) & 7;
-
-    word_t ss_value = (word_command >> 9) & 7;
-
-    switch (num_mode) {
-    case 0:
-        opcode.dd.addr  = num_register_dd;
-        opcode.dd.value = *(ptr_pdp->R0 + opcode.dd.addr);
-        opcode.ss.addr  = num_register_ss;
-        opcode.ss.value = ss_value;
-        // ss -откуда, dd - куда;
-        /*TRACE("In register R%d\t VALUE = %06o\t ",
-              opcode.dd.addr,
-              opcode.ss.value);
-        */
-        TRACE("R%d ", opcode.dd.addr);
-        break;
-        // мода 1, (R1)
-    case 1:
-        opcode.ss.addr = *(ptr_pdp->R0 + num_register_ss); // в регистре адрес
-        opcode.ss.value = opcode.ss.addr; // по адресу - значение
-        /*TRACE("CASE 1\tR%d\t ADDR = %06o\t VALUE = %06o\t ",
-              num_register_ss,
-              opcode.ss.addr,
-              opcode.ss.value);
-        */
-
-        TRACE("(R%d) ", opcode.dd.addr);
-        break;
-        // мода 2, (R1)+ или #3
-        // case 2:
-        //     res.adr = reg[r];           // в регистре адрес
-        //     res.val = w_read(res.adr);  // по адресу - значение
-        //     reg[r] += 2;                // TODO: +1
-        //     // печать разной мнемоники для PC и других регистров
-        //     if (r == 7)
-        //         trace(TRACE, "#%o ", res.val);
-        //     else
-        //         trace(TRACE, "(R%d)+ ", r);
-        //     break;
-        // // мы еще не дописали другие моды
-        // default:
-        //     trace(ERROR, "Mode %d not implemented yet!\n", m);
-        //     exit(1);
-    }
+    opcode.ss = get_args(pdp, word_command >> 6);
+    opcode.dd = get_args(pdp, word_command);
     return opcode;
 }
 
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    (void) addr;
     op_code_t opcode  = { { 0, 0 }, { 0, 0 } };
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
         opcode = __get_mr(pdp, word_command);
-    *(ptr_pdp->R0 + opcode.dd.addr) += opcode.ss.value + opcode.dd.value;
-
-    /*PRINT_RESULT("[ADD] IN Regist R%d = Value_ss %06o + VALUE_dd = %06o\n",
-                 opcode.dd.addr,
-                 opcode.ss.value,
-                 opcode.dd.value);
-    */// print_command(addr, word_command, (byte_t *) "mov");
-    // command_reg_dump(pdp);
+    addr                            = 0;
+    *(ptr_pdp->R0 + opcode.dd.addr) = opcode.ss.value + opcode.dd.value;
 }
 
 void
 command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+
+    (void) addr;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp)
         opcode = __get_mr(pdp, word_command);
-
-    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-
-    /*PRINT_RESULT("[MOV] IN REGISTER = %06o,\t "
-                 "RES.VALUE = %06o\n",
-                 opcode.dd.addr,
-                 opcode.ss.value);
-    */
+    addr                            = 0;
+    pdp_11_t *ptr_pdp               = (pdp_11_t *) pdp;
     *(ptr_pdp->R0 + opcode.dd.addr) = (word_t) opcode.ss.value;
-    // print_command(addr, word_command, (byte_t *) "mov");
-    // command_reg_dump(pdp);
-
-    // w_write(pdp, , res.value);
 }
 
 void
 command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    (void) addr;
     if (pdp)
         __get_mr(pdp, word_command);
+    addr = 0;
 }
 
 void

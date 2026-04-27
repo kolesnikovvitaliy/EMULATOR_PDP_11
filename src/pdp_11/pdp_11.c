@@ -199,10 +199,9 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
 
     for (int i = 1; i < commands_list; i++) {
         if ((word_command & commands[i]->mask) == commands[i]->opcode) {
+            printf("\n%06o %06o : %s ", addr, word_command, commands[i]->name);
             commands[i]->do_commands_command(
                 (struct pdp_11_t *) pdp, addr, word_command);
-            PRINT_RESULT(
-                "%06o %06o : %s", addr, word_command, commands[i]->name);
             flag = 1;
             break;
         }
