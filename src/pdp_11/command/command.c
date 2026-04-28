@@ -152,7 +152,6 @@ command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
         opcode = __get_mr(pdp, word_command);
-    addr                            = 0;
     *(ptr_pdp->R0 + opcode.dd.addr) = opcode.ss.value + opcode.dd.value;
 }
 
@@ -164,7 +163,6 @@ command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp)
         opcode = __get_mr(pdp, word_command);
-    addr                            = 0;
     pdp_11_t *ptr_pdp               = (pdp_11_t *) pdp;
     *(ptr_pdp->R0 + opcode.dd.addr) = (word_t) opcode.ss.value;
 }
@@ -175,7 +173,6 @@ command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     (void) addr;
     if (pdp)
         __get_mr(pdp, word_command);
-    addr = 0;
 }
 
 void
