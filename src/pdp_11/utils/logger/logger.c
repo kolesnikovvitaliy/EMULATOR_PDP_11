@@ -43,7 +43,7 @@ log_message(log_level_t level, const char *fmt, ...)
     va_start(args, fmt);
     vprintf(fmt, args);
     va_end(args);
-    printf(CLR_RESET "\n");
+    printf(CLR_RESET "");
     return;
 }
 

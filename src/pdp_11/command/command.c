@@ -59,7 +59,7 @@ command_reg_dump(struct pdp_11_t *pdp)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
 
-    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o",
+    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
                  ptr_reg->R0,
                  ptr_reg->R1,
                  ptr_reg->R2,
@@ -82,7 +82,9 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     *ptr_pc += 2;
     // print_command(addr, word_command, (byte_t *) "halt");
     command_reg_dump(pdp);
-    PRINT_RESULT("THE END!!!", "");
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    PRINT_RESULT("THE END!!!\n", "");
 
     pdp_destroy(pdp);
     free(pdp);
@@ -104,7 +106,7 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
 
         // ss -откуда, dd - куда;
 
-        printf("R%d ", res.addr);
+        PRINT_RESULT("R%d ", res.addr);
         break;
         // мода 1, (R1)
     case 1:
@@ -112,7 +114,7 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
         res.value = w_read(pdp, res.addr); // по адресу - значение
         // ss -откуда, dd - куда;
 
-        printf("(R%d) ", num_register);
+        PRINT_RESULT("(R%d) ", num_register);
         break;
         // мода 2, (R1)+ или #3
     case 2:
@@ -122,13 +124,13 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
         //*(ptr_pdp->R0 + num_register) += 2; // TODO: +1
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7)
-            printf("#%o ", res.value);
+            PRINT_RESULT("#%o ", res.value);
         else
-            printf("(R%d)+ ", num_register);
+            PRINT_RESULT("(R%d)+ ", num_register);
         break;
     //мы еще не дописали другие моды
     default:
-        ERROR("Mode %d not implemented yet!\n", mode);
+        ERROR("\nMode %d not implemented yet!\n", mode);
         exit(1);
     }
     return res;
