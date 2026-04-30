@@ -149,6 +149,16 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
+    /**
+        @brief Выполняет операцию сложения (ADD) для процессора PDP-11.
+        Извлекает значения операндов источника (ss) и назначения (dd),
+        суммирует их и записывает результат по адресу назначения.
+        @param[in,out] pdp Указатель на структуру состояния процессора.
+        @param[in] addr Адрес текущей команды (не используется).
+        @param[in] word_command 16-битный код команды с параметрами адресации.
+        @note Параметр addr приводится к (void) для предотвращения
+       предупреждений компилятора.
+    */
     (void) addr;
     op_code_t opcode  = { { 0, 0 }, { 0, 0 } };
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
