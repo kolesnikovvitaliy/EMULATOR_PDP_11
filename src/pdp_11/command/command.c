@@ -80,7 +80,6 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
     *ptr_pc += 2;
-    // print_command(addr, word_command, (byte_t *) "halt");
     command_reg_dump(pdp);
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x26);
@@ -90,6 +89,7 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     free(pdp);
     exit(0);
 }
+
 arg_t
 get_args(struct pdp_11_t *pdp, word_t word_command)
 {
@@ -108,7 +108,7 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
 
         PRINT_RESULT("R%d ", res.addr);
         break;
-        // мода 1, (R1)
+    // мода 1, (R1)
     case 1:
         res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение
@@ -116,12 +116,11 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
 
         PRINT_RESULT("(R%d) ", num_register);
         break;
-        // мода 2, (R1)+ или #3
+    // мода 2, (R1)+ или #3
     case 2:
         *(ptr_pdp->R0 + num_register) += 2;       // TODO: +1
         res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение
-        //*(ptr_pdp->R0 + num_register) += 2; // TODO: +1
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7)
             PRINT_RESULT("#%o ", res.value);
@@ -135,10 +134,10 @@ get_args(struct pdp_11_t *pdp, word_t word_command)
     }
     return res;
 }
+
 op_code_t
 __get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
-    // TODO: Получить значения мод;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     // ss -откуда, dd - куда;
     opcode.ss = get_args(pdp, word_command >> 6);
@@ -146,19 +145,20 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
     return opcode;
 }
 
+/**
+@brief Выполняет операцию сложения (ADD) для процессора PDP-11.
+Извлекает значения операндов источника (ss) и назначения (dd),
+суммирует их и записывает результат по адресу назначения.
+@param[in,out] pdp Указатель на структуру состояния процессора.
+@param[in] addr Адрес текущей команды (не используется).
+@param[in] word_command 16-битный код команды с параметрами адресации.
+@note Параметр addr приводится к (void) для предотвращения
+предупреждений компилятора.
+*/
 void
 command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 {
-    /**
-        @brief Выполняет операцию сложения (ADD) для процессора PDP-11.
-        Извлекает значения операндов источника (ss) и назначения (dd),
-        суммирует их и записывает результат по адресу назначения.
-        @param[in,out] pdp Указатель на структуру состояния процессора.
-        @param[in] addr Адрес текущей команды (не используется).
-        @param[in] word_command 16-битный код команды с параметрами адресации.
-        @note Параметр addr приводится к (void) для предотвращения
-       предупреждений компилятора.
-    */
+
     (void) addr;
     op_code_t opcode  = { { 0, 0 }, { 0, 0 } };
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
