@@ -1,3 +1,4 @@
+#include "pdp_11/command/command.h"
 #include "pdp_11/command/command_p.h"
 #include "pdp_11/command/commands_list.h"
 #include "pdp_11/pdp_11.h"
@@ -9,7 +10,7 @@
 #include <stdlib.h>
 
 void
-command_reg_dump(struct pdp_11_t *pdp)
+__command_reg_dump(struct pdp_11_t *pdp)
 {
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
@@ -34,7 +35,7 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
     *ptr_pc += 2;
-    command_reg_dump(pdp);
+    __command_reg_dump(pdp);
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x26);
     PRINT_RESULT("THE END!!!\n", "");
@@ -92,5 +93,5 @@ command_do_unknown(struct pdp_11_t *pdp,
                    word_t           word_command)
 {
     if (pdp)
-        print_command(addr, word_command, (byte_t *) "unknown");
+        __print_command(addr, word_command, (byte_t *) "unknown");
 }

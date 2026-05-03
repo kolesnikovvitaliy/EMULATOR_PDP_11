@@ -1,6 +1,7 @@
-//#include "pdp_11/command/command_p.h"
 #include "pdp_11/command/commands_list.h"
 
+#include "pdp_11/command/command_p.h"
+#include "pdp_11/command/commands.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
 #include "pdp_11/register/register_p.h"

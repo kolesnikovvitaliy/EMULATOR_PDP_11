@@ -1,4 +1,5 @@
 #include "pdp_11/command/command_p.h"
+#include "pdp_11/command/commands.h"
 #include "pdp_11/command/commands_list.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
@@ -7,6 +8,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+extern command_t template_commands[];
 
 command_t **
 command_new()
@@ -36,13 +39,13 @@ command_destroy(command_t **commands)
 }
 
 void
-print_command(address_word_t addr, word_t word_command, byte_t *name_command)
+__print_command(address_word_t addr, word_t word_command, byte_t *name_command)
 {
     PRINT_RESULT("%06o %06o : %s", addr, word_command, name_command);
 }
 
 arg_t
-get_args(struct pdp_11_t *pdp, word_t word_command)
+__get_args(struct pdp_11_t *pdp, word_t word_command)
 {
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
@@ -91,82 +94,7 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command)
 {
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     // ss -откуда, dd - куда;
-    opcode.ss = get_args(pdp, word_command >> 6);
-    opcode.dd = get_args(pdp, word_command);
+    opcode.ss = __get_args(pdp, word_command >> 6);
+    opcode.dd = __get_args(pdp, word_command);
     return opcode;
 }
-
-// // COMMANDS
-//
-// void
-// command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t
-// word_command)
-// {
-//     (void) addr;
-//     (void) word_command;
-//     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-//     word_t *  ptr_pc  = ptr_pdp->PC;
-//     *ptr_pc += 2;
-//     command_reg_dump(pdp);
-//     // pdp_mem_dump(pdp, 0x40, 0x20);
-//     // pdp_mem_dump(pdp, 0x200, 0x26);
-//     PRINT_RESULT("THE END!!!\n", "");
-//
-//     pdp_destroy(pdp);
-//     free(pdp);
-//     exit(0);
-// }
-
-// /**
-// @brief Выполняет операцию сложения (ADD) для процессора PDP-11.
-// Извлекает значения операндов источника (ss) и назначения (dd),
-// суммирует их и записывает результат по адресу назначения.
-// @param[in,out] pdp Указатель на структуру состояния процессора.
-// @param[in] addr Адрес текущей команды (не используется).
-// @param[in] word_command 16-битный код команды с параметрами адресации.
-// @note Параметр addr приводится к (void) для предотвращения
-// предупреждений компилятора.
-// */
-// void
-// command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t
-// word_command)
-// {
-//
-//     (void) addr;
-//     op_code_t opcode  = { { 0, 0 }, { 0, 0 } };
-//     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-//     if (pdp)
-//         opcode = __get_mr(pdp, word_command);
-//     *(ptr_pdp->R0 + opcode.dd.addr) = opcode.ss.value + opcode.dd.value;
-// }
-//
-// void
-// command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t
-// word_command)
-// {
-//
-//     (void) addr;
-//     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
-//     if (pdp)
-//         opcode = __get_mr(pdp, word_command);
-//     pdp_11_t *ptr_pdp               = (pdp_11_t *) pdp;
-//     *(ptr_pdp->R0 + opcode.dd.addr) = (word_t) opcode.ss.value;
-// }
-//
-// void
-// command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t
-// word_command)
-// {
-//     (void) addr;
-//     if (pdp)
-//         __get_mr(pdp, word_command);
-// }
-//
-// void
-// command_do_unknown(struct pdp_11_t *pdp,
-//                    address_word_t   addr,
-//                    word_t           word_command)
-// {
-//     if (pdp)
-//         print_command(addr, word_command, (byte_t *) "unknown");
-// }

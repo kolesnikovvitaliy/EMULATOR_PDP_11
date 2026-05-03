@@ -26,8 +26,9 @@ typedef struct {
 } op_code_t;
 
 op_code_t __get_mr(struct pdp_11_t *pdp, word_t word_command);
-arg_t     get_args(struct pdp_11_t *pdp, word_t word_command);
-void
-print_command(address_word_t addr, word_t word_command, byte_t *name_command);
+arg_t     __get_args(struct pdp_11_t *pdp, word_t word_command);
+void      __print_command(address_word_t addr,
+                          word_t         word_command,
+                          byte_t *       name_command);
 #endif
 #pragma once
