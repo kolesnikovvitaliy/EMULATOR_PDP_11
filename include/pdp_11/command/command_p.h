@@ -25,12 +25,9 @@ typedef struct {
     arg_t dd;
 } op_code_t;
 
-void command_do_halt(struct pdp_11_t *, address_word_t, word_t);
-void command_do_add(struct pdp_11_t *, address_word_t, word_t);
-void command_do_mov(struct pdp_11_t *, address_word_t, word_t);
-void command_do_inc(struct pdp_11_t *, address_word_t, word_t);
-void command_do_unknown(struct pdp_11_t *, address_word_t, word_t);
-
-extern byte_t commands_list;
+op_code_t __get_mr(struct pdp_11_t *pdp, word_t word_command);
+arg_t     get_args(struct pdp_11_t *pdp, word_t word_command);
+void
+print_command(address_word_t addr, word_t word_command, byte_t *name_command);
 #endif
 #pragma once

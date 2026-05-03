@@ -1,3 +1,29 @@
+#include "pdp_11/command/command_p.h"
+#include "pdp_11/command/commands_list.h"
+#include "pdp_11/pdp_11.h"
+#include "pdp_11/pdp_11_p.h"
+#include "pdp_11/register/register_p.h"
+#include "utils/logger/logger.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void
+command_reg_dump(struct pdp_11_t *pdp)
+{
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
+
+    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
+                 ptr_reg->R0,
+                 ptr_reg->R1,
+                 ptr_reg->R2,
+                 ptr_reg->R3,
+                 ptr_reg->R4,
+                 ptr_reg->R5,
+                 ptr_reg->SP,
+                 ptr_reg->PC);
+}
 // COMMANDS
 
 void

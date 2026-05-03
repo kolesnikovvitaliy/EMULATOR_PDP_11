@@ -1,4 +1,5 @@
 #include "pdp_11/command/command_p.h"
+#include "pdp_11/command/commands_list.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
 #include "pdp_11/register/register_p.h"
@@ -38,23 +39,6 @@ void
 print_command(address_word_t addr, word_t word_command, byte_t *name_command)
 {
     PRINT_RESULT("%06o %06o : %s", addr, word_command, name_command);
-}
-
-void
-command_reg_dump(struct pdp_11_t *pdp)
-{
-    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-    reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
-
-    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
-                 ptr_reg->R0,
-                 ptr_reg->R1,
-                 ptr_reg->R2,
-                 ptr_reg->R3,
-                 ptr_reg->R4,
-                 ptr_reg->R5,
-                 ptr_reg->SP,
-                 ptr_reg->PC);
 }
 
 arg_t
