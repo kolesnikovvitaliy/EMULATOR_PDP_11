@@ -28,9 +28,13 @@ __command_reg_dump(struct pdp_11_t *pdp)
 // COMMANDS
 
 void
-command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
+command_do_halt(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
 {
     (void) addr;
+    (void) params;
     (void) word_command;
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
@@ -56,10 +60,14 @@ command_do_halt(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 предупреждений компилятора.
 */
 void
-command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
+command_do_add(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
 {
 
     (void) addr;
+    (void) params;
     op_code_t opcode  = { { 0, 0 }, { 0, 0 } };
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     if (pdp)
@@ -68,10 +76,14 @@ command_do_add(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 }
 
 void
-command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
+command_do_mov(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
 {
 
     (void) addr;
+    (void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp)
         opcode = __get_mr(pdp, word_command);
@@ -80,9 +92,13 @@ command_do_mov(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 }
 
 void
-command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
+command_do_inc(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
 {
     (void) addr;
+    (void) params;
     if (pdp)
         __get_mr(pdp, word_command);
 }
@@ -90,8 +106,10 @@ command_do_inc(struct pdp_11_t *pdp, address_word_t addr, word_t word_command)
 void
 command_do_unknown(struct pdp_11_t *pdp,
                    address_word_t   addr,
-                   word_t           word_command)
+                   word_t           word_command,
+                   byte_t           params)
 {
+    (void) params;
     if (pdp)
         __print_command(addr, word_command, (byte_t *) "unknown");
 }

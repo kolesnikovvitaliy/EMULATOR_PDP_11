@@ -1,4 +1,5 @@
 #include "pdp_11/command/command_p.h"
+#include "pdp_11/command/commands.h"
 #include "pdp_11/pdp_11.h"
 #include "tests/test_pdp/test_command/test_command.h"
 #include "types/types.h"
@@ -13,6 +14,6 @@
 int
 test_halt(struct pdp_11_t *pdp, word_t *ptr_pc)
 {
-    command_do_halt(pdp, *ptr_pc, (word_t)(w_read(pdp, *ptr_pc)));
+    command_do_halt(pdp, *ptr_pc, (word_t)(w_read(pdp, *ptr_pc)), (byte_t) 1);
     return 0;
 }

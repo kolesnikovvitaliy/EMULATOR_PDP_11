@@ -201,8 +201,10 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
         if ((word_command & commands[i]->mask) == commands[i]->opcode) {
             PRINT_RESULT(
                 "%06o %06o : %s ", addr, word_command, commands[i]->name);
-            commands[i]->do_commands_command(
-                (struct pdp_11_t *) pdp, addr, word_command);
+            commands[i]->do_commands_command((struct pdp_11_t *) pdp,
+                                             addr,
+                                             word_command,
+                                             commands[i]->params);
             PRINT_RESULT("\n", "");
             flag = 1;
             break;
@@ -211,7 +213,7 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
 
     if (!flag) {
         commands[0]->do_commands_command(
-            (struct pdp_11_t *) pdp, addr, word_command);
+            (struct pdp_11_t *) pdp, addr, word_command, commands[0]->params);
     }
 
     *ptr_pc += 2;
