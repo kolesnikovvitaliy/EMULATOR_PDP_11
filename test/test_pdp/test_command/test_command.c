@@ -61,7 +61,7 @@ test_command(struct pdp_11_t *pdp)
 
     word_t *ptr_pc = ptr_pdp->PC;
     *ptr_pc        = addr;
-    command_t *run_command;
+    // command_t *run_command;
     /* TESTS COMMAND */
     TRACE("\n\nTHE COMMAND TEST STARTED\n", "");
 
@@ -71,13 +71,14 @@ test_command(struct pdp_11_t *pdp)
     // Тест команды mov;
     //*ptr_pc = addr;
     w_write(pdp, addr, (word_t) 0010503);
-    run_command = __ptr_command(
+    /*run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
 
     assert(strcmp((char *) run_command->name, "mov") == 0);
 
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
-    // test_mov(pdp, ptr_pc);
+    *///
+    test_mov(pdp, addr);
     ////////////////////////////////////////////////////////////////////////////
     //---------------------------------------------------------------------------
 
