@@ -63,7 +63,7 @@ test_command(struct pdp_11_t *pdp)
     *ptr_pc        = addr;
     // command_t *run_command;
     /* TESTS COMMAND */
-    TRACE("\n\nTHE COMMAND TEST STARTED\n", "");
+    TRACE("\nTHE COMMAND TEST STARTED\n", "");
 
     //----------------------------------------------------------------------
     //////////////////////////////////////////////////////////////////////////
