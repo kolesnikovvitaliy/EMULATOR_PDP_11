@@ -29,6 +29,32 @@
  * @todo Раскомментировать и интегрировать основной цикл выполнения do_command.
  */
 
+int
+test_command(struct pdp_11_t *pdp)
+{
+    assert(pdp);
+
+    pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
+    address_word_t addr    = 01000;
+
+    word_t *ptr_pc = ptr_pdp->PC;
+    *ptr_pc        = addr;
+
+    //----------------------------------------------------------------------;
+    TRACE("\nTHE COMMAND TEST STARTED\n", "");
+    //////////////////////////////////////////////////////////////////////////;
+    // Тест команды mov;
+    w_write(pdp, addr, (word_t) 0010503);
+    test_mov(pdp, addr);
+    /////////////////////////////////////////////////////////////////////////;
+    // Тест команды hall
+    w_write(pdp, addr, (word_t) 0000001);
+    test_halt(pdp, ptr_pc);
+    //----------------------------------------------------------------------;
+
+    return 0;
+}
+// Вспомагательна функция получения команды: для тестов;
 command_t *
 __ptr_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
 {
@@ -48,47 +74,4 @@ __ptr_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
     }
 
     return (command_t *) commands[0];
-}
-int
-test_command(struct pdp_11_t *pdp)
-{
-    /* TODO Прочитать из файла программу и выполнить */
-
-    assert(pdp);
-
-    pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
-    address_word_t addr    = 01000;
-
-    word_t *ptr_pc = ptr_pdp->PC;
-    *ptr_pc        = addr;
-    // command_t *run_command;
-    /* TESTS COMMAND */
-    TRACE("\nTHE COMMAND TEST STARTED\n", "");
-
-    //----------------------------------------------------------------------
-    //////////////////////////////////////////////////////////////////////////
-    // WARNING("TEST MOV\n", "");
-    // Тест команды mov;
-    //*ptr_pc = addr;
-    w_write(pdp, addr, (word_t) 0010503);
-    /*run_command = __ptr_command(
-        (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-
-    assert(strcmp((char *) run_command->name, "mov") == 0);
-
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
-    *///
-    test_mov(pdp, addr);
-    ////////////////////////////////////////////////////////////////////////////
-    //---------------------------------------------------------------------------
-
-    // WARNING("TEST HALT\n", "");
-    // Запись команды HALT (000000) по адресу addr и запуск теста
-    *ptr_pc = addr;
-    w_write(pdp, addr, (word_t) 0000001);
-    test_halt(pdp, ptr_pc);
-
-    // ptr_pc = do_command(pdp, ptr_pdp->command, *ptr_pc);
-
-    return 0;
 }
