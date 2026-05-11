@@ -67,8 +67,6 @@ __ptr_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
 
     for (int i = 1; i < commands_list; i++) {
         if ((word_command & commands[i]->mask) == commands[i]->opcode) {
-            // PRINT_RESULT(
-            //    "%06o %06o : %s ", addr, word_command, commands[i]->name);
             return (command_t *) commands[i];
         }
     }
