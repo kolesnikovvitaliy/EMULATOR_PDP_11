@@ -59,7 +59,6 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
     test_mode0(pdp);
     // PRINT_RESULT("\r", "");
     TRACE("%s", "test_move  ");
-    // assert(strcmp((char *) run_command->name, "mov") == 0);
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
 
     assert(*(((pdp_11_t *) pdp)->R3) == 034);
