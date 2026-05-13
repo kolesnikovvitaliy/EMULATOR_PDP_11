@@ -47,7 +47,6 @@ __print_command(address_word_t addr, word_t word_command, byte_t *name_command)
 arg_t
 __get_args(struct pdp_11_t *pdp, word_t word_command)
 {
-    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
     arg_t  res          = { 0, 0 };
     word_t num_register = word_command & 7;
@@ -56,7 +55,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     switch (mode) {
     case 0:
         res.addr  = num_register;
-        res.value = *(ptr_pdp->R0 + res.addr);
+        res.value = pdp_reg_get_var(pdp, res.addr);
 
         // ss -откуда, dd - куда;
 
@@ -65,16 +64,18 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         break;
     // мода 1, (R1)
     case 1:
-        res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
+        res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение
         // ss -откуда, dd - куда;
 
         PRINT_RESULT("(R%d) ", num_register);
         break;
     // мода 2, (R1)+ или #3
-    case 2:
-        *(ptr_pdp->R0 + num_register) += 2;       // TODO: +1
-        res.addr = *(ptr_pdp->R0 + num_register); // в регистре адрес
+    case 2:;
+        word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
+        t_var_reg += 2;
+        pdp_reg_set_var(pdp, num_register, t_var_reg); // TODO: +1
+        res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7) {

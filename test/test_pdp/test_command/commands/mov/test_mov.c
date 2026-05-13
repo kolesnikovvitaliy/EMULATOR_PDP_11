@@ -26,8 +26,10 @@ test_mode0(struct pdp_11_t *pdp)
 {
     PRINT_RESULT("\r\n", "");
 
-    *(((pdp_11_t *) pdp)->R3) = 012;
-    *(((pdp_11_t *) pdp)->R5) = 034;
+    //*(((pdp_11_t *) pdp)->R3) = 012;
+    pdp_reg_set_var(pdp, 3, 012);
+    pdp_reg_set_var(pdp, 5, 034);
+    //*(((pdp_11_t *) pdp)->R5) = 034;
     //     reg[3] = 12;    // dd
     //     reg[5] = 34;    // ss
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
@@ -61,8 +63,8 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
     TRACE("%s", "test_move  ");
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
 
-    assert(*(((pdp_11_t *) pdp)->R3) == 034);
-    assert(*(((pdp_11_t *) pdp)->R5) == 034);
+    assert(pdp_reg_get_var(pdp, 3) == 034);
+    assert(pdp_reg_get_var(pdp, 5) == 034);
     PRINT_RESULT("  %s", "... OK\n");
     return 0;
 }

@@ -26,6 +26,12 @@ w_read(struct pdp_11_t *,
 void    pdp_load_data(struct pdp_11_t *pdp, byte_t *filename);
 void    pdp_mem_dump(struct pdp_11_t *pdp, address_word_t addr, word_t size);
 byte_t *pdp_parse_filename(int argc, char **argv);
+// Установка и получение значения регистра
+
+word_t pdp_reg_get_var(struct pdp_11_t *pdp, byte_t num_register);
+word_t
+pdp_reg_set_var(struct pdp_11_t *pdp, byte_t num_register, word_t value);
+// address_word_t pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register);
 
 // Выполнение команды
 word_t *

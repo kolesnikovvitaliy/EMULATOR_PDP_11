@@ -46,6 +46,7 @@ test_command(struct pdp_11_t *pdp)
     // Тест команды mov;
     w_write(pdp, addr, (word_t) 0010503);
     test_mov(pdp, addr);
+
     /////////////////////////////////////////////////////////////////////////;
     // Тест команды hall
     w_write(pdp, addr, (word_t) 0000001);

@@ -178,7 +178,36 @@ pdp_parse_filename(int argc, char **argv)
     assert(!argv[0]);
     exit(1);
 }
+//////////////////////////////////////////////////////////////////
+// Установка и получение значения регистра
+word_t
+pdp_reg_get_var(struct pdp_11_t *pdp, byte_t num_register)
+{
+    assert(pdp);
 
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    word_t *  ptr_reg = ptr_pdp->R0 + num_register;
+    return *ptr_reg;
+}
+void
+pdp_reg_set_var(struct pdp_11_t *pdp, byte_t num_register, word_t value)
+{
+    assert(pdp);
+
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    word_t *  ptr_reg = ptr_pdp->R0 + num_register;
+    *ptr_reg          = value;
+}
+// address_word_t
+// pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register)
+// {
+//     assert(pdp);
+//
+//     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+//     word_t *  ptr_reg = ptr_pdp->R0 + num_register;
+//     return (address_word_t) ptr_reg;
+// }
+///////////////////////////////////////////////////////////
 /**
  * @brief Выполняет одну машинную команду по указанному адресу.
  * @param pdp Указатель на экземпляр PDP-11.
