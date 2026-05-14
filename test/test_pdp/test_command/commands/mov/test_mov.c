@@ -48,6 +48,53 @@ test_mode0(struct pdp_11_t *pdp)
     PRINT_RESULT("%s", " ... OK\n");
 }
 
+void
+test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
+{
+    // PRINT_RESULT("\r", "");
+
+    //*(((pdp_11_t *) pdp)->R3) = 012;
+    for (int i = 0; i < 6; i++) {
+        pdp_reg_set_var(pdp, i, 00);
+    }
+    pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
+    command_t *run_command;
+
+    run_command = __ptr_command(
+        (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
+
+    pdp_reg_set_var(pdp, 7, 01000);
+    // setup
+    pdp_reg_set_var(pdp, 3, 012);  // dd
+    pdp_reg_set_var(pdp, 5, 0200); // ss
+    w_write(pdp, 0200, 034);
+    //     reg[3] = 12;    // dd
+    //     reg[5] = 34;    // ss
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    // pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    // PRINT_RESULT("\r", "");
+
+    if (pdp) {
+        opcode = __get_mr(pdp, (word_t) 0011503);
+    }
+    PRINT_RESULT("\r          ", "");
+    TRACE("%s", "test_mode1_toreg  ");
+    assert(opcode.ss.value == 034);
+    assert(opcode.ss.addr == 0200);
+    assert(opcode.dd.value == 012);
+    assert(opcode.dd.addr == 03);
+
+    // test_parse_mov(run_command);
+
+    // // PRINT_RESULT("\r", "");
+    // TRACE("%s", "test_move  ");
+    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    assert(pdp_reg_get_var(pdp, 3) == 034);
+    assert(pdp_reg_get_var(pdp, 5) == 0200);
+
+    PRINT_RESULT("  %s", " ... OK\n");
+}
+
 int
 test_mov(struct pdp_11_t *pdp, const address_word_t addr)
 {
@@ -59,6 +106,7 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
 
     test_parse_mov(run_command);
     test_mode0(pdp);
+
     // PRINT_RESULT("\r", "");
     TRACE("%s", "test_move  ");
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
@@ -66,5 +114,6 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
     assert(pdp_reg_get_var(pdp, 3) == 034);
     assert(pdp_reg_get_var(pdp, 5) == 034);
     PRINT_RESULT("  %s", "... OK\n");
+
     return 0;
 }
