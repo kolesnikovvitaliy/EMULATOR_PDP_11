@@ -48,13 +48,13 @@ __is_valid_addr(mem_t *memory, address_word_t addr, word_t len)
 {
 
     if (!(memory->default_memory)) {
-        if ((addr | len) > memory->mem_byte->size_b) {
+        if ((addr | len) > (memory->mem_byte->size_b - 1)) {
             abort();
         }
         return 1;
     }
 
-    if ((addr + len) > memory->mem_word->size_w) {
+    if ((addr + len) > (memory->mem_word->size_w - 1)) {
         abort();
     }
     return 1;

@@ -72,6 +72,7 @@ command_do_add(struct pdp_11_t *pdp,
     if (pdp) {
         opcode = __get_mr(pdp, word_command);
     }
+    w_write(pdp, opcode.dd.addr, (opcode.ss.value + opcode.dd.value));
     pdp_reg_set_var(pdp, opcode.dd.addr, (opcode.ss.value + opcode.dd.value));
 }
 
@@ -88,6 +89,8 @@ command_do_mov(struct pdp_11_t *pdp,
     if (pdp) {
         opcode = __get_mr(pdp, word_command);
     }
+
+    w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
 
