@@ -59,8 +59,8 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
 
     // setup
-    pdp_reg_set_var(pdp, 2, 012);  // dd
-    pdp_reg_set_var(pdp, 5, 0200); // ss
+    pdp_reg_set_var(pdp, 02, 012);  // dd
+    pdp_reg_set_var(pdp, 05, 0200); // ss
 
     w_write(pdp, 0200, 034);
 
@@ -89,7 +89,7 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
 {
     pdp_reg_set_var(pdp, 7, 01000);
     for (int i = 0; i <= 6; i++) {
-        pdp_reg_set_var(pdp, i, 0);
+        pdp_reg_set_var(pdp, i, 00);
     }
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
@@ -98,8 +98,9 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
 
     // setup
-    pdp_reg_set_var(pdp, 3, 066);  // dd
-    pdp_reg_set_var(pdp, 5, 0200); // ss
+    pdp_reg_set_var(pdp, 03, 066);  // dd
+    pdp_reg_set_var(pdp, 05, 0200); // ss
+
     w_write(pdp, 0200, 034);
 
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
