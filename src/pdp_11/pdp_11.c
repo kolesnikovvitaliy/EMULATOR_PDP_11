@@ -184,7 +184,9 @@ word_t
 pdp_reg_get_var(struct pdp_11_t *pdp, byte_t num_register)
 {
     assert(pdp);
-
+    if (num_register > 07) {
+        assert(num_register);
+    }
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_reg = ptr_pdp->R0 + num_register;
     return *ptr_reg;
@@ -193,8 +195,9 @@ void
 pdp_reg_set_var(struct pdp_11_t *pdp, byte_t num_register, word_t value)
 {
     assert(pdp);
-    if (num_register > 07)
+    if (num_register > 07) {
         return;
+    }
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_reg = ptr_pdp->R0 + num_register;
     *ptr_reg          = value;

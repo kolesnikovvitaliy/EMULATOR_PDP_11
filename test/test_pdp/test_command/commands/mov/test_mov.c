@@ -162,6 +162,43 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     PRINT_RESULT("  %s", " ... OK\n");
 }
 
+void
+test_mode2(struct pdp_11_t *pdp, const address_word_t addr)
+{
+    pdp_reg_set_var(pdp, 7, 01000);
+    for (int i = 0; i <= 6; i++) {
+        pdp_reg_set_var(pdp, i, 00);
+    }
+    pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
+    command_t *run_command;
+
+    run_command = __ptr_command(
+        (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
+
+    // setup
+    pdp_reg_set_var(pdp, 3, 00); // ss
+    pdp_reg_set_var(pdp, 0, 01); // ss
+
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    if (pdp) {
+        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+    }
+
+    PRINT_RESULT("\r          ", "");
+    TRACE("%s", "test_mode2 ");
+
+    assert(opcode.ss.value == 02);
+    assert(opcode.ss.addr == 01002);
+    assert(opcode.dd.value == 0131000);
+    assert(opcode.dd.addr == 03);
+
+    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+
+    assert(w_read(pdp, opcode.dd.addr) == 0140400);
+
+    PRINT_RESULT("  %s", " ... OK\n");
+}
+
 int
 test_mov(struct pdp_11_t *pdp, const address_word_t addr)
 {
