@@ -1,3 +1,7 @@
+/**
+ * @file test_pdp.c
+ * @brief Запуск модульных тестов эмулятора.
+ */
 #include "tests/test_pdp/test_pdp.h"
 
 #include "pdp_11/command/command.h"

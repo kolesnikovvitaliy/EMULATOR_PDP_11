@@ -1,3 +1,7 @@
+/**
+ * @file test_command.c
+ * @brief Запуск тестов исполнения команд процессором.
+ */
 #include "tests/test_pdp/test_command/test_command.h"
 
 #include "pdp_11/command/command.h"
