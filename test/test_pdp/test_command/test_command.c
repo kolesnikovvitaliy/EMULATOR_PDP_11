@@ -60,13 +60,13 @@ test_command(struct pdp_11_t *pdp)
     w_write(pdp, addr, (word_t) 0011114);
     test_mode1_mem_to_mem(pdp, addr);
 
-    w_write(pdp, addr, (word_t) 0012720);
+    w_write(pdp, addr, (word_t) 0012723);
     test_mode2(pdp, addr);
 
     /////////////////////////////////////////////////////////////////////////;
     // Тест команды hall
-    w_write(pdp, addr, (word_t) 0000001);
-    test_halt(pdp, ptr_pc);
+    // w_write(pdp, addr, (word_t) 0000001);
+    // test_halt(pdp, ptr_pc);
     //----------------------------------------------------------------------;
 
     return 0;

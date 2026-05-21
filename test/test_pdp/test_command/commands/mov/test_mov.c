@@ -285,8 +285,7 @@ test_mode2(struct pdp_11_t *pdp, const address_word_t addr)
 
     //! @name Конфигурация режима автоинкремента
     //! @{
-    pdp_reg_set_var(pdp, 3, 00); // R3 сброшен
-    pdp_reg_set_var(pdp, 0, 01); // R0 инициализирован базовым смещением
+    pdp_reg_set_var(pdp, 3, 0102); // В R3 записан вдрес
     //! @}
 
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
@@ -301,15 +300,12 @@ test_mode2(struct pdp_11_t *pdp, const address_word_t addr)
     //! < Контроль расчетных значений декодера для автоинкремента
     assert(opcode.ss.value == 02);
     assert(opcode.ss.addr == 01002);
-    assert(opcode.dd.value == 0131000);
-    assert(opcode.dd.addr == 03);
-
+    assert(opcode.dd.value == 034);
+    assert(opcode.dd.addr == 0104);
     //! < Исполнение команды с триггером автоинкремента регистров
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
-
     //! < Проверка измененного состояния памяти после выполнения операции
-    assert(w_read(pdp, opcode.dd.addr) == 0140400);
-
+    assert(pdp_reg_get_var(pdp, 3) == 0106);
     PRINT_RESULT("  %s", " ... OK\n");
 }
 
