@@ -86,10 +86,10 @@ command_do_mov(struct pdp_11_t *pdp,
     (void) addr;
     (void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
-    if (pdp) {
-        opcode = __get_mr(pdp, word_command);
+    if (!pdp) {
+        return;
     }
-
+    opcode = __get_mr(pdp, word_command);
     w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
