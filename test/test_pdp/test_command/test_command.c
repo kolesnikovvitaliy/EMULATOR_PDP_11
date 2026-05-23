@@ -47,6 +47,12 @@ test_command(struct pdp_11_t *pdp)
     //----------------------------------------------------------------------;
     TRACE("\nTHE COMMAND TEST STARTED\n", "");
     //////////////////////////////////////////////////////////////////////////;
+
+    // TODO
+    // test_mode0();
+    // test_mode1();
+    // test_mode2();
+
     // Тест команды mov;
     w_write(pdp, addr, (word_t) 0010503);
     test_mov(pdp, addr);
