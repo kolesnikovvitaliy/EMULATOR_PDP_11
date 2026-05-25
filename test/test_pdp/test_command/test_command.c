@@ -10,6 +10,7 @@
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
 #include "tests/test.h"
+#include "tests/test_pdp/test_command/test_mode/test_mode0/test_mode0.h"
 #include "tests/test_pdp/test_pdp.h"
 #include "utils/logger/logger.h"
 #include "utils/utils.h"
@@ -49,13 +50,12 @@ test_command(struct pdp_11_t *pdp)
     //////////////////////////////////////////////////////////////////////////;
 
     // TODO
-    // test_mode0();
     // test_mode1();
     // test_mode2();
 
     // Тест команды mov;
     w_write(pdp, addr, (word_t) 0010503);
-    test_mov(pdp, addr);
+    test_mode0(pdp, addr);
 
     w_write(pdp, addr, (word_t) 0011502);
     test_mode1_toreg(pdp, addr);
