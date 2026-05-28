@@ -63,7 +63,7 @@ test_w2b_rword_b(struct pdp_11_t *pdp)
     b0 = 0xb2;
     b1 = 0xa1;
     b_write(pdp, a, b0);
-    b_write(pdp, a + 1, b1);
+    b_write(pdp, (address_byte_t)(a + 1), b1);
     wres = w_read(pdp, a);
     // тут полезно написать отладочную печать a, w, wres
     DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t wres=%04x\n", a, b1, b0, wres);
@@ -86,7 +86,7 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
     res_b1 = 0xa1;
     w_write(pdp, a, w);
     b0 = b_read(pdp, a);
-    b1 = b_read(pdp, a + 1);
+    b1 = b_read(pdp, (address_byte_t)(a + 1));
     // тут полезно написать отладочную печать a, w, wres
     DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t w=%04x\n", a, b1, b0, w);
     assert(b1 == res_b1);

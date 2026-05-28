@@ -17,7 +17,7 @@ load_data_term(struct pdp_11_t *pdp)
     word_t addr, count_str, data, res_input;
 
     addr = count_str = data = res_input = 0x00;
-    res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
+    res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
     // printf("RES INPUT DATA = %d\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
     //                res_input, addr, count_str);
     DEBUG("\nRES INPUT DATA = %d\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
@@ -32,10 +32,11 @@ load_data_term(struct pdp_11_t *pdp)
     }
     do {
         for (byte_t ind = 0x0; ind < count_str; ind++) {
-            fscanf(stdin, "%hx", &data);
-            b_write(pdp, (addr | ind), data);
+            int res_fscanf __attribute__((unused));
+            res_fscanf = fscanf(stdin, "%hx", &data);
+            b_write(pdp, (address_word_t)(addr | ind), (byte_t) data);
         }
-        res_input = fscanf(stdin, "%hx%hx", &addr, &count_str);
+        res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD TERMINAL EXIT\r\n\n");
     INFO("\nREAD TERMINAL EXIT\r\n\n", "");

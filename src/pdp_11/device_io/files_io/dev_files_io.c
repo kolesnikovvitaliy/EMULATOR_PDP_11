@@ -23,7 +23,7 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
     fp = pdp_file_open(filename, (byte_t *) "rb");
     assert(fp);
 
-    res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
+    res_input = (word_t) fscanf(fp, "%hx%hx", &addr, &count_str);
     assert(res_input);
     if (!(res_input == res_input_data)) {
         pdp_file_close(fp);
@@ -34,10 +34,11 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
     }
     do {
         for (byte_t ind = 0x0; ind < count_str; ind++) {
-            fscanf(fp, "%hx", &data);
-            b_write(pdp, (addr | ind), data);
+            int res_fscanf __attribute__((unused));
+            res_fscanf = fscanf(fp, "%hx", &data);
+            b_write(pdp, (address_byte_t)(addr | ind), (byte_t) data);
         }
-        res_input = fscanf(fp, "%hx%hx", &addr, &count_str);
+        res_input = (word_t) fscanf(fp, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD FILE EXIT\n\n");
     INFO("\nREAD FILE EXIT\n\n", "");

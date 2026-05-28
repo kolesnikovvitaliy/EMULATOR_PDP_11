@@ -38,7 +38,7 @@ command_do_halt(struct pdp_11_t *pdp,
     (void) word_command;
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
-    *ptr_pc += 2;
+    *ptr_pc           = (word_t)(*ptr_pc + 2);
     __command_reg_dump(pdp);
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x26);
@@ -72,8 +72,9 @@ command_do_add(struct pdp_11_t *pdp,
     if (pdp) {
         opcode = __get_mr(pdp, word_command);
     }
-    w_write(pdp, opcode.dd.addr, (opcode.ss.value + opcode.dd.value));
-    pdp_reg_set_var(pdp, opcode.dd.addr, (opcode.ss.value + opcode.dd.value));
+    w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
+    pdp_reg_set_var(
+        pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
 }
 
 void

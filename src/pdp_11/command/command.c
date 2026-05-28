@@ -73,7 +73,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     // мода 2, (R1)+ или #3
     case 2:;
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
-        t_var_reg += 2;
+        t_var_reg        = (word_t)(t_var_reg + 2);
         pdp_reg_set_var(pdp, num_register, t_var_reg); // TODO: +1
         res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение

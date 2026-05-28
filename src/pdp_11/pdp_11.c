@@ -249,6 +249,6 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
             (struct pdp_11_t *) pdp, addr, word_command, commands[0]->params);
     }
 
-    *ptr_pc += 2;
+    *ptr_pc = (word_t)(*ptr_pc + 2);
     return ptr_pc;
 }

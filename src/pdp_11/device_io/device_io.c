@@ -43,7 +43,7 @@ void
 dev_io_mem_dump(struct pdp_11_t *pdp, address_word_t addr, word_t size)
 {
     for (word_t ind = 0x0000; ind < size; ind++) {
-        word_t ch = w_read(pdp, addr + ind);
+        word_t ch = w_read(pdp, (address_word_t)(addr + ind));
         fprintf(stdout, "%06o: %06o %04hx\r\n", (addr | ind++), ch, ch);
     }
     fprintf(stdout, "\r\n\n");
