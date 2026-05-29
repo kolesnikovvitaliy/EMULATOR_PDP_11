@@ -74,9 +74,10 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 2:;
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
         t_var_reg        = (word_t)(t_var_reg + 2);
+        res.addr         = t_var_reg;
+        res.value        = w_read(pdp, res.addr);
         pdp_reg_set_var(pdp, num_register, t_var_reg); // TODO: +1
-        res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
-        res.value = w_read(pdp, res.addr); // по адресу - значение
+
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7) {
             PRINT_RESULT("#%o ", res.value);
