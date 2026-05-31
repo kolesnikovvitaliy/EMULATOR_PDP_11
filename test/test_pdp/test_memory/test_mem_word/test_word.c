@@ -25,7 +25,7 @@ test_rw_byte_w(struct pdp_11_t *pdp)
     bres = b_read(pdp, adr);
     assert(bres == b0);
 
-    PRINT_RESULT("%s", " ... OK\n");
+    PRINT_RESULT("%s", " ... OK");
 }
 
 void
@@ -48,7 +48,7 @@ test_rw_word_w(struct pdp_11_t *pdp)
 
     // TRACE(" a = %06x\t w = %04x\t wres = %04x\n", adr, w, wres);
     assert(w == wres);
-    PRINT_RESULT("%s", " ... OK\n");
+    PRINT_RESULT("%s", " ... OK");
 }
 
 void
@@ -70,7 +70,7 @@ test_w2b_rword_w(struct pdp_11_t *pdp)
     // тут полезно написать отладочную печать a, w, wres
     // TRACE(" a=%06o\t b1=%02hhx\t b0=%02hhx\t wres=%04x\n", a, b1, b0, wres);
     assert(w == wres);
-    PRINT_RESULT("%s", " ... OK\n");
+    PRINT_RESULT("%s", " ... OK");
 }
 
 void
@@ -104,7 +104,7 @@ test_word_buffer(struct pdp_11_t *pdp)
 {
     INFO("TEST MEMORY TYPE ==WORD== START", "");
 
-    test_rw_word_w(pdp);
+    test_rw_byte_w(pdp);
     test_rw_word_w(pdp);
     test_w2b_rword_w(pdp);
     test_wword_r2b_w(pdp);

@@ -48,7 +48,7 @@ test_command(struct pdp_11_t *pdp)
     *ptr_pc        = addr;
 
     //----------------------------------------------------------------------;
-    TRACE("\nTHE COMMAND TEST STARTED\n", "");
+    INFO("THE COMMAND TEST STARTED", "");
     //////////////////////////////////////////////////////////////////////////;
 
     // TODO
@@ -59,6 +59,7 @@ test_command(struct pdp_11_t *pdp)
     test_mode0(pdp);
     test_mode1(pdp);
     test_mode2(pdp);
+    INFO("THE COMMAND TEST WAS SUCCESSFUL\n", "");
 
     // w_write(pdp, addr, (word_t) 0011502);
     // test_mode1_toreg(pdp, addr);

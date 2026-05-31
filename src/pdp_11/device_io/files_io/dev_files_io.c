@@ -41,7 +41,7 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
         res_input = (word_t) fscanf(fp, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD FILE EXIT\n\n");
-    INFO("\nREAD FILE EXIT\n\n", "");
+    INFO("READ FILE EXIT", "");
     pdp_file_close(fp);
     return;
 }

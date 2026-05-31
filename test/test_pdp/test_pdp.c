@@ -33,14 +33,16 @@ test_pdp_memory(byte_t type_memory, int argc, char **argv)
 
     memory_type(type_memory);
 
-    DEBUG("DEFAULT MEMORY FOR CREATE PDP_11 \
-                        \t%d\r\n",
-          g_default_memory);
+    /*
+     * // DEBUG("DEFAULT MEMORY FOR CREATE PDP_11 \
+     * //                     \t%d\r\n",
+     * //       g_default_memory);
+     */
 
     struct pdp_11_t *pdp = pdp_new();
     pdp_create(pdp);
     assert(pdp);
-
+    PRINT_RESULT("%s", " ... OK\n");
     all_tests(pdp, argc, argv);
 
     pdp_destroy(pdp);
@@ -51,34 +53,36 @@ test_pdp_memory(byte_t type_memory, int argc, char **argv)
 int
 test_pdp(int argc, char **argv)
 {
-    DEBUG("\nСтартовый тест для проверки правильности\n \
-                        создания и использования функций",
-          "\r\n\n");
+    /*
+     * DEBUG("\nСтартовый тест для проверки правильности\n \
+     *                   создания и использования функций",
+     *     "\r\n\n");
+     */
     ////////////////////////////////////////////
-    WARNING("\nALLOCAT MEMORY FOR CLASS MEM_BYTE_T < BYTE >\n", "");
-    TRACE("\nMEMORY BYTE CREATED !!!", "\r\n\n");
+    WARNING("ALLOCAT MEMORY FOR CLASS MEM_BYTE_T < BYTE >", "");
+    INFO("ALLOCAT MEMORY  TYPE ==BYTE==", "");
     // Если путь к файлу отсутствует запускается BYTE_TEST
     if (3 >= argc) {
         test_pdp_memory(type_memory_byte, argc, argv);
-        TRACE("\nMEMORY BYTE DESTROY !!! ", "\r\n\n");
+        WARNING("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
         return 0;
     }
     // Если есть путь к файлу запускаются BYTE_TEST и WORD_TEST
 
     test_pdp_memory(type_memory_byte, argc, argv);
 
-    TRACE("\nMEMORY BYTE DESTROY !!! ", "\r\n\n");
+    WARNING("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
     ////////////////////////////////////////////
 
     ////////////////////////////////////////////
-    WARNING("\nALLOCAT MEMORY FOR CLASS MEM_WORD_T < WORD >\n", "");
-    TRACE("\nMEMORY WORD CREATED !!! ", "\r\n\n");
+    WARNING("ALLOCAT MEMORY FOR CLASS MEM_WORD_T < WORD >", "");
+    INFO("ALLOCAT MEMORY  TYPE ==WORD==  !!!", "");
 
     test_pdp_memory(type_memory_word, argc, argv);
 
-    TRACE("\nMEMORY WORD DESTROY !!! ", "\r\n\n");
+    WARNING("MEMORY ==WORD== DESTROY !!! \n", "");
     ////////////////////////////////////////////
-    INFO("ALL TESTS PDP_11 PASSED SUCCESSFULLY", "");
+    INFO("ALL TESTS PDP_11 PASSED SUCCESSFULLY\n", "");
     return 1;
 }
 /////////////////////////////////////////////////////////////////////

@@ -39,6 +39,6 @@ load_data_term(struct pdp_11_t *pdp)
         res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD TERMINAL EXIT\r\n\n");
-    INFO("\nREAD TERMINAL EXIT\r\n\n", "");
+    INFO("READ TERMINAL EXIT", "");
     return;
 }

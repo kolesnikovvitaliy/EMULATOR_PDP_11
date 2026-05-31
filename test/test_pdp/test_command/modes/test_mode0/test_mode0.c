@@ -54,5 +54,5 @@ test_mode0(struct pdp_11_t *pdp)
     assert(opcode.dd.addr == 03);
 
     //! < Тест Mode 0 успешно пройден
-    PRINT_RESULT("%s", " ... OK\n");
+    PRINT_RESULT("%s", " ... OK\n\r");
 }

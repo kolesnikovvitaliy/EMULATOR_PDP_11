@@ -18,13 +18,14 @@ test_rw_byte_b(struct pdp_11_t *pdp)
     adr = 0;
     b0  = 0x12;
 
-    DEBUG("\nПишем и читаем байт по четному адресу\r\n", "\n");
+    TRACE("Пишем и читаем байт по четному адресу", "");
 
     b_write(pdp, adr, b0);
     bres = b_read(pdp, adr);
 
-    DEBUG("\na = %06o\t b0 = %hhx\t bres = %hhx\r\n", adr, b0, bres);
+    // DEBUG("\na = %06o\t b0 = %hhx\t bres = %hhx\r\n", adr, b0, bres);
     assert(bres == b0);
+    PRINT_RESULT("%s", " ... OK");
 }
 
 void
@@ -38,15 +39,16 @@ test_rw_word_b(struct pdp_11_t *pdp)
     adr = 8;
     w   = 0x3456;
 
-    DEBUG("\nПишем и читаем слово\r\n", "\n");
+    TRACE("Пишем и читаем слово", "");
 
     w_write(pdp, adr, w);
     wres = w_read(pdp, adr);
     if (adr & 1)
         (adr--);
 
-    DEBUG("\na = %06x\t w = %04x\t wres = %04x\n", adr, w, wres);
+    // DEBUG("\na = %06x\t w = %04x\t wres = %04x\n", adr, w, wres);
     assert(w == wres);
+    PRINT_RESULT("%s", " ... OK");
 }
 
 void
@@ -56,7 +58,7 @@ test_w2b_rword_b(struct pdp_11_t *pdp)
     address_word_t a;
     byte_t         b0, b1;
     word_t         w, wres;
-    DEBUG("\nПишем 2 байта, читаем слово\n", "\n");
+    TRACE("Пишем 2 байта, читаем слово", "");
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
@@ -66,8 +68,10 @@ test_w2b_rword_b(struct pdp_11_t *pdp)
     b_write(pdp, (address_byte_t)(a + 1), b1);
     wres = w_read(pdp, a);
     // тут полезно написать отладочную печать a, w, wres
-    DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t wres=%04x\n", a, b1, b0, wres);
+    // DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t wres=%04x\n", a, b1, b0,
+    // wres);
     assert(w == wres);
+    PRINT_RESULT("%s", " ... OK");
 }
 
 //--------------------------------------------------------------------
@@ -78,7 +82,7 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
     address_word_t a;
     byte_t         b0, b1, res_b0, res_b1;
     word_t         w;
-    DEBUG("\nПишем слово читаем 2 байта\n", "\n");
+    TRACE("Пишем слово читаем 2 байта", "");
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
@@ -88,19 +92,21 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
     b0 = b_read(pdp, a);
     b1 = b_read(pdp, (address_byte_t)(a + 1));
     // тут полезно написать отладочную печать a, w, wres
-    DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t w=%04x\n", a, b1, b0, w);
+    // DEBUG("\na=%06o\t b1=%02hhx\t b0=%02hhx\t w=%04x\n", a, b1, b0, w);
     assert(b1 == res_b1);
     assert(b0 == res_b0);
+    PRINT_RESULT("%s", " ... OK");
 }
 //////////////////////////////////////////////////////////////////////
 void
 test_byte_buffer(struct pdp_11_t *pdp)
 {
-    TRACE("\n\r\n\t\t TEST_BYTE\r\n\n", "\n");
+    INFO("TEST MEMORY TYPE ==BYTE== START", "");
 
     test_rw_byte_b(pdp);
     test_rw_word_b(pdp);
     test_w2b_rword_b(pdp);
     test_wword_r2b_b(pdp);
+    INFO("TEST MEMORY TYPE ==BYTE== WAS PASSED SUCCESSFULLY\n", "");
 }
 //////////////////////////////////////////////////////////////////////

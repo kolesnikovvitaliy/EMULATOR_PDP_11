@@ -229,7 +229,6 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
 
     byte_t flag  = 0;
     word_command = w_read(pdp, *ptr_pc);
-
     for (int i = 1; i < commands_list; i++) {
         if ((word_command & commands[i]->mask) == commands[i]->opcode) {
             PRINT_RESULT(

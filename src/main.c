@@ -68,7 +68,7 @@ main(int argc, char **argv)
     struct pdp_11_t *pdp = pdp_new();
     assert(pdp != NULL);
 
-    DEBUG("PDP_11 ИНИЦИАЛИЗИРОВАНА", "");
+    TRACE("PDP_11 ИНИЦИАЛИЗИРОВАНА", "");
 
     /* Запуск исполнительного цикла */
     run(pdp, argc, argv);
@@ -109,7 +109,7 @@ start_test_if_mode_debug(int argc, char **argv)
 
     for (int i = 0; i < argc; i++) {
         if (strcmp("-d", argv[i]) == 0) {
-            DEBUG("ЗАПУСК ТЕСТОВ", "");
+            TRACE("ЗАПУСК ТЕСТОВ\n", "");
             test_pdp(argc, argv);
             return 1;
         }

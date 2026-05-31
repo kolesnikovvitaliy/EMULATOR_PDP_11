@@ -46,7 +46,7 @@ run(struct pdp_11_t *pdp, int argc, char **argv)
 
     /* Загрузка бинарных данных в оперативную память эмулятора */
     pdp_load_data(pdp, (byte_t *) filename);
-
+    PRINT_RESULT("\n", "");
     /** @anchor start_address
      * Точка входа в программу по умолчанию: 01000 (восьмеричная система)
      */
