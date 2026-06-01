@@ -40,6 +40,7 @@ test_mode0(struct pdp_11_t *pdp)
     }
 
     PRINT_RESULT("\r      ", "");
+    PRINT_RESULT("\x1b[F", "");
     //! < Логируем запуск теста нулевого режима адресации
     TRACE("%s\t", "test_mode0");
 

@@ -46,8 +46,9 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
         //! < Чтение и разбор опкода
         opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
     }
-
+    // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
+    PRINT_RESULT("\x1b[F", "");
     TRACE("%s", "test_mode1_mem_to_mem  ");
 
     //! < Проверяем корректность связки "Регистр -> Адрес памяти -> Значение"

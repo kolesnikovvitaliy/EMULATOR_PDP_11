@@ -50,8 +50,9 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
         //! < Извлечение битовой маски операции
         opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
     }
-
+    // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
+    PRINT_RESULT("\x1b[F", "");
     TRACE("%s", "test_mode1_reg_to_mem  ");
 
     //! < Контроль декодирования: SS ссылается на R3, DD указывает на адрес

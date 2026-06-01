@@ -59,6 +59,7 @@ test_command(struct pdp_11_t *pdp)
     test_mode0(pdp);
     test_mode1(pdp);
     test_mode2(pdp);
+    PRINT_RESULT("\x1b[F", "");
     INFO("THE COMMAND TEST WAS SUCCESSFUL\n", "");
 
     // w_write(pdp, addr, (word_t) 0011502);
