@@ -33,11 +33,6 @@ test_pdp_memory(byte_t type_memory, int argc, char **argv)
 
     memory_type(type_memory);
 
-    /*
-     * // DEBUG("DEFAULT MEMORY FOR CREATE PDP_11 \
-     * //                     \t%d\r\n",
-     * //       g_default_memory);
-     */
 
     struct pdp_11_t *pdp = pdp_new();
     pdp_create(pdp);
