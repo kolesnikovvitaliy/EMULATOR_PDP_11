@@ -58,7 +58,9 @@ int
 main(int argc, char **argv)
 {
     // Проверка режима отладки перед стартом основной логики
-    start_test_if_mode_debug(argc, argv);
+    int flag_tests = 0;
+    /*ЗАПУСК ПРОВЕРКИ РАБОТЫ ЭМУЛЯТОРА В РЕЖИМЕ ПАМЯТИ =BYTE= и =WORD=*/
+    flag_tests = start_test_if_mode_debug(argc, argv);
 
     /**
      * @note Инициализация через pdp_new гарантирует нулевое состояние
@@ -68,12 +70,13 @@ main(int argc, char **argv)
     struct pdp_11_t *pdp = pdp_new();
     assert(pdp != NULL);
 
-    TRACE("PDP_11 ИНИЦИАЛИЗИРОВАНА", "");
+    TRACE("PDP_11 ИНИЦИАЛИЗИРОВАНА\n", "");
 
     /* Запуск исполнительного цикла */
-    run(pdp, argc, argv);
+    run(pdp, argc, argv, flag_tests);
 
     /* Очистка контекста перед выходом */
+
     free(pdp);
 
     return 0;
@@ -109,8 +112,12 @@ start_test_if_mode_debug(int argc, char **argv)
 
     for (int i = 0; i < argc; i++) {
         if (strcmp("-d", argv[i]) == 0) {
-            TRACE("ЗАПУСК ТЕСТОВ\n", "");
+            WARNING("ЗАПУСК ПРОВЕРКИ КОНФИГУРАЦИИ", "");
+            log_level_t log_level = set_log_level(NONE);
             test_pdp(argc, argv);
+
+            set_log_level(log_level);
+            WARNING("ПРОВЕРКА КОНФИГУРАЦИИ ЗАВЕРШИЛАСЬ УСПЕШНО\n", "");
             return 1;
         }
     }

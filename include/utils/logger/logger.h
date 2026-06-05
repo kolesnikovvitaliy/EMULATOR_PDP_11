@@ -2,7 +2,8 @@
 #    define LOGGER_H
 
 typedef enum {
-    PRINT_RESULT = 0,
+    NONE = 0,
+    PRINT_RESULT,
     ERROR,
     INFO,
     WARNING,
@@ -10,6 +11,7 @@ typedef enum {
     DEBUG
 } log_level_t;
 
+#    define CLR_NONE         "\x1b[37m" // Белый
 #    define CLR_PRINT_RESULT "\x1b[37m" // Белый
 #    define CLR_ERROR        "\x1b[31m" // Красный
 #    define CLR_INFO         "\x1b[32m" // Зеленый
@@ -31,6 +33,7 @@ log_level_t set_log_level(log_level_t);
 //#define TRACE(fmt, ...) log_message(TRACE, __FILE__, __LINE__, __func__,
 // fmt,##__VA_ARGS__) #define DEBUG(fmt, ...) log_message(DEBUG, __FILE__,
 //__LINE__, __func__, fmt,##__VA_ARGS__)
+#    define NONE(fmt, ...) log_message(NONE, fmt, ##__VA_ARGS__)
 #    define PRINT_RESULT(fmt, ...)                                            \
         log_message(PRINT_RESULT, fmt, ##__VA_ARGS__)
 #    define ERROR(fmt, ...)   log_message(ERROR, fmt, ##__VA_ARGS__)

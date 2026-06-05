@@ -11,10 +11,11 @@ void
 log_message(log_level_t level, const char *fmt, ...)
 {
 
-    const char *levels[]
-        = { "PRINT_RESULT", "ERROR", "INFO", "WARNING", "TRACE", "DEBUG" };
-    const char *level_colors[] = { CLR_PRINT_RESULT, CLR_ERROR, CLR_INFO,
-                                   CLR_WARNING,      CLR_TRACE, CLR_DEBUG };
+    const char *levels[] = { "NONE",    "PRINT_RESULT", "ERROR", "INFO",
+                             "WARNING", "TRACE",        "DEBUG" };
+    const char *level_colors[]
+        = { CLR_NONE,    CLR_PRINT_RESULT, CLR_ERROR, CLR_INFO,
+            CLR_WARNING, CLR_TRACE,        CLR_DEBUG };
 
     // Если уровень сообщения выше текущего
     // порога, игнорируем его
@@ -32,10 +33,12 @@ log_message(log_level_t level, const char *fmt, ...)
     // printf("%s[%s]\t[%s] [%s:%d] %s(): ", level_colors[level],
     // levels[level],
     //                time_str, file, line, func);
-    if (level == 0) {
-        printf("%s", level_colors[level]);
-    } else {
-        printf("\n%s[%s]: ", level_colors[level], levels[level]);
+    if (level != 0) {
+        if (level == 1) {
+            printf("%s", level_colors[level]);
+        } else {
+            printf("\n%s[%s]: ", level_colors[level], levels[level]);
+        }
     }
 
     // Обработка переменного числа аргументов

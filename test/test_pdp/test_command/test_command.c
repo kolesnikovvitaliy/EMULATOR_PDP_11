@@ -9,6 +9,7 @@
 #include "pdp_11/command/commands.h"
 #include "pdp_11/pdp_11.h"
 #include "pdp_11/pdp_11_p.h"
+#include "pdp_11/register/register_p.h"
 #include "tests/test.h"
 #include "tests/test_pdp/test_command/modes/test_mode0/test_mode0.h"
 #include "tests/test_pdp/test_command/modes/test_mode1/test_mode1.h"
@@ -59,6 +60,9 @@ test_command(struct pdp_11_t *pdp)
     test_mode0(pdp);
     test_mode1(pdp);
     test_mode2(pdp);
+    for (int i = 0; i <= 6; i++) {
+        pdp_reg_set_var(pdp, i, 00);
+    }
     PRINT_RESULT("\x1b[F", "");
     INFO("THE COMMAND TEST WAS SUCCESSFUL\n", "");
 

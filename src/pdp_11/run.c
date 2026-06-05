@@ -7,6 +7,7 @@
 #include "pdp_11/pdp_11_p.h"
 #include "pdp_11/register/register_p.h"
 #include "tests/test.h"
+#include "tests/test_pdp/test_pdp.h"
 #include "types/types.h"
 
 #include <stdio.h>
@@ -36,11 +37,15 @@
  *       или выполнении специфических инструкций процессора.
  */
 int
-run(struct pdp_11_t *pdp, int argc, char **argv)
+run(struct pdp_11_t *pdp, int argc, char **argv, int flag_tests)
 {
     /* Подготовка аппаратной части эмулятора */
     pdp_create(pdp);
-
+    /* Запус тестов */
+    if (flag_tests) {
+        all_tests(pdp, argc, argv);
+        TRACE("ALL TESTS PASSED SUCCESSFULLY\n", "");
+    }
     /* Определение целевого файла из аргументов командной строки */
     byte_t *filename = pdp_parse_filename(argc, argv);
 
@@ -68,6 +73,7 @@ run(struct pdp_11_t *pdp, int argc, char **argv)
     }
 
     /* Освобождение выделенных ресурсов */
+
     pdp_destroy(pdp);
 
     return 0;
