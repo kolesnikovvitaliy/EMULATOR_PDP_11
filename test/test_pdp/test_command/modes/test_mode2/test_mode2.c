@@ -25,6 +25,9 @@ test_mode2(struct pdp_11_t *pdp)
     //! < Очистка регистрового файла
     address_word_t addr = 01000;
 
+    pdp_reg_clear(pdp);
+    pdp_reg_set_var(pdp, 7, 01000);
+
     w_write(pdp, addr, (word_t) 0012723);
 
     w_write(pdp, 0102, (word_t) 017);
@@ -32,11 +35,6 @@ test_mode2(struct pdp_11_t *pdp)
     w_write(pdp, 01002, (word_t) 055);
     w_write(pdp, 01004, (word_t) 077);
 
-    pdp_reg_set_var(pdp, 7, 01000);
-
-    for (int i = 0; i <= 6; i++) {
-        pdp_reg_set_var(pdp, i, 00);
-    }
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
 

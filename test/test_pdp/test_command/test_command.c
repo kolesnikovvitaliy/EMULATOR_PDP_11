@@ -60,9 +60,9 @@ test_command(struct pdp_11_t *pdp)
     test_mode0(pdp);
     test_mode1(pdp);
     test_mode2(pdp);
-    for (int i = 0; i <= 6; i++) {
-        pdp_reg_set_var(pdp, i, 00);
-    }
+
+    pdp_reg_clear(pdp);
+
     PRINT_RESULT("\x1b[F", "");
     INFO("THE COMMAND TEST WAS SUCCESSFUL\n", "");
 

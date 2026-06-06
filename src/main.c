@@ -61,7 +61,6 @@ main(int argc, char **argv)
     int flag_tests = 0;
     /*ЗАПУСК ПРОВЕРКИ РАБОТЫ ЭМУЛЯТОРА В РЕЖИМЕ ПАМЯТИ =BYTE= и =WORD=*/
     flag_tests = start_test_if_mode_debug(argc, argv);
-
     /**
      * @note Инициализация через pdp_new гарантирует нулевое состояние
      * регистров и памяти, что предотвращает "undefined behavior" и ошибки

@@ -14,10 +14,9 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
 {
     //! < Сбрасываем процессор в исходное состояние: PC = 01000, регистры R0-R6
     //! очищены
+    pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, 01000);
-    for (int i = 0; i <= 6; i++) {
-        pdp_reg_set_var(pdp, i, 00);
-    }
+
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
 

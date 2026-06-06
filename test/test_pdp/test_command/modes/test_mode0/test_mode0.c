@@ -22,10 +22,13 @@ test_mode0(struct pdp_11_t *pdp)
 {
     address_word_t addr = 01000;
 
+    pdp_reg_clear(pdp);
+    pdp_reg_set_var(pdp, 7, 01000);
+
     w_write(pdp, addr, (word_t) 0010503);
 
     //! < Инициализируем счетчик команд (R7 / PC) базовым адресом 01000
-    pdp_reg_set_var(pdp, 7, addr);
+
     PRINT_RESULT("\r\n", "");
 
     //! < Заполняем регистры-операнды тестовыми восьмеричными значениями

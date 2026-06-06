@@ -21,10 +21,9 @@ void
 test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
 {
     //! < Первичная инициализация системных регистров общего назначения
+    pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, 01000);
-    for (int i = 0; i <= 6; i++) {
-        pdp_reg_set_var(pdp, i, 00);
-    }
+
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
 

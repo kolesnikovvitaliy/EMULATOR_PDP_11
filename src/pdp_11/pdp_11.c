@@ -202,6 +202,13 @@ pdp_reg_set_var(struct pdp_11_t *pdp, byte_t num_register, word_t value)
     word_t *  ptr_reg = ptr_pdp->R0 + num_register;
     *ptr_reg          = value;
 }
+void
+pdp_reg_clear(struct pdp_11_t *pdp)
+{
+    for (byte_t i = 0; i <= 6; i++) {
+        pdp_reg_set_var(pdp, i, 00);
+    }
+}
 // address_word_t
 // pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register)
 // {
