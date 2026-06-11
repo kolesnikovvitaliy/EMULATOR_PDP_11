@@ -42,9 +42,9 @@ test_command(struct pdp_11_t *pdp)
 {
     assert(pdp);
 
-    pdp_11_t *     ptr_pdp = (pdp_11_t *) pdp;
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
 
-    address_word_t addr    = 01000;
+    address_word_t addr = 01000;
 
     word_t *ptr_pc = ptr_pdp->PC;
     *ptr_pc        = addr;

@@ -1,45 +1,189 @@
+/**
+ * @file logger.h
+ * @brief Модуль легковесного цветного логирования для консоли.
+ * @author Ваше Имя / Команда
+ * @version 1.0
+ * @date 2026
+ *
+ * @details Данный заголовочный файл предоставляет удобный интерфейс для вывода
+ * логов различного уровня важности в поток стандартного вывода. Каждый уровень
+ * лога имеет свой уникальный ANSI-цвет для повышения читаемости в терминале.
+ *
+ * ### Пример использования:
+ * @code
+ * #include "logger.h"
+ *
+ * int main() {
+ *     set_log_level(INFO);
+ *     INFO("Приложение успешно запущено. Код: %d", 200);
+ *     ERROR("Произошла критическая ошибка: %s", "Доступ запрещен");
+ *     return 0;
+ * }
+ * @endcode
+ */
+
 #ifndef LOGGER_H
 #    define LOGGER_H
 
+/**
+ * @enum log_level_t
+ * @brief Уровни важности сообщений логирования.
+ *
+ * Используются для фильтрации выводимых сообщений и определения их цвета.
+ */
 typedef enum {
-    NONE = 0,
-    PRINT_RESULT,
-    ERROR,
-    INFO,
-    WARNING,
-    TRACE,
-    DEBUG
+    NONE = 0, /**< Отсутствие логирования / Чистый вывод без префиксов. */
+    PRINT_RESULT, /**< Вывод результатов работы программы. */
+    ERROR, /**< Критические ошибки, сбои выполнения. */
+    INFO, /**< Информационные сообщения о штатной работе. */
+    WARNING, /**< Предупреждения о потенциальных проблемах. */
+    TRACE, /**< Подробная трассировка шагов алгоритма. */
+    DEBUG /**< Отладочная информация для разработчиков. */
 } log_level_t;
 
-#    define CLR_NONE         "\x1b[37m" // Белый
-#    define CLR_PRINT_RESULT "\x1b[37m" // Белый
-#    define CLR_ERROR        "\x1b[31m" // Красный
-#    define CLR_INFO         "\x1b[32m" // Зеленый
-#    define CLR_WARNING      "\x1b[33m" // Желтый
-#    define CLR_TRACE        "\x1b[94m" // Светло-синий
-#    define CLR_DEBUG        "\x1b[36m" // Циан
-#    define CLR_RESET        "\x1b[0m"
+/**
+ * @name ANSI Цветовые коды
+ * @brief Управляющие последовательности для окрашивания текста в консоли.
+ * @{
+ */
+#    define CLR_NONE "\x1b[37m" /**< Белый цвет текста */
+#    define CLR_PRINT_RESULT                                                  \
+        "\x1b[37m" /**< Белый цвет текста для результатов */
+#    define CLR_ERROR "\x1b[31m" /**< Красный цвет текста для ошибок */
+#    define CLR_INFO  "\x1b[32m" /**< Зеленый цвет текста для информации */
+#    define CLR_WARNING                                                       \
+        "\x1b[33m" /**< Желтый цвет текста для предупреждений */
+#    define CLR_TRACE                                                         \
+        "\x1b[94m" /**< Светло-синий цвет текста для трассировки */
+#    define CLR_DEBUG                                                                         \
+        "\x1b[36m" /**< Циан (голубой) цвет текста для отладки \
+                    */
+#    define CLR_RESET                                                         \
+        "\x1b[0m" /**< Сброс цвета к системному значению по умолчанию */
+/** @} */
 
-// void log_message(log_level_t, const char*, int,
-//                const char*, const char*, ...);
-void        log_message(log_level_t, const char *, ...);
-log_level_t set_log_level(log_level_t);
+/**
+ * @brief Универсальная функция для записи сообщений в лог.
+ *
+ * @param[in] level Уровень важности сообщения (определяет префикс и цвет).
+ * @param[in] fmt Строка формата в стиле стандартной функции `printf`.
+ * @param[in] ... Переменное число аргументов, подставляемых в строку формата.
+ *
+ * @note Функция автоматически добавляет цветовые коды перед текстом сообщения
+ *       и сбрасывает их в конце (`CLR_RESET`).
+ *
+ * @warning Строка формата `fmt` не должна быть `NULL`.
+ */
+void log_message(log_level_t level, const char *fmt, ...);
 
-// Макросы для удобного вызова
-//#define ERROR(fmt, ...) log_message(ERROR, __FILE__, __LINE__, __func__,
-// fmt,##__VA_ARGS__) #define INFO(fmt, ...) log_message(INFO, __FILE__,
-//__LINE__, __func__, fmt,##__VA_ARGS__) #define WARNING(fmt, ...)
-// log_message(WARNING,  __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
-//#define TRACE(fmt, ...) log_message(TRACE, __FILE__, __LINE__, __func__,
-// fmt,##__VA_ARGS__) #define DEBUG(fmt, ...) log_message(DEBUG, __FILE__,
-//__LINE__, __func__, fmt,##__VA_ARGS__)
+/**
+ * @brief Установка текущего глобального уровня фильтрации логов.
+ *
+ * @details Позволяет динамически изменять детализацию вывода. Сообщения с
+ * уровнем важности ниже установленного будут игнорироваться.
+ *
+ * @param[in] new_level Новый уровень логирования для применения.
+ * @return log_level_t Предыдущий уровень логирования, который был активен до
+ * вызова.
+ */
+log_level_t set_log_level(log_level_t new_level);
+
+/**
+ * @name Макросы быстрого вызова
+ * @brief Обертки над функцией log_message для упрощения синтаксиса.
+ * @{
+ */
+
+/**
+ * @def NONE(fmt, ...)
+ * @brief Вывод сообщения без явного указания уровня (обычный белый текст).
+ */
 #    define NONE(fmt, ...) log_message(NONE, fmt, ##__VA_ARGS__)
+
+/**
+ * @def PRINT_RESULT(fmt, ...)
+ * @brief Вывод итогового результата выполнения.
+ */
 #    define PRINT_RESULT(fmt, ...)                                            \
         log_message(PRINT_RESULT, fmt, ##__VA_ARGS__)
-#    define ERROR(fmt, ...)   log_message(ERROR, fmt, ##__VA_ARGS__)
-#    define INFO(fmt, ...)    log_message(INFO, fmt, ##__VA_ARGS__)
+
+/**
+ * @def ERROR(fmt, ...)
+ * @brief Вывод сообщения об ошибке (окрашивается в @b красный цвет).
+ */
+#    define ERROR(fmt, ...) log_message(ERROR, fmt, ##__VA_ARGS__)
+
+/**
+ * @def INFO(fmt, ...)
+ * @brief Вывод информационного сообщения (окрашивается в @b зеленый цвет).
+ */
+#    define INFO(fmt, ...) log_message(INFO, fmt, ##__VA_ARGS__)
+
+/**
+ * @def WARNING(fmt, ...)
+ * @brief Вывод предупреждения (окрашивается в @b желтый цвет).
+ */
 #    define WARNING(fmt, ...) log_message(WARNING, fmt, ##__VA_ARGS__)
-#    define TRACE(fmt, ...)   log_message(TRACE, fmt, ##__VA_ARGS__)
-#    define DEBUG(fmt, ...)   log_message(DEBUG, fmt, ##__VA_ARGS__)
+
+/**
+ * @def TRACE(fmt, ...)
+ * @brief Вывод лога трассировки (окрашивается в @b светло-синий цвет).
+ */
+#    define TRACE(fmt, ...) log_message(TRACE, fmt, ##__VA_ARGS__)
+
+/**
+ * @def DEBUG(fmt, ...)
+ * @brief Вывод отладочного сообщения (окрашивается в @b циан/голубой цвет).
+ */
+#    define DEBUG(fmt, ...) log_message(DEBUG, fmt, ##__VA_ARGS__)
+
+/** @} */
+
 #endif
 #pragma once
+
+// #ifndef LOGGER_H
+// #    define LOGGER_H
+//
+// typedef enum {
+//     NONE = 0,
+//     PRINT_RESULT,
+//     ERROR,
+//     INFO,
+//     WARNING,
+//     TRACE,
+//     DEBUG
+// } log_level_t;
+//
+// #    define CLR_NONE         "\x1b[37m" // Белый
+// #    define CLR_PRINT_RESULT "\x1b[37m" // Белый
+// #    define CLR_ERROR        "\x1b[31m" // Красный
+// #    define CLR_INFO         "\x1b[32m" // Зеленый
+// #    define CLR_WARNING      "\x1b[33m" // Желтый
+// #    define CLR_TRACE        "\x1b[94m" // Светло-синий
+// #    define CLR_DEBUG        "\x1b[36m" // Циан
+// #    define CLR_RESET        "\x1b[0m"
+//
+// // void log_message(log_level_t, const char*, int,
+// //                const char*, const char*, ...);
+// void        log_message(log_level_t, const char *, ...);
+// log_level_t set_log_level(log_level_t);
+//
+// // Макросы для удобного вызова
+// //#define ERROR(fmt, ...) log_message(ERROR, __FILE__, __LINE__, __func__,
+// // fmt,##__VA_ARGS__) #define INFO(fmt, ...) log_message(INFO, __FILE__,
+// //__LINE__, __func__, fmt,##__VA_ARGS__) #define WARNING(fmt, ...)
+// // log_message(WARNING,  __FILE__, __LINE__, __func__, fmt,##__VA_ARGS__)
+// //#define TRACE(fmt, ...) log_message(TRACE, __FILE__, __LINE__, __func__,
+// // fmt,##__VA_ARGS__) #define DEBUG(fmt, ...) log_message(DEBUG, __FILE__,
+// //__LINE__, __func__, fmt,##__VA_ARGS__)
+// #    define NONE(fmt, ...) log_message(NONE, fmt, ##__VA_ARGS__)
+// #    define PRINT_RESULT(fmt, ...)
+//         log_message(PRINT_RESULT, fmt, ##__VA_ARGS__)
+// #    define ERROR(fmt, ...)   log_message(ERROR, fmt, ##__VA_ARGS__)
+// #    define INFO(fmt, ...)    log_message(INFO, fmt, ##__VA_ARGS__)
+// #    define WARNING(fmt, ...) log_message(WARNING, fmt, ##__VA_ARGS__)
+// #    define TRACE(fmt, ...)   log_message(TRACE, fmt, ##__VA_ARGS__)
+// #    define DEBUG(fmt, ...)   log_message(DEBUG, fmt, ##__VA_ARGS__)
+// #endif
+// #pragma once
