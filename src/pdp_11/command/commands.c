@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TODO : ADD COMMAND CLR, SOB:
+
 void
 __command_reg_dump(struct pdp_11_t *pdp)
 {
@@ -108,6 +110,30 @@ command_do_inc(struct pdp_11_t *pdp,
 }
 
 void
+command_do_clr(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    (void) params;
+    if (pdp)
+        __get_mr(pdp, word_command);
+}
+
+void
+command_do_sob(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    (void) params;
+    if (pdp)
+        __get_mr(pdp, word_command);
+}
+
+void
 command_do_unknown(struct pdp_11_t *pdp,
                    address_word_t   addr,
                    word_t           word_command,
@@ -115,5 +141,5 @@ command_do_unknown(struct pdp_11_t *pdp,
 {
     (void) params;
     if (pdp)
-        __print_command(addr, word_command, (byte_t *) "unknown");
+        __print_command(addr, word_command, (byte_t *) "unknown\n");
 }

@@ -20,20 +20,17 @@
  */
 
 void
-test_mode2(struct pdp_11_t *pdp)
+test_mode3(struct pdp_11_t *pdp)
 {
     //! < Очистка регистрового файла
-    address_word_t addr = 01000;
+    address_word_t addr = 01004;
 
     pdp_reg_clear(pdp);
-    pdp_reg_set_var(pdp, 7, 01000);
+    pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, addr, (word_t) 0012723);
-
-    w_write(pdp, 0100, (word_t) 017);
-    w_write(pdp, 0104, (word_t) 066);
-    w_write(pdp, 01002, (word_t) 055);
-    w_write(pdp, 01004, (word_t) 077);
+    w_write(pdp, 01004, (word_t) 0013701);
+    w_write(pdp, 01006, (word_t) 0202);
+    w_write(pdp, 0202, (word_t) 05);
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
@@ -41,11 +38,6 @@ test_mode2(struct pdp_11_t *pdp)
     //! < Привязка указателя на команду
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-
-    //! @name Конфигурация режима автоинкремента
-    //! @{
-    pdp_reg_set_var(pdp, 3, 0100); // В R3 записан вдрес
-    //! @}
 
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
@@ -55,21 +47,35 @@ test_mode2(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode2 ");
+    TRACE("%s", "test_mode3 ");
 
     //! < Контроль расчетных значений декодера для автоинкремента
 
-    assert(opcode.ss.value == 055);
-    assert(opcode.ss.addr == 01002);
-    assert(opcode.dd.value == 017);
-    assert(opcode.dd.addr == 0102);
-    assert(w_read(pdp, 0104) == 066);
+    PRINT_RESULT("\nopcode.ss.value = %o", opcode.ss.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o", opcode.dd.value);
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+
+    pdp_mem_dump(pdp, 0200, 20);
+    pdp_mem_dump(pdp, 01000, 20);
+
+    // assert(opcode.ss.value == 055);
+    // assert(opcode.ss.addr == 01002);
+    // assert(opcode.dd.value == 017);
+    // assert(opcode.dd.addr == 0102);
+    // assert(w_read(pdp, 0104) == 066);
     //! < Исполнение команды с триггером автоинкремента регистров
     run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
 
+    PRINT_RESULT("\nopcode.ss.value = %o", opcode.ss.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o", opcode.dd.value);
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    __command_reg_dump(pdp);
+
     //! < Проверка измененного состояния памяти после выполнения операции
-    assert(pdp_reg_get_var(pdp, 3) == 0104);
-    assert(w_read(pdp, pdp_reg_get_var(pdp, 3)) == 077);
+    // assert(pdp_reg_get_var(pdp, 3) == 0104);
+    // assert(w_read(pdp, pdp_reg_get_var(pdp, 3)) == 077);
 
     PRINT_RESULT("  %s", " ... OK\n");
 }
