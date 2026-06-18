@@ -23,13 +23,13 @@ void
 test_mode3(struct pdp_11_t *pdp)
 {
     //! < Очистка регистрового файла
-    address_word_t addr = 01004;
+    address_word_t addr = 01000;
 
     pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, 01004, (word_t) 0013701);
-    w_write(pdp, 01006, (word_t) 0202);
+    w_write(pdp, 01000, (word_t) 0013701);
+    w_write(pdp, 01002, (word_t) 0202);
     w_write(pdp, 0202, (word_t) 05);
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
@@ -51,13 +51,13 @@ test_mode3(struct pdp_11_t *pdp)
 
     //! < Контроль расчетных значений декодера для автоинкремента
 
-    PRINT_RESULT("\nopcode.ss.value = %o", opcode.ss.value);
-    PRINT_RESULT("\nopcode.ss.addr = %o", opcode.ss.addr);
-    PRINT_RESULT("\nopcode.dd.value = %o", opcode.dd.value);
-    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    // PRINT_RESULT("\nopcode.ss.value = %o", opcode.ss.value);
+    // PRINT_RESULT("\nopcode.ss.addr = %o", opcode.ss.addr);
+    // PRINT_RESULT("\nopcode.dd.value = %o", opcode.dd.value);
+    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
 
-    pdp_mem_dump(pdp, 0200, 20);
-    pdp_mem_dump(pdp, 01000, 20);
+    // pdp_mem_dump(pdp, 0200, 20);
+    // pdp_mem_dump(pdp, 01000, 20);
 
     // assert(opcode.ss.value == 055);
     // assert(opcode.ss.addr == 01002);

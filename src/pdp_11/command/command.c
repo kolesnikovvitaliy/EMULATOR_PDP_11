@@ -167,7 +167,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7) {
-            res.value = w_read(pdp, res.addr);
+            res.value = w_read(pdp, (address_word_t)(res.addr));
             PRINT_RESULT("#%o ", res.value);
         } else {
             res.value = w_read(pdp, (address_word_t)(res.addr - 2));
@@ -177,15 +177,9 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 3:; //  для объявления типа данных word_t требуется " ; " после метки
         word_t temp_value_register
             = (word_t) pdp_reg_get_var(pdp, num_register);
+
         address_word_t addr_1
             = (address_word_t)(temp_value_register + 2); // adr = reg[n]
-
-        /*res.addr_2 = w_read(pdp, res.addr);*/ // adr = mem[adr]
-        // res.value = w_read(pdp, res.addr); // добавилось еще одно
-        // разыменование
-
-        // pdp_reg_set_var(
-        //     pdp, num_register, (address_word_t)(temp_value_register + 2));
 
         // ss -откуда, dd - куда;
 
@@ -195,21 +189,23 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             res.value = w_read(
                 pdp, (address_word_t)(res.addr)); // добавилось еще одно
-            // TODO: Исправить баг в тесте mode_3;
-            //PRINT_RESULT("ADDR = %o ", res.addr);
+            pdp_reg_set_var(
+                pdp, num_register, (address_word_t)(temp_value_register + 2));
             PRINT_RESULT("@#%o ", res.value);
+
         } else {
-            res.addr = w_read(pdp, (address_word_t)(addr_1 - 2));
+
+            res.addr = w_read(pdp, (address_word_t)(addr_1));
 
             res.value
                 = w_read(pdp,
                          (address_word_t)(
                              res.addr)); // добавилось еще одно разыменование
-
-            PRINT_RESULT("@(R%d)+ ", num_register);
+            pdp_reg_set_var(
+                pdp, num_register, (address_word_t)(temp_value_register));
+            PRINT_RESULT("\n@(R%d)+ ", num_register);
         }
-        pdp_reg_set_var(
-            pdp, num_register, (address_word_t)(temp_value_register + 2));
+
         break;
     //мы еще не дописали другие моды
     default:
