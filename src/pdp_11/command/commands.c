@@ -105,8 +105,14 @@ command_do_inc(struct pdp_11_t *pdp,
 {
     (void) addr;
     (void) params;
-    if (pdp)
-        __get_mr(pdp, word_command);
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command);
+    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    PRINT_RESULT("\nCOMMAND_SOB\n", "");
 }
 
 void
@@ -117,8 +123,13 @@ command_do_clr(struct pdp_11_t *pdp,
 {
     (void) addr;
     (void) params;
-    if (pdp)
-        __get_mr(pdp, word_command);
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command);
+    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    pdp_reg_set_var(pdp, opcode.dd.addr, 00);
 }
 
 void
@@ -129,8 +140,24 @@ command_do_sob(struct pdp_11_t *pdp,
 {
     (void) addr;
     (void) params;
-    if (pdp)
-        __get_mr(pdp, word_command);
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command);
+    PRINT_RESULT("\nCOMMAND_SOB\n", "");
+    (void) opcode;
+
+    // reg[r]--; // Уменьшаем регистр на 1
+    // word_t temp_register_value = pdp_reg_get_var(pdp, opcode.dd.addr);
+    // pdp_reg_set_var(pdp, opcode.dd.addr, word_t(temp_register_value - 2));
+
+    // if ((word_t)(temp_register_value - 2) != 0) {
+    //     PC = PC - (nn * 2); // Переход назад
+    // }
+    // return;
+    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
 
 void
