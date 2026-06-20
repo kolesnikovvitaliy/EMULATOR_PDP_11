@@ -14,6 +14,7 @@
 int
 test_halt(struct pdp_11_t *pdp, word_t *ptr_pc)
 {
-    command_do_halt(pdp, *ptr_pc, (word_t)(w_read(pdp, *ptr_pc)), (byte_t) 1);
+    command_do_halt(
+        pdp, *ptr_pc, (word_t)(w_read(pdp, *ptr_pc)), HAS_SS | HAS_DD);
     return 0;
 }

@@ -138,6 +138,8 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     word_t num_register = word_command & 7;
     byte_t mode         = (word_command >> 3) & 7;
 
+    // byte_t mode = (word_command >> 3) & 7;
+
     switch (mode) {
     case 0:
         res.addr  = num_register;
@@ -175,34 +177,28 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         }
         break;
     case 3:; //  для объявления типа данных word_t требуется " ; " после метки
-        word_t temp_value_register
+
+        address_word_t temp_value_register
             = (word_t) pdp_reg_get_var(pdp, num_register);
 
-        address_word_t addr_1
-            = (address_word_t)(temp_value_register + 2); // adr = reg[n]
+        address_word_t inc_addr_offset
+            = (address_word_t)(temp_value_register + 2); // adr = reg[n] 1002
 
+        address_word_t addr_top = (address_word_t)(
+            w_read(pdp,
+                   (address_word_t)(inc_addr_offset))); // adr = reg[n] 110
+
+        // pdp_reg_set_var(pdp, num_register,
+        // (address_word_t)(inc_addr_offset));
+
+        res.addr  = addr_top;
+        res.value = w_read(pdp, (address_word_t)(res.addr));
         // ss -откуда, dd - куда;
 
         if (num_register == 7) {
-
-            res.addr = w_read(pdp, (address_word_t)(addr_1));
-
-            res.value = w_read(
-                pdp, (address_word_t)(res.addr)); // добавилось еще одно
-            pdp_reg_set_var(
-                pdp, num_register, (address_word_t)(temp_value_register + 2));
             PRINT_RESULT("@#%o ", res.value);
 
         } else {
-
-            res.addr = w_read(pdp, (address_word_t)(addr_1));
-
-            res.value
-                = w_read(pdp,
-                         (address_word_t)(
-                             res.addr)); // добавилось еще одно разыменование
-            pdp_reg_set_var(
-                pdp, num_register, (address_word_t)(temp_value_register));
             PRINT_RESULT("\n@(R%d)+ ", num_register);
         }
 
@@ -249,14 +245,19 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
  * @endcode
  */
 op_code_t
-__get_mr(struct pdp_11_t *pdp, word_t word_command)
+__get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
 {
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     // ss -откуда, dd - куда;
     // Выделяем 6 бит источника (сдвиг на 6 вправо)
-    opcode.ss = __get_args(pdp, word_command >> 6);
-
+    if (param & HAS_SS) {
+        opcode.ss = __get_args(pdp, word_command >> 6);
+    }
     // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
-    opcode.dd = __get_args(pdp, word_command);
+    if (param & HAS_DD) {
+        opcode.dd = __get_args(pdp, word_command);
+    }
+    // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
+
     return opcode;
 }

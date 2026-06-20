@@ -69,10 +69,10 @@ command_do_add(struct pdp_11_t *pdp,
 {
 
     (void) addr;
-    (void) params;
+    //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
-        opcode = __get_mr(pdp, word_command);
+        opcode = __get_mr(pdp, word_command, params);
     }
     w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
     pdp_reg_set_var(
@@ -87,12 +87,12 @@ command_do_mov(struct pdp_11_t *pdp,
 {
 
     (void) addr;
-    (void) params;
+    //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
-    opcode = __get_mr(pdp, word_command);
+    opcode = __get_mr(pdp, word_command, params);
     w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
@@ -104,12 +104,12 @@ command_do_inc(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    (void) params;
+    //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
-    opcode = __get_mr(pdp, word_command);
+    opcode = __get_mr(pdp, word_command, params);
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
     PRINT_RESULT("\nCOMMAND_SOB\n", "");
@@ -122,12 +122,12 @@ command_do_clr(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    (void) params;
+    //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
-    opcode = __get_mr(pdp, word_command);
+    opcode = __get_mr(pdp, word_command, params);
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, 00);
 }
@@ -139,12 +139,12 @@ command_do_sob(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    (void) params;
+    //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
-    opcode = __get_mr(pdp, word_command);
+    opcode = __get_mr(pdp, word_command, params);
     PRINT_RESULT("\nCOMMAND_SOB\n", "");
     (void) opcode;
 

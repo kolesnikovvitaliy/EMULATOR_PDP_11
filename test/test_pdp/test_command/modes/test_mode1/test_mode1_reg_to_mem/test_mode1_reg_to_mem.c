@@ -47,7 +47,8 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
         //! < Извлечение битовой маски операции
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode
+            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
     }
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
@@ -62,7 +63,8 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     assert(opcode.dd.addr == 0200);
 
     //! < Запуск выполнения логики команды
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Финальная проверка: значение 066 обязано записаться в ячейку памяти
     //! 0200

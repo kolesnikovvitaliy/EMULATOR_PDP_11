@@ -18,7 +18,7 @@ command_t template_commands[] = {
     { 0177700, 0052000, (byte_t *) "inc", command_do_inc, HAS_DD },
     { 0177000, 0110000, (byte_t *) "movb", command_do_mov, HAS_SS | HAS_DD },
     { 0177000, 0077000, (byte_t *) "sob", command_do_sob, HAS_SS | HAS_DD },
-    { 0177700, 0005000, (byte_t *) "clr", command_do_sob, HAS_SS | HAS_DD },
+    { 0177700, 0005000, (byte_t *) "clr", command_do_sob, HAS_DD },
 
     // добавить остальные команды
 };

@@ -50,7 +50,8 @@ test_mode2(struct pdp_11_t *pdp)
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
         //! < Декодирование аргументов инкрементной операции
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode
+            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
     }
 
     PRINT_RESULT("\r                            ", "");
@@ -65,7 +66,8 @@ test_mode2(struct pdp_11_t *pdp)
     assert(opcode.dd.addr == 0102);
     assert(w_read(pdp, 0104) == 066);
     //! < Исполнение команды с триггером автоинкремента регистров
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверка измененного состояния памяти после выполнения операции
     assert(pdp_reg_get_var(pdp, 3) == 0104);

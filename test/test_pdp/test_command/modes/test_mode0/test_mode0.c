@@ -39,7 +39,7 @@ test_mode0(struct pdp_11_t *pdp)
     if (pdp) {
         //! < Декодируем макет инструкции (0010503) для извлечения модов и
         //! номеров регистров
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr), HAS_DD | HAS_SS);
     }
 
     PRINT_RESULT("\r      ", "");

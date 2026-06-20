@@ -34,15 +34,17 @@ test_mode3(struct pdp_11_t *pdp)
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
-
+    run_command = __ptr_command(
+        (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
         //! < Декодирование аргументов инкрементной операции
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode
+            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
     }
     //! < Привязка указателя на команду
-    run_command = __ptr_command(
-        (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
+    // run_command = __ptr_command(
+    //     (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
@@ -55,8 +57,13 @@ test_mode3(struct pdp_11_t *pdp)
     assert(opcode.ss.addr == 0202);
     assert(opcode.dd.value == 00);
     assert(opcode.dd.addr == 03);
+    // PRINT_RESULT("\nopcode.ss.value%o\n", opcode.ss.value);
+    // PRINT_RESULT("\nopcode.ss.addr%o\n", opcode.ss.addr);
+    // PRINT_RESULT("\nopcode.dd.value%o\n", opcode.dd.value);
+    // PRINT_RESULT("\nopcode.dd.addr%o\n", opcode.dd.addr);
 
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверка измененного состояния памяти после выполнения операции
     assert(pdp_reg_get_var(pdp, opcode.dd.addr) == opcode.ss.value);

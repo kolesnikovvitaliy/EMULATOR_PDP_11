@@ -64,7 +64,8 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
 
     TRACE("%s", "test_move  ");
     //! < Выполнение основной тестируемой операции MOV
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! @name Финальная верификация результатов работы MOV
     //! @{

@@ -43,7 +43,8 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
         //! < Чтение и разбор опкода
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode
+            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
     }
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
@@ -57,7 +58,8 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     assert(opcode.dd.addr == 0210);
 
     //! < Выполнение операции пересылки MOV memory -> memory
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверяем, что значение 055 успешно скопировано в адрес назначения
     //! (0210)

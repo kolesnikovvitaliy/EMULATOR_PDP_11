@@ -7,6 +7,7 @@
 #include "utils/logger/logger.h"
 
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 
 void
@@ -38,7 +39,8 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (pdp) {
         //! < Читаем инструкцию из памяти по заданному адресу и парсим операнды
-        opcode = __get_mr(pdp, (word_t) w_read(pdp, addr));
+        opcode
+            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
     }
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
@@ -53,7 +55,8 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
     assert(opcode.dd.addr == 02);
 
     //! < Эмулируем непосредственное выполнение команды процессором
-    run_command->do_commands_command(pdp, addr, w_read(pdp, addr), (byte_t) 1);
+    run_command->do_commands_command(
+        pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверяем результат: значение 034 должно перекочевать в регистр R2
     //! (DD)
