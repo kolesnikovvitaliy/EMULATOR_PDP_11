@@ -155,7 +155,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
         res.value = w_read(pdp, res.addr); // по адресу - значение
         // ss -откуда, dd - куда;
-
         PRINT_RESULT("(R%d) ", num_register);
         break;
     // мода 2, (R1)+ или #3
@@ -182,26 +181,94 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             = (word_t) pdp_reg_get_var(pdp, num_register);
 
         address_word_t inc_addr_offset
-            = (address_word_t)(temp_value_register + 2); // adr = reg[n] 1002
+            = (address_word_t)(temp_value_register + 2);
 
-        address_word_t addr_top = (address_word_t)(
-            w_read(pdp,
-                   (address_word_t)(inc_addr_offset))); // adr = reg[n] 110
-
-        // pdp_reg_set_var(pdp, num_register,
-        // (address_word_t)(inc_addr_offset));
+        address_word_t addr_top
+            = (address_word_t)(w_read(pdp, (address_word_t)(inc_addr_offset)));
 
         res.addr  = addr_top;
         res.value = w_read(pdp, (address_word_t)(res.addr));
         // ss -откуда, dd - куда;
-
+        pdp_reg_set_var(pdp, num_register, (address_word_t)(inc_addr_offset));
         if (num_register == 7) {
+            // pdp_reg_set_var(
+            //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
             PRINT_RESULT("@#%o ", res.value);
 
         } else {
+            // pdp_reg_set_var(
+            //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
             PRINT_RESULT("\n@(R%d)+ ", num_register);
         }
 
+        break;
+    case 4:; //  для объявления типа данных word_t требуется " ; " после метки
+
+        t_var_reg = pdp_reg_get_var(pdp, num_register);
+        t_var_reg = (word_t)(t_var_reg);
+        res.addr  = t_var_reg;
+
+        // печать разной мнемоники для PC и других регистров
+        res.value = w_read(pdp, (address_word_t)(res.addr));
+        pdp_reg_set_var(
+            pdp, num_register, (address_word_t)(res.addr - 2)); // TODO: +1
+
+        PRINT_RESULT("-(R%d) ", num_register);
+
+        break;
+    case 5:; //  для объявления типа данных word_t требуется " ; " после метки
+
+        temp_value_register = (word_t) pdp_reg_get_var(pdp, num_register);
+
+        inc_addr_offset = (address_word_t)(temp_value_register - 2);
+
+        addr_top
+            = (address_word_t)(w_read(pdp, (address_word_t)(inc_addr_offset)));
+
+        pdp_reg_set_var(pdp, num_register, (address_word_t)(inc_addr_offset));
+
+        res.addr  = addr_top;
+        res.value = w_read(pdp, (address_word_t)(res.addr));
+        // ss -откуда, dd - куда;
+        // pdp_reg_set_var(
+        //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
+        PRINT_RESULT("\n@-(R%d) ", num_register);
+
+        break;
+    case 6:;
+        word_t nn = (word_t) pdp_reg_get_var(pdp, 7);
+        pdp_reg_set_var(pdp, 7, (word_t)(nn + 2));
+        temp_value_register = (word_t) pdp_reg_get_var(pdp, num_register);
+        res.addr            = (temp_value_register + nn) & 0177777;
+        res.value           = w_read(pdp, (address_word_t)(res.addr));
+
+        if (num_register != 7) {
+            PRINT_RESULT(" %.6o(R%o) ", nn, num_register);
+        } else {
+            PRINT_RESULT(" %.6o\n", res.addr);
+        }
+        break;
+    case 7:;
+        nn = (address_word_t) pdp_reg_get_var(pdp, 7);
+        pdp_reg_set_var(pdp, 7, (address_word_t)(nn + 2));
+        TRACE("NN = %o\n", nn);
+        TRACE("num_register = %o\n", num_register);
+        TRACE("pdp_reg_get_var(pdp, num_register) = %o\n ",
+              pdp_reg_get_var(pdp, num_register));
+        temp_value_register
+            = (address_word_t) pdp_reg_get_var(pdp, num_register);
+        TRACE("temp_value_register = %o\n ", temp_value_register);
+        // res.addr  = w_read(pdp, (temp_value_register + nn) & 0177777);
+        res.addr = (address_word_t)((nn - temp_value_register) & 0177777);
+        TRACE("res.addr = %o\n", res.addr);
+        res.value = w_read(pdp, (address_word_t)(res.addr));
+        TRACE("res.value = %o\n", res.value);
+
+        if (num_register != 7) {
+            PRINT_RESULT("@%o(R%o) ", nn, num_register);
+        } else {
+            PRINT_RESULT("@%o \n", res.addr);
+        }
         break;
     //мы еще не дописали другие моды
     default:

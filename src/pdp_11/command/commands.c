@@ -112,7 +112,6 @@ command_do_inc(struct pdp_11_t *pdp,
     opcode = __get_mr(pdp, word_command, params);
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
-    PRINT_RESULT("\nCOMMAND_SOB\n", "");
 }
 
 void
@@ -128,8 +127,15 @@ command_do_clr(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    pdp_reg_set_var(pdp, opcode.dd.addr, 00);
+    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    //  __command_reg_dump(pdp);
+    //
+    w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
+    PRINT_RESULT("\n", "");
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
+    pdp_mem_dump(pdp, 0x40, 0x20);
+    pdp_mem_dump(pdp, 0x200, 0x26);
+    __command_reg_dump(pdp);
 }
 
 void
@@ -145,8 +151,18 @@ command_do_sob(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    PRINT_RESULT("\nCOMMAND_SOB\n", "");
     (void) opcode;
+
+    /*word w = w_read(pc - 2);
+    int r = (w >> 6) & 7;  // 8-6 бит
+    word offset = w & 077;  // смещение числа 0-5 биты
+
+    reg[r]--;
+
+    if(reg[r] != 0)
+    {
+        pc = pc - 2*offset;
+    }*/
 
     // reg[r]--; // Уменьшаем регистр на 1
     // word_t temp_register_value = pdp_reg_get_var(pdp, opcode.dd.addr);
@@ -157,7 +173,7 @@ command_do_sob(struct pdp_11_t *pdp,
     // }
     // return;
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    pdp_reg_set_var(pdp, 7, opcode.dd.addr);
 }
 
 void
@@ -167,6 +183,8 @@ command_do_unknown(struct pdp_11_t *pdp,
                    byte_t           params)
 {
     (void) params;
-    if (pdp)
-        __print_command(addr, word_command, (byte_t *) "unknown\n");
+    if (!pdp)
+        return;
+    __print_command(addr, word_command, (byte_t *) "unknown\n");
+    // pdp_reg_set_var(pdp, addr, (word_t)(addr + 4));
 }

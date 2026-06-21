@@ -61,11 +61,15 @@ test_mode3(struct pdp_11_t *pdp)
     // PRINT_RESULT("\nopcode.ss.addr%o\n", opcode.ss.addr);
     // PRINT_RESULT("\nopcode.dd.value%o\n", opcode.dd.value);
     // PRINT_RESULT("\nopcode.dd.addr%o\n", opcode.dd.addr);
-
+    pdp_reg_set_var(pdp, 7, (word_t)(pdp_reg_get_var(pdp, 7) - 2));
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверка измененного состояния памяти после выполнения операции
+    // PRINT_RESULT("\nopcode.ss.value%o\n", opcode.ss.value);
+    // PRINT_RESULT("\nopcode.ss.addr%o\n", opcode.ss.addr);
+    // PRINT_RESULT("\nopcode.dd.value%o\n", opcode.dd.value);
+    // PRINT_RESULT("\nopcode.dd.addr%o\n", opcode.dd.addr);
     assert(pdp_reg_get_var(pdp, opcode.dd.addr) == opcode.ss.value);
     //__command_reg_dump(pdp);
 
