@@ -238,6 +238,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 6:;
         word_t nn = (word_t) pdp_reg_get_var(pdp, 7);
         pdp_reg_set_var(pdp, 7, (word_t)(nn + 2));
+
         temp_value_register = (word_t) pdp_reg_get_var(pdp, num_register);
         res.addr            = (temp_value_register + nn) & 0177777;
         res.value           = w_read(pdp, (address_word_t)(res.addr));
@@ -250,19 +251,22 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         break;
     case 7:;
         nn = (address_word_t) pdp_reg_get_var(pdp, 7);
-        pdp_reg_set_var(pdp, 7, (address_word_t)(nn + 2));
-        TRACE("NN = %o\n", nn);
-        TRACE("num_register = %o\n", num_register);
-        TRACE("pdp_reg_get_var(pdp, num_register) = %o\n ",
-              pdp_reg_get_var(pdp, num_register));
+        // word_t offset = pdp_reg_get_var(pdp, num_register);
+        pdp_reg_set_var(pdp, 7, (address_word_t)(nn + (2 * num_register)));
+        // TRACE("NN = %o\n", nn);
+        // TRACE("num_register = %o\n", num_register);
+        // TRACE("pdp_reg_get_var(pdp, num_register) = %o\n ",
+        //       pdp_reg_get_var(pdp, num_register));
         temp_value_register
             = (address_word_t) pdp_reg_get_var(pdp, num_register);
-        TRACE("temp_value_register = %o\n ", temp_value_register);
-        // res.addr  = w_read(pdp, (temp_value_register + nn) & 0177777);
-        res.addr = (address_word_t)((nn - temp_value_register) & 0177777);
-        TRACE("res.addr = %o\n", res.addr);
+        // TRACE("temp_value_register = %o\n ", temp_value_register);
+        res.addr = w_read(pdp, (temp_value_register + nn) & 0177777);
+        // res.addr
+        //     = (address_word_t)((nn - (2 * temp_value_register)) & 0177777);
+        // res.addr = (address_word_t) pdp_reg_get_var(pdp, 7);
+        // TRACE("res.addr = %o\n", res.addr);
         res.value = w_read(pdp, (address_word_t)(res.addr));
-        TRACE("res.value = %o\n", res.value);
+        // TRACE("res.value = %o\n", res.value);
 
         if (num_register != 7) {
             PRINT_RESULT("@%o(R%o) ", nn, num_register);

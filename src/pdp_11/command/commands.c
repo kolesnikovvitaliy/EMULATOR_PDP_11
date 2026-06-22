@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // TODO : ADD COMMAND CLR, SOB:
 
@@ -131,11 +132,11 @@ command_do_clr(struct pdp_11_t *pdp,
     //  __command_reg_dump(pdp);
     //
     w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
-    PRINT_RESULT("\n", "");
+    // PRINT_RESULT("\n", "");
     // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
-    pdp_mem_dump(pdp, 0x40, 0x20);
-    pdp_mem_dump(pdp, 0x200, 0x26);
-    __command_reg_dump(pdp);
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
 }
 
 void
@@ -144,15 +145,34 @@ command_do_sob(struct pdp_11_t *pdp,
                word_t           word_command,
                byte_t           params)
 {
-    (void) addr;
+    //(void) addr;
     //(void) params;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    (void) opcode;
-
+    //(void) opcode;
+    // word_t num_register             = (word_command >> 6) & 7;
+    // word_t register_value_decrement = pdp_reg_get_var(pdp, num_register);
+    // PRINT_RESULT("\nregister_value_decrement = %o\n",
+    //              register_value_decrement);
+    // PRINT_RESULT("\nr = %o\n", num_register);
+    // PRINT_RESULT("\naddr = %o\n", addr);
+    // PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
+    // PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
+    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    // PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
+    // word_t pc = pdp_reg_get_var(pdp, 7);
+    //
+    // word_t w      = w_read(pdp, (address_word_t)(pc - 2));
+    // word_t r      = (w >> 6) & 7;
+    // word_t offset = w & 077;
+    // pdp_reg_set_var(pdp, r, (word_t)(pdp_reg_get_var(pdp, r) - 1));
+    // if (pdp_reg_get_var(pdp, r) != 0) {
+    //     pdp_reg_set_var(
+    //         pdp, 7, (word_t)(pdp_reg_get_var(pdp, 7) - 2 * offset));
+    // }
     /*word w = w_read(pc - 2);
     int r = (w >> 6) & 7;  // 8-6 бит
     word offset = w & 077;  // смещение числа 0-5 биты
@@ -173,7 +193,15 @@ command_do_sob(struct pdp_11_t *pdp,
     // }
     // return;
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    pdp_reg_set_var(pdp, 7, opcode.dd.addr);
+    // word_t register_value_decrement = pdp_reg_get_var(pdp, num_register);
+    // if (register_value_decrement != 0) {
+    //     pdp_reg_set_var(
+    //         pdp, num_register, (word_t)(register_value_decrement - 1));
+    //     pdp_reg_set_var(pdp, 7, (word_t)(opcode.ss.addr));
+    // }
+
+    __command_reg_dump(pdp);
+    sleep(5);
 }
 
 void
