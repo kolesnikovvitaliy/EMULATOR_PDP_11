@@ -15,9 +15,9 @@ command_t template_commands[] = {
     { 0177777, 0000000, (byte_t *) "halt", command_do_halt, NO_PARAMS },
     { 0170000, 0010000, (byte_t *) "mov", command_do_mov, HAS_SS | HAS_DD },
     { 0170000, 0060000, (byte_t *) "add", command_do_add, HAS_SS | HAS_DD },
-    { 0177700, 0052000, (byte_t *) "inc", command_do_inc, HAS_DD },
-    { 0177000, 0110000, (byte_t *) "movb", command_do_mov, HAS_SS | HAS_DD },
-    { 0177000, 0077000, (byte_t *) "sob", command_do_sob, HAS_SS | HAS_DD },
+    { 0177700, 0005200, (byte_t *) "inc", command_do_inc, HAS_DD },
+    { 0177000, 0110000, (byte_t *) "movb", command_do_movb, HAS_SS | HAS_DD },
+    { 0177000, 0077000, (byte_t *) "sob", command_do_sob, HAS_R | HAS_NN },
     { 0177700, 0005000, (byte_t *) "clr", command_do_clr, HAS_DD },
 
     // добавить остальные команды

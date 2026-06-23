@@ -251,27 +251,23 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         break;
     case 7:;
         nn = (address_word_t) pdp_reg_get_var(pdp, 7);
-        // word_t offset = pdp_reg_get_var(pdp, num_register);
-        pdp_reg_set_var(pdp, 7, (address_word_t)(nn + (2 * num_register)));
-        // TRACE("NN = %o\n", nn);
-        // TRACE("num_register = %o\n", num_register);
-        // TRACE("pdp_reg_get_var(pdp, num_register) = %o\n ",
-        //       pdp_reg_get_var(pdp, num_register));
-        temp_value_register
-            = (address_word_t) pdp_reg_get_var(pdp, num_register);
-        // TRACE("temp_value_register = %o\n ", temp_value_register);
-        res.addr = w_read(pdp, (temp_value_register + nn) & 0177777);
-        // res.addr
-        //     = (address_word_t)((nn - (2 * temp_value_register)) & 0177777);
-        // res.addr = (address_word_t) pdp_reg_get_var(pdp, 7);
-        // TRACE("res.addr = %o\n", res.addr);
-        res.value = w_read(pdp, (address_word_t)(res.addr));
-        // TRACE("res.value = %o\n", res.value);
 
+        word_t x = w_read(pdp, nn);
+        pdp_reg_set_var(pdp, 7, (address_word_t)(nn));
+        res.addr  = (address_word_t) pdp_reg_get_var(pdp, num_register);
+        res.addr  = (word_t)(res.addr + x);
+        res.addr  = w_read(pdp, res.addr);
+        res.value = w_read(pdp, res.addr);
+
+        // word_t PC = pdp_reg_get_var(pdp, 7);
+        // // pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
+        // word_t NN = res.addr;
+        // // word_t RN = pdp_reg_get_var(pdp, num_register);
         if (num_register != 7) {
-            PRINT_RESULT("@%o(R%o) ", nn, num_register);
+            PRINT_RESULT("@%o(R%o) \n", nn, num_register);
         } else {
-            PRINT_RESULT("@%o \n", res.addr);
+
+            PRINT_RESULT("@%o \n", pdp_reg_get_var(pdp, 7));
         }
         break;
     //мы еще не дописали другие моды
@@ -329,6 +325,12 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
         opcode.dd = __get_args(pdp, word_command);
     }
     // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
+    if (param & HAS_NN) {
+        opcode.dd = __get_args(pdp, word_command);
+    }
+    if (param & HAS_R) {
+        opcode.ss = __get_args(pdp, word_command >> 6);
+    }
 
     return opcode;
 }

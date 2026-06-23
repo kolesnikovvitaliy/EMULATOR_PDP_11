@@ -99,6 +99,24 @@ command_do_mov(struct pdp_11_t *pdp,
 }
 
 void
+command_do_movb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+
+    (void) addr;
+    //(void) params;
+    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command, params);
+    w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+}
+
+void
 command_do_inc(struct pdp_11_t *pdp,
                address_word_t   addr,
                word_t           word_command,
@@ -145,63 +163,27 @@ command_do_sob(struct pdp_11_t *pdp,
                word_t           word_command,
                byte_t           params)
 {
-    //(void) addr;
-    //(void) params;
+    (void) addr;
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
     if (!pdp) {
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
     //(void) opcode;
-    // word_t num_register             = (word_command >> 6) & 7;
-    // word_t register_value_decrement = pdp_reg_get_var(pdp, num_register);
-    // PRINT_RESULT("\nregister_value_decrement = %o\n",
-    //              register_value_decrement);
-    // PRINT_RESULT("\nr = %o\n", num_register);
-    // PRINT_RESULT("\naddr = %o\n", addr);
-    // PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
-    // PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    // PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
-    // word_t pc = pdp_reg_get_var(pdp, 7);
-    //
-    // word_t w      = w_read(pdp, (address_word_t)(pc - 2));
-    // word_t r      = (w >> 6) & 7;
-    // word_t offset = w & 077;
-    // pdp_reg_set_var(pdp, r, (word_t)(pdp_reg_get_var(pdp, r) - 1));
-    // if (pdp_reg_get_var(pdp, r) != 0) {
-    //     pdp_reg_set_var(
-    //         pdp, 7, (word_t)(pdp_reg_get_var(pdp, 7) - 2 * offset));
-    // }
-    /*word w = w_read(pc - 2);
-    int r = (w >> 6) & 7;  // 8-6 бит
-    word offset = w & 077;  // смещение числа 0-5 биты
+    word_t R  = (word_command >> 6) & 7;
+    word_t NN = opcode.dd.addr;
+    word_t RN = pdp_reg_get_var(pdp, R);
 
-    reg[r]--;
+    pdp_reg_set_var(pdp, R, --RN);
+    RN = pdp_reg_get_var(pdp, R);
 
-    if(reg[r] != 0)
-    {
-        pc = pc - 2*offset;
-    }*/
+    if (RN != 0) {
+        word_t PC = pdp_reg_get_var(pdp, 7);
+        pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
+    }
 
-    // reg[r]--; // Уменьшаем регистр на 1
-    // word_t temp_register_value = pdp_reg_get_var(pdp, opcode.dd.addr);
-    // pdp_reg_set_var(pdp, opcode.dd.addr, word_t(temp_register_value - 2));
-
-    // if ((word_t)(temp_register_value - 2) != 0) {
-    //     PC = PC - (nn * 2); // Переход назад
-    // }
-    // return;
-    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    // word_t register_value_decrement = pdp_reg_get_var(pdp, num_register);
-    // if (register_value_decrement != 0) {
-    //     pdp_reg_set_var(
-    //         pdp, num_register, (word_t)(register_value_decrement - 1));
-    //     pdp_reg_set_var(pdp, 7, (word_t)(opcode.ss.addr));
-    // }
-
-    __command_reg_dump(pdp);
-    sleep(5);
+    // __command_reg_dump(pdp);
+    // sleep(5);
 }
 
 void
