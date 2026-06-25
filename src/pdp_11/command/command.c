@@ -250,19 +250,21 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         }
         break;
     case 7:;
-        nn = (address_word_t) pdp_reg_get_var(pdp, 7);
-
+        nn       = (address_word_t) pdp_reg_get_var(pdp, 7);
         word_t x = w_read(pdp, nn);
-        pdp_reg_set_var(pdp, 7, (address_word_t)(nn));
-        res.addr  = (address_word_t) pdp_reg_get_var(pdp, num_register);
-        res.addr  = (word_t)(res.addr + x);
-        res.addr  = w_read(pdp, res.addr);
+
+        res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
+
+        res.addr = (word_t)(res.addr + x);
+
+        res.addr = w_read(pdp, res.addr);
+        ;
         res.value = w_read(pdp, res.addr);
 
         // word_t PC = pdp_reg_get_var(pdp, 7);
         // // pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
-        // word_t NN = res.addr;
-        // // word_t RN = pdp_reg_get_var(pdp, num_register);
+        // //
+        // pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))))
         if (num_register != 7) {
             PRINT_RESULT("@%o(R%o) \n", nn, num_register);
         } else {
