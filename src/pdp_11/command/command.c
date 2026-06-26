@@ -236,37 +236,35 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         break;
     case 6:;
-        word_t nn = (word_t) pdp_reg_get_var(pdp, 7);
-        pdp_reg_set_var(pdp, 7, (word_t)(nn + 2));
+        word_t addr_in_pc = (word_t) pdp_reg_get_var(pdp, 7);
+        pdp_reg_set_var(pdp, 7, (word_t)(addr_in_pc + 2));
 
         temp_value_register = (word_t) pdp_reg_get_var(pdp, num_register);
-        res.addr            = (temp_value_register + nn) & 0177777;
+        res.addr            = (temp_value_register + addr_in_pc) & 0177777;
         res.value           = w_read(pdp, (address_word_t)(res.addr));
 
         if (num_register != 7) {
-            PRINT_RESULT(" %.6o(R%o) ", nn, num_register);
+            PRINT_RESULT(" %.6o(R%o) ", addr_in_pc, num_register);
         } else {
             PRINT_RESULT(" %.6o\n", res.addr);
         }
         break;
     case 7:;
-        nn       = (address_word_t) pdp_reg_get_var(pdp, 7);
-        word_t x = w_read(pdp, nn);
+        addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
+
+        word_t com_word = w_read(pdp, addr_in_pc);
+        res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
+
+        if (res.addr > 1) {
+            com_word = (word_r)(addr_in_pc - (2 * (com_word & 7)) + 2);
+        } else {
+            com_word = (word_t)(addr_in_pc + 2);
+        }
 
         res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
 
-        res.addr = (word_t)(res.addr + x);
-
-        res.addr = w_read(pdp, res.addr);
-        ;
-        res.value = w_read(pdp, res.addr);
-
-        // word_t PC = pdp_reg_get_var(pdp, 7);
-        // // pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
-        // //
-        // pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))))
         if (num_register != 7) {
-            PRINT_RESULT("@%o(R%o) \n", nn, num_register);
+            PRINT_RESULT("@%o(R%o) \n", x, num_register);
         } else {
 
             PRINT_RESULT("@%o \n", pdp_reg_get_var(pdp, 7));
@@ -317,6 +315,7 @@ op_code_t
 __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
 {
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+
     // ss -откуда, dd - куда;
     // Выделяем 6 бит источника (сдвиг на 6 вправо)
     if (param & HAS_SS) {

@@ -168,6 +168,7 @@ command_do_sob(struct pdp_11_t *pdp,
     if (!pdp) {
         return;
     }
+
     opcode = __get_mr(pdp, word_command, params);
     //(void) opcode;
     word_t R  = (word_command >> 6) & 7;
@@ -182,7 +183,7 @@ command_do_sob(struct pdp_11_t *pdp,
         pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
     }
 
-    // __command_reg_dump(pdp);
+    __command_reg_dump(pdp);
     // sleep(5);
 }
 
