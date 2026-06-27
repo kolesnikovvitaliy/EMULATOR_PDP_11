@@ -252,22 +252,23 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 7:;
         addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
 
-        word_t com_word = w_read(pdp, addr_in_pc);
+        address_word_t addr_word_command = w_read(pdp, addr_in_pc);
         res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
 
-        if (res.addr > 1) {
-            com_word = (word_r)(addr_in_pc - (2 * (com_word & 7)) + 2);
-        } else {
-            com_word = (word_t)(addr_in_pc + 2);
-        }
+        // addr_word_command = (address_word_t)(addr_in_pc);
+        addr_word_command
+            = (address_word_t)(addr_in_pc - (2 * (addr_word_command & 7)) + 2);
+        // if (res.addr <= 1) {
+        //     addr_word_command = (address_word_t)(addr_in_pc);
+        // }
 
         res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
 
         if (num_register != 7) {
-            PRINT_RESULT("@%o(R%o) \n", x, num_register);
+            PRINT_RESULT("@%o(R%o) \n", addr_word_command, num_register);
         } else {
 
-            PRINT_RESULT("@%o \n", pdp_reg_get_var(pdp, 7));
+            PRINT_RESULT("@%o \n", addr_in_pc);
         }
         break;
     //мы еще не дописали другие моды
