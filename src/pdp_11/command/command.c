@@ -253,14 +253,9 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
 
         address_word_t addr_word_command = w_read(pdp, addr_in_pc);
-        res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
 
-        // addr_word_command = (address_word_t)(addr_in_pc);
         addr_word_command
             = (address_word_t)(addr_in_pc - (2 * (addr_word_command & 7)) + 2);
-        // if (res.addr <= 1) {
-        //     addr_word_command = (address_word_t)(addr_in_pc);
-        // }
 
         res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
 

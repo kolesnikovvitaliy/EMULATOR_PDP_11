@@ -170,17 +170,17 @@ command_do_sob(struct pdp_11_t *pdp,
     }
 
     opcode = __get_mr(pdp, word_command, params);
-    //(void) opcode;
-    word_t R  = (word_command >> 6) & 7;
-    word_t NN = opcode.dd.addr;
-    word_t RN = pdp_reg_get_var(pdp, R);
 
-    pdp_reg_set_var(pdp, R, --RN);
-    RN = pdp_reg_get_var(pdp, R);
+    word_t num_register     = (word_command >> 6) & 7;
+    word_t number_of_cycles = opcode.dd.addr;
+    word_t count_cycles     = pdp_reg_get_var(pdp, num_register);
 
-    if (RN != 0) {
+    pdp_reg_set_var(pdp, num_register, --count_cycles);
+    count_cycles = pdp_reg_get_var(pdp, num_register);
+
+    if (count_cycles != 0) {
         word_t PC = pdp_reg_get_var(pdp, 7);
-        pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * NN))));
+        pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * number_of_cycles))));
     }
 
     //__command_reg_dump(pdp);
