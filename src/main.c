@@ -63,8 +63,7 @@ int
 main(int argc, char **argv)
 {
 #ifdef _WIN32
-    Console.OutputEncoding
-        = Encoding.UTF8
+    SetConsoleOutputCP(65001); // Для Windows
 #else
     setlocale(LC_ALL, "Russian");
 #endif

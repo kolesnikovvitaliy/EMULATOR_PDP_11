@@ -173,7 +173,7 @@ command_do_sob(struct pdp_11_t *pdp,
 
     word_t num_register     = (word_command >> 6) & 7;
     word_t number_of_cycles = opcode.dd.addr;
-    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    //PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
     word_t count_cycles = pdp_reg_get_var(pdp, num_register);
 
     pdp_reg_set_var(pdp, num_register, --count_cycles);
