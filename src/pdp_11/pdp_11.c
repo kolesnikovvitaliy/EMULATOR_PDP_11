@@ -23,7 +23,7 @@
  * @return Указатель на выделенную память для pdp_11_t.
  */
 pdp_11_t *
-pdp_new()
+pdp_new(void)
 {
     return (pdp_11_t *) malloc(sizeof(pdp_11_t));
 }

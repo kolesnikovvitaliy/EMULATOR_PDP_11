@@ -20,6 +20,50 @@
 | 🔍 **Трассировка** | Интерактивный мониторинг состояния системы в реальном времени. | `Flags`, `Registers` |
 
 ---
+## 🚀 Сборка и запуск
+
+### 1. Требования
+Для сборки вам понадобится компилятор `gcc` или `clang` с поддержкой стандарта C99.
+
+
+## Запуск
+Для сборки проекта используется `make`:
+
+```bash
+git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
+cd EMULATOR_PDP_11
+make
+```
+Для сборки проекта Windows:
+
+```bash
+git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
+cd EMULATOR_PDP_11
+```
+```bash
+mingw32-gcc -O2 -g3 -Wall -Wextra -Wpedantic -std=c11 -Wpointer-arith -Wstrict-prototypes -Iinclude -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror=format-security -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -Warray-bounds -fstack-clash-protection -fstack-protector-strong -o pdp.exe src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/test_command.c test/test.c
+```
+
+## 💎 Параметры запуска
+
+Используйте флаги командной строки для управления поведением эмулятора и уровнем детализации отчетов:
+
+
+| 💠 Флаг | 🧊 Название | 🌐 Описание |
+| :---: | :--- | :--- |
+| `-t` | **Trace** | Включает пошаговую трассировку: вывод состояния всех регистров и флагов `PSW` после каждой исполненной команды. |
+| `-d` | **Debug/Tests** | Запуск встроенного набора модульных тестов для верификации корректности работы памяти, регистров и системы команд. |
+
+---
+## Запуск
+```bash
+./pdp.exe -t ./data/test.txt
+```
+---
+## Для запуска модульных тестов
+```bash
+./pdp.exe -t -d ./data/test.txt
+```
 
 ### 🚀 Детальный обзор:
 
@@ -187,52 +231,6 @@
 
 
 
-## 🚀 Сборка и запуск
-
-### 1. Требования
-Для сборки вам понадобится компилятор `gcc` или `clang` с поддержкой стандарта C89.
-
-
-## Запуск
-Для сборки проекта используется `make`:
-
-```bash
-git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
-cd EMULATOR_PDP_11
-make
-```
-Для сборки проекта Windows:
-
-```bash
-git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
-cd EMULATOR_PDP_11
-```
-```bash
-mingw32-gcc -O2 -g3 -Wall -Wextra -Wpedantic -std=c11 -Iinclude -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror=format-security -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -Warray-bounds -fstack-clash-protection -fstack-protector-strong -o pdp.exe src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/test_command.c test/test.c
-```
-
-
-
-## 💎 Параметры запуска
-
-Используйте флаги командной строки для управления поведением эмулятора и уровнем детализации отчетов:
-
-
-| 💠 Флаг | 🧊 Название | 🌐 Описание |
-| :---: | :--- | :--- |
-| `-t` | **Trace** | Включает пошаговую трассировку: вывод состояния всех регистров и флагов `PSW` после каждой исполненной команды. |
-| `-d` | **Debug/Tests** | Запуск встроенного набора модульных тестов для верификации корректности работы памяти, регистров и системы команд. |
-
----
-## Запуск
-```bash
-./pdp.exe -t ./data/test.txt
-```
----
-## Для запуска модульных тестов
-```bash
-./pdp.exe -t -d ./data/test.txt
-```
 
 # 📋 Описание проекта
 

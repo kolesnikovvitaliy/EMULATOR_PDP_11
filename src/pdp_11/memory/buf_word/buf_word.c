@@ -14,7 +14,7 @@ void   __word_write_w(void *, address_word_t, word_t);
 
 /////////////////////////////////////////////////////////////////
 mem_word_t *
-mem_word_new()
+mem_word_new(void)
 {
     // Выделение памяти для класса памяти типа WORD;
     return (mem_word_t *) malloc(sizeof(mem_word_t));

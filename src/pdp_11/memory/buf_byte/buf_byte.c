@@ -14,7 +14,7 @@ void   __word_write_b(void *, address_word_t, word_t);
 /////////////////////////////////////////////////////////////////////
 
 mem_byte_t *
-mem_byte_new()
+mem_byte_new(void)
 {
     return (mem_byte_t *) malloc(sizeof(mem_byte_t));
 }

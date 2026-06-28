@@ -5,7 +5,7 @@ struct pdp_11_t;
 
 struct dev_io_t;
 
-struct dev_io_t *dev_io_new();
+struct dev_io_t *dev_io_new(void);
 
 void dev_io_create(struct dev_io_t *);
 void dev_io_destroy(struct dev_io_t *);

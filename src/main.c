@@ -16,6 +16,7 @@
 #include "utils/logger/logger.h"
 
 #include <assert.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,6 +58,7 @@ int start_test_if_mode_debug(int argc, char **argv);
 int
 main(int argc, char **argv)
 {
+    setlocale(LC_ALL, "Russian");
     // Проверка режима отладки перед стартом основной логики
     int flag_tests = 0;
     /*ЗАПУСК ПРОВЕРКИ РАБОТЫ ЭМУЛЯТОРА В РЕЖИМЕ ПАМЯТИ =BYTE= и =WORD=*/

@@ -38,7 +38,7 @@ extern command_t template_commands[];
  * инициализирована.
  */
 command_t **
-command_new()
+command_new(void)
 {
     return (command_t **) malloc(
         commands_list

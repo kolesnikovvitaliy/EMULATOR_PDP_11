@@ -39,6 +39,7 @@
 int
 run(struct pdp_11_t *pdp, int argc, char **argv, int flag_tests)
 {
+
     /* Подготовка аппаратной части эмулятора */
     pdp_create(pdp);
     /* Запус тестов */

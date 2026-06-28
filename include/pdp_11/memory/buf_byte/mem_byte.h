@@ -44,7 +44,7 @@ struct mem_byte_t;
  * @return struct mem_byte_t* Указатель на созданный объект управления буфером.
  * @retval NULL Ошибка выделения памяти в куче (malloc вернул NULL).
  */
-struct mem_byte_t *mem_byte_new();
+struct mem_byte_t *mem_byte_new(void);
 
 /**
  * @brief Инициализирует дескриптор буфера и выделяет под него массив байт.

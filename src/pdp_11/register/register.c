@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 reg_t *
-register_new()
+register_new(void)
 {
     return (reg_t *) malloc(sizeof(reg_t));
 }

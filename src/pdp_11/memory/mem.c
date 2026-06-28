@@ -9,7 +9,7 @@
 
 byte_t g_default_memory;
 mem_t *
-mem_new()
+mem_new(void)
 {
     return (mem_t *) malloc(sizeof(mem_t));
 }

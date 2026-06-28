@@ -3,7 +3,7 @@
 
 struct mem_t;
 
-struct mem_t *mem_new();
+struct mem_t *mem_new(void);
 
 void mem_create(struct mem_t *);
 void mem_destroy(struct mem_t *);

@@ -48,7 +48,7 @@ struct command_t;
  * @see command_create()
  * @see command_destroy()
  */
-struct command_t *command_new();
+struct command_t *command_new(void);
 
 /**
  * @brief Инициализация указателя на команду с выделением памяти.

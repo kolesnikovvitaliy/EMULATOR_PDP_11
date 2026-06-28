@@ -5,7 +5,7 @@
 #    include "utils/logger/logger.h"
 struct pdp_11_t;
 struct command_t;
-struct pdp_11_t *pdp_new();
+struct pdp_11_t *pdp_new(void);
 
 void pdp_create(struct pdp_11_t *);
 void pdp_destroy(struct pdp_11_t *);
