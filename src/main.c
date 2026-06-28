@@ -16,7 +16,11 @@
 #include "utils/logger/logger.h"
 
 #include <assert.h>
-#include <locale.h>
+#ifdef _WIN32
+#    include <windows.h>
+#else
+#    include <locale.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,9 +62,15 @@ int start_test_if_mode_debug(int argc, char **argv);
 int
 main(int argc, char **argv)
 {
+#ifdef _WIN32
+    Console.OutputEncoding
+        = Encoding.UTF8
+#else
     setlocale(LC_ALL, "Russian");
-    // Проверка режима отладки перед стартом основной логики
-    int flag_tests = 0;
+#endif
+          // Проверка режима отладки перед стартом основной логики
+          int flag_tests
+        = 0;
     /*ЗАПУСК ПРОВЕРКИ РАБОТЫ ЭМУЛЯТОРА В РЕЖИМЕ ПАМЯТИ =BYTE= и =WORD=*/
     flag_tests = start_test_if_mode_debug(argc, argv);
     /**
