@@ -67,9 +67,8 @@ main(int argc, char **argv)
 #else
     setlocale(LC_ALL, "Russian");
 #endif
-          // Проверка режима отладки перед стартом основной логики
-          int flag_tests
-        = 0;
+        // Проверка режима отладки перед стартом основной логики
+    int flag_tests = 0;
     /*ЗАПУСК ПРОВЕРКИ РАБОТЫ ЭМУЛЯТОРА В РЕЖИМЕ ПАМЯТИ =BYTE= и =WORD=*/
     flag_tests = start_test_if_mode_debug(argc, argv);
     /**
