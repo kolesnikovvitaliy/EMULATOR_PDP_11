@@ -205,16 +205,13 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
 
         t_var_reg = pdp_reg_get_var(pdp, num_register);
-        t_var_reg = (word_t)(t_var_reg);
-        res.addr  = t_var_reg;
+        // pdp_reg_set_var(
+        //     pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
+        res.addr = (address_word_t)(t_var_reg - 2);
 
-        // печать разной мнемоники для PC и других регистров
         res.value = w_read(pdp, (address_word_t)(res.addr));
-        pdp_reg_set_var(
-            pdp, num_register, (address_word_t)(res.addr - 2)); // TODO: +1
 
         PRINT_RESULT("-(R%d) ", num_register);
-
         break;
     case 5:; //  для объявления типа данных word_t требуется " ; " после метки
 
@@ -236,23 +233,27 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         break;
     case 6:;
-        word_t addr_in_pc = (word_t) pdp_reg_get_var(pdp, 7);
-        pdp_reg_set_var(pdp, 7, (word_t)(addr_in_pc + 2));
+        address_word_t addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
 
-        temp_value_register = (word_t) pdp_reg_get_var(pdp, num_register);
-        res.addr            = (temp_value_register + addr_in_pc) & 0177777;
-        res.value           = w_read(pdp, (address_word_t)(res.addr));
+        address_word_t addr_word_command = w_read(pdp, addr_in_pc);
 
-        if (num_register != 7) {
-            PRINT_RESULT(" %.6o(R%o) ", addr_in_pc, num_register);
+        addr_word_command
+            = (address_word_t)(addr_in_pc - (2 * (addr_word_command & 7)) + 2);
+
+        res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
+
+        if (num_register == 7) {
+            res.value = w_read(pdp, (address_word_t)(res.addr));
+            PRINT_RESULT("\n%o(R%d) ", addr_in_pc, num_register);
         } else {
-            PRINT_RESULT(" %.6o\n", res.addr);
+            res.value = w_read(pdp, (address_word_t)(res.addr - 2));
+            PRINT_RESULT("\n%o\n", res.addr);
         }
         break;
     case 7:;
         addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
 
-        address_word_t addr_word_command = w_read(pdp, addr_in_pc);
+        addr_word_command = w_read(pdp, addr_in_pc);
 
         addr_word_command
             = (address_word_t)(addr_in_pc - (2 * (addr_word_command & 7)) + 2);

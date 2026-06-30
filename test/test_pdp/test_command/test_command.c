@@ -11,10 +11,12 @@
 #include "pdp_11/pdp_11_p.h"
 #include "pdp_11/register/register_p.h"
 #include "tests/test.h"
-#include "tests/test_pdp/test_command/modes/test_mode0/test_mode0.h"
-#include "tests/test_pdp/test_command/modes/test_mode1/test_mode1.h"
-#include "tests/test_pdp/test_command/modes/test_mode2/test_mode2.h"
-#include "tests/test_pdp/test_command/modes/test_mode3/test_mode3.h"
+#include "tests/test_pdp/test_command/modes/test_mode/test_mode.h"
+// #include "tests/test_pdp/test_command/modes/test_mode0/test_mode0.h"
+// #include "tests/test_pdp/test_command/modes/test_mode1/test_mode1.h"
+// #include "tests/test_pdp/test_command/modes/test_mode2/test_mode2.h"
+// #include "tests/test_pdp/test_command/modes/test_mode3/test_mode3.h"
+// #include "tests/test_pdp/test_command/modes/test_mode4/test_mode4.h"
 #include "tests/test_pdp/test_pdp.h"
 #include "utils/logger/logger.h"
 #include "utils/utils.h"
@@ -63,6 +65,7 @@ test_command(struct pdp_11_t *pdp)
     test_mode1(pdp);
     test_mode2(pdp);
     test_mode3(pdp);
+    test_mode4(pdp);
 
     pdp_reg_clear(pdp);
 
