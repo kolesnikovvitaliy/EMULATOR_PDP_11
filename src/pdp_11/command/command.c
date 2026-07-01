@@ -194,7 +194,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             // pdp_reg_set_var(
             //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
             PRINT_RESULT("@#%o ", res.value);
-
         } else {
             // pdp_reg_set_var(
             //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
@@ -203,14 +202,12 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         break;
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
-
         t_var_reg = pdp_reg_get_var(pdp, num_register);
-        // pdp_reg_set_var(
-        //     pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
-        res.addr = (address_word_t)(t_var_reg - 2);
+        pdp_reg_set_var(
+            pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
+        res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
 
         res.value = w_read(pdp, (address_word_t)(res.addr));
-
         PRINT_RESULT("-(R%d) ", num_register);
         break;
     case 5:; //  для объявления типа данных word_t требуется " ; " после метки
@@ -263,7 +260,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         if (num_register != 7) {
             PRINT_RESULT("@%o(R%o) \n", addr_word_command, num_register);
         } else {
-
             PRINT_RESULT("@%o \n", addr_in_pc);
         }
         break;
