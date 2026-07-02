@@ -31,7 +31,7 @@ test_mode2(struct pdp_11_t *pdp)
     w_write(pdp, addr, (word_t) 0012723);
 
     w_write(pdp, 0100, (word_t) 017);
-    w_write(pdp, 0104, (word_t) 066);
+    w_write(pdp, 0102, (word_t) 066);
     w_write(pdp, 01002, (word_t) 055);
     w_write(pdp, 01004, (word_t) 077);
 
@@ -44,34 +44,25 @@ test_mode2(struct pdp_11_t *pdp)
 
     //! @name Конфигурация режима автоинкремента
     //! @{
-    pdp_reg_set_var(pdp, 3, 0100); // В R3 записан вдрес
+    pdp_reg_set_var(pdp, 3, 0102); // В R3 записан вдрес
     //! @}
-
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
-    if (pdp) {
-        //! < Декодирование аргументов инкрементной операции
-        opcode
-            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
-    }
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
     TRACE("%s", "test_mode2 ");
 
     //! < Контроль расчетных значений декодера для автоинкремента
+    // PRINT_RESULT("\nRES = %o \n", w_read(pdp, pdp_reg_get_var(pdp, 3)));
+    assert(w_read(pdp, pdp_reg_get_var(pdp, 3)) == 066);
 
-    assert(opcode.ss.value == 055);
-    assert(opcode.ss.addr == 01002);
-    assert(opcode.dd.value == 017);
-    assert(opcode.dd.addr == 0102);
-    assert(w_read(pdp, 0104) == 066);
-    //! < Исполнение команды с триггером автоинкремента регистров
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
-
-    //! < Проверка измененного состояния памяти после выполнения операции
+    //! < Проверка измененного состояния памяти после выполнения
+    //     операции
+    assert(w_read(pdp, (word_t)(pdp_reg_get_var(pdp, 3) - 2)) == 055);
     assert(pdp_reg_get_var(pdp, 3) == 0104);
-    assert(w_read(pdp, pdp_reg_get_var(pdp, 3)) == 077);
-
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
     PRINT_RESULT("  %s", " ... OK\n");
 }

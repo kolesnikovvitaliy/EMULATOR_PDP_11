@@ -158,22 +158,23 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         PRINT_RESULT("(R%d) ", num_register);
         break;
     // мода 2, (R1)+ или #3
-    case 2:;
-        word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
-        t_var_reg        = (word_t)(t_var_reg + 2);
-        res.addr         = t_var_reg;
+    case 2:
+        res.addr = pdp_reg_get_var(pdp, num_register);
 
         pdp_reg_set_var(
-            pdp, num_register, (address_word_t)(res.addr)); // TODO: +1
+            pdp, num_register, (address_word_t)(res.addr + 2)); // TODO: +1
 
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7) {
-            res.value = w_read(pdp, (address_word_t)(res.addr));
+            res.value = w_read(pdp, (address_word_t)(res.addr + 2));
             PRINT_RESULT("#%o ", res.value);
         } else {
-            res.value = w_read(pdp, (address_word_t)(res.addr - 2));
+            res.value = w_read(pdp, (address_word_t)(res.addr));
             PRINT_RESULT("(R%d)+ ", num_register);
         }
+        // PRINT_RESULT("\nRES.ADDR = %o\nRES.VALUE = %o\n", res.addr,
+        // res.value);
+        // __command_reg_dump(pdp);
         break;
     case 3:; //  для объявления типа данных word_t требуется " ; " после метки
 
@@ -202,7 +203,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         break;
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
-        t_var_reg = pdp_reg_get_var(pdp, num_register);
+        word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
         pdp_reg_set_var(
             pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
