@@ -25,6 +25,7 @@
  * @brief Внешний массив шаблонов базовых команд процессора
  */
 extern command_t template_commands[];
+extern byte_t    commands_list;
 
 /**
  * @brief 📦 Инициализатор контейнера: Выделение памяти под массив команд
