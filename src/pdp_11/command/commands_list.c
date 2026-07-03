@@ -24,5 +24,5 @@ command_t template_commands[] = {
 };
 
 /* размер списка комманд */
-/*byte_t*/
+
 byte_t commands_list = sizeof(template_commands) / sizeof(command_t);
