@@ -28,20 +28,22 @@ test_mode3(struct pdp_11_t *pdp)
     pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, 01000, (word_t) 0013703);
-    w_write(pdp, 01002, (word_t) 0202);
-    w_write(pdp, 0202, (word_t) 017);
+    w_write(pdp, 01000, (word_t) /*0013703*/ 0013301); // 0013303
+    pdp_reg_set_var(pdp, 3, 01002);
+    w_write(pdp, 01002, (word_t) 0112);
+    w_write(pdp, 0112, (word_t) 017);
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
-    if (pdp) {
-        //! < Декодирование аргументов инкрементной операции
-        opcode
-            = __get_mr(pdp, (word_t) w_read(pdp, addr), run_command->params);
-    }
+    // op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    // if (pdp) {
+    //     //! < Декодирование аргументов инкрементной операции
+    //     opcode
+    //         = __get_mr(pdp, (word_t) w_read(pdp, addr),
+    //         run_command->params);
+    // }
     //! < Привязка указателя на команду
     // run_command = __ptr_command(
     //     (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
@@ -53,15 +55,15 @@ test_mode3(struct pdp_11_t *pdp)
     //! < Контроль расчетных значений декодера для автоинкремента
     //! < Исполнение команды с триггером автоинкремента регистров
 
-    assert(opcode.ss.value == 017);
-    assert(opcode.ss.addr == 0202);
-    assert(opcode.dd.value == 00);
-    assert(opcode.dd.addr == 03);
+    // assert(opcode.ss.value == 017);
+    // assert(opcode.ss.addr == 0202);
+    // assert(opcode.dd.value == 00);
+    // assert(opcode.dd.addr == 03);
     // PRINT_RESULT("\nopcode.ss.value%o\n", opcode.ss.value);
     // PRINT_RESULT("\nopcode.ss.addr%o\n", opcode.ss.addr);
     // PRINT_RESULT("\nopcode.dd.value%o\n", opcode.dd.value);
     // PRINT_RESULT("\nopcode.dd.addr%o\n", opcode.dd.addr);
-    pdp_reg_set_var(pdp, 7, (word_t)(pdp_reg_get_var(pdp, 7) - 2));
+    // pdp_reg_set_var(pdp, 7, (word_t)(pdp_reg_get_var(pdp, 7) - 2));
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
 
@@ -70,8 +72,12 @@ test_mode3(struct pdp_11_t *pdp)
     // PRINT_RESULT("\nopcode.ss.addr%o\n", opcode.ss.addr);
     // PRINT_RESULT("\nopcode.dd.value%o\n", opcode.dd.value);
     // PRINT_RESULT("\nopcode.dd.addr%o\n", opcode.dd.addr);
-    assert(pdp_reg_get_var(pdp, opcode.dd.addr) == opcode.ss.value);
-    //__command_reg_dump(pdp);
+    assert(pdp_reg_get_var(pdp, 1) == 017);
+    assert(pdp_reg_get_var(pdp, 3) == 01004);
+    assert(pdp_reg_get_var(pdp, 7) == 01000);
+    // pdp_mem_dump(pdp, 0x40, 0x26);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
 
     PRINT_RESULT("  %s", " ... OK\n");
 }

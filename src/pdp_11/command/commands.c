@@ -184,7 +184,7 @@ command_do_sob(struct pdp_11_t *pdp,
         pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * number_of_cycles))));
     }
 
-    //__command_reg_dump(pdp);
+    // __command_reg_dump(pdp);
     // sleep(5);
 }
 

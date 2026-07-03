@@ -25,7 +25,6 @@
  * @brief Внешний массив шаблонов базовых команд процессора
  */
 extern command_t template_commands[];
-// extern byte_t    commands_list;
 
 /**
  * @brief 📦 Инициализатор контейнера: Выделение памяти под массив команд
@@ -139,8 +138,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     word_t num_register = word_command & 7;
     byte_t mode         = (word_command >> 3) & 7;
 
-    // byte_t mode = (word_command >> 3) & 7;
-
     switch (mode) {
     case 0:
         res.addr  = num_register;
@@ -161,9 +158,8 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     // мода 2, (R1)+ или #3
     case 2:
         res.addr = pdp_reg_get_var(pdp, num_register);
-
-        pdp_reg_set_var(
-            pdp, num_register, (address_word_t)(res.addr + 2)); // TODO: +1
+        // ss -откуда, dd - куда;
+        pdp_reg_set_var(pdp, num_register, (address_word_t)(res.addr + 2));
 
         // печать разной мнемоники для PC и других регистров
         if (num_register == 7) {
@@ -173,35 +169,39 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             res.value = w_read(pdp, (address_word_t)(res.addr));
             PRINT_RESULT("(R%d)+ ", num_register);
         }
-        // PRINT_RESULT("\nRES.ADDR = %o\nRES.VALUE = %o\n", res.addr,
-        // res.value);
-        // __command_reg_dump(pdp);
-        break;
-    case 3:; //  для объявления типа данных word_t требуется " ; " после метки
 
+        break;
+    case 3:; //  для объявления типа данных address_word_t требуется " ; "
+             //  после метки
         address_word_t temp_value_register
-            = (word_t) pdp_reg_get_var(pdp, num_register);
+            = (word_t) pdp_reg_get_var(pdp, num_register); // 1002
 
         address_word_t inc_addr_offset
-            = (address_word_t)(temp_value_register + 2);
+            = (address_word_t)(temp_value_register + 2); // 1004
 
-        address_word_t addr_top
-            = (address_word_t)(w_read(pdp, (address_word_t)(inc_addr_offset)));
-
-        res.addr  = addr_top;
-        res.value = w_read(pdp, (address_word_t)(res.addr));
         // ss -откуда, dd - куда;
         pdp_reg_set_var(pdp, num_register, (address_word_t)(inc_addr_offset));
+
         if (num_register == 7) {
-            // pdp_reg_set_var(
-            //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
+
+            address_word_t addr_reg_pc = (address_word_t)(
+                w_read(pdp, (address_word_t)(inc_addr_offset)));
+
+            res.addr  = addr_reg_pc;
+            res.value = w_read(pdp, (address_word_t)(res.addr));
+
             PRINT_RESULT("@#%o ", res.value);
         } else {
-            // pdp_reg_set_var(
-            //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
-            PRINT_RESULT("\n@(R%d)+ ", num_register);
-        }
 
+            address_word_t addr_top = (address_word_t)(
+                w_read(pdp, (address_word_t)(temp_value_register)));
+
+            res.addr  = addr_top;
+            res.value = w_read(pdp, (address_word_t)(res.addr));
+
+            PRINT_RESULT("@(R%d)+ ", num_register);
+        }
+        // __command_reg_dump(pdp);
         break;
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
@@ -218,7 +218,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         inc_addr_offset = (address_word_t)(temp_value_register - 2);
 
-        addr_top
+        address_word_t addr_top
             = (address_word_t)(w_read(pdp, (address_word_t)(inc_addr_offset)));
 
         pdp_reg_set_var(pdp, num_register, (address_word_t)(inc_addr_offset));
