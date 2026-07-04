@@ -209,15 +209,15 @@ pdp_reg_clear(struct pdp_11_t *pdp)
         pdp_reg_set_var(pdp, i, 00);
     }
 }
-// address_word_t
-// pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register)
-// {
-//     assert(pdp);
-//
-//     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
-//     word_t *  ptr_reg = ptr_pdp->R0 + num_register;
-//     return (address_word_t) ptr_reg;
-// }
+address_word_t *
+pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register)
+{
+    assert(pdp);
+
+    pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
+    word_t *  ptr_reg = ptr_pdp->R0 + num_register;
+    return (address_word_t *) ptr_reg;
+}
 ///////////////////////////////////////////////////////////
 /**
  * @brief Выполняет одну машинную команду по указанному адресу.

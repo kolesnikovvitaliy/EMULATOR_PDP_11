@@ -30,6 +30,8 @@ test_mode3(struct pdp_11_t *pdp)
 
     w_write(pdp, 01000, (word_t) /*0013703*/ 0013301); // 0013303
     pdp_reg_set_var(pdp, 3, 01002);
+    PRINT_RESULT("\npdp_reg_get_addr(pdp, 3) = %o\n",
+                 pdp_reg_get_addr(pdp, 3)); // 1366
     w_write(pdp, 01002, (word_t) 0112);
     w_write(pdp, 0112, (word_t) 017);
 

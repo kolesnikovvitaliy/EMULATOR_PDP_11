@@ -31,7 +31,7 @@ byte_t *pdp_parse_filename(int argc, char **argv);
 word_t pdp_reg_get_var(struct pdp_11_t *pdp, int num_register);
 void   pdp_reg_set_var(struct pdp_11_t *pdp, int num_register, word_t value);
 void   pdp_reg_clear(struct pdp_11_t *pdp);
-// address_word_t pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register);
+address_word_t *pdp_reg_get_addr(struct pdp_11_t *pdp, byte_t num_register);
 
 // Выполнение команды
 word_t *
