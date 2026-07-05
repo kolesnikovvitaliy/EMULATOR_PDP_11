@@ -43,8 +43,9 @@ command_do_halt(struct pdp_11_t *pdp,
     word_t *  ptr_pc  = ptr_pdp->PC;
     *ptr_pc           = (word_t)(*ptr_pc + 2);
     __command_reg_dump(pdp);
+    PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
     pdp_mem_dump(pdp, 0x40, 0x20);
-    pdp_mem_dump(pdp, 0x200, 0x26);
+    pdp_mem_dump(pdp, 0x200, 0x20);
     PRINT_RESULT("THE END!!!\n", "");
 
     pdp_destroy(pdp);
