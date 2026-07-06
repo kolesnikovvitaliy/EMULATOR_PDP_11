@@ -228,7 +228,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         // ss -откуда, dd - куда;
         // pdp_reg_set_var(
         //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
-        PRINT_RESULT("\n@-(R%d) ", num_register);
+        PRINT_RESULT("@-(R%d) ", num_register);
 
         break;
     case 6:;
