@@ -7,5 +7,6 @@
 #    include "tests/test_pdp/test_command/modes/test_mode4/test_mode4.h"
 #    include "tests/test_pdp/test_command/modes/test_mode5/test_mode5.h"
 #    include "tests/test_pdp/test_command/modes/test_mode6/test_mode6.h"
+#    include "tests/test_pdp/test_command/modes/test_mode7/test_mode7.h"
 #endif
 #pragma once

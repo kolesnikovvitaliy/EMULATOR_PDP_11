@@ -251,19 +251,24 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         }
         break;
     case 7:;
-        addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
+        addr_in_pc  = (address_word_t) pdp_reg_get_var(pdp, 7);
+        word_in_mem = w_read(pdp, (word_t)(addr_in_pc + 2));
+        pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc));
 
-        word_t addr_word_command = w_read(pdp, addr_in_pc);
+        res.addr = pdp_reg_get_var(pdp, num_register);
+        res.addr = (word_t)(res.addr + word_in_mem);
 
-        addr_word_command
-            = (address_word_t)(addr_in_pc - (2 * (addr_word_command & 7)) + 2);
+        res.value = w_read(pdp, res.addr);
+        if (num_register == 7) {
+            res.addr = (word_t)(pdp_reg_get_var(pdp, 7) + 2);
+            pdp_reg_set_var(pdp, 7, res.addr);
+            // res.addr = (word_t)(pdp_reg_get_var(pdp, 7) + 2);
+            res.addr = (word_t)(res.addr + word_in_mem);
 
-        res.addr = (address_word_t) pdp_reg_get_var(pdp, num_register);
-
-        if (num_register != 7) {
-            PRINT_RESULT("@%o(R%o) \n", addr_word_command, num_register);
+            res.value = w_read(pdp, res.addr);
+            PRINT_RESULT("@%o ", res.addr + 2);
         } else {
-            PRINT_RESULT("@%o \n", addr_in_pc);
+            PRINT_RESULT("@%o(R%o) ", word_in_mem, num_register);
         }
         break;
     //мы еще не дописали другие моды

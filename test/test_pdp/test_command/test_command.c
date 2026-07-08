@@ -63,6 +63,7 @@ test_command(struct pdp_11_t *pdp)
     test_mode4(pdp);
     test_mode5(pdp);
     test_mode6(pdp);
+    test_mode7(pdp);
 
     pdp_reg_clear(pdp);
 
