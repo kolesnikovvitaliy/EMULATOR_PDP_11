@@ -251,25 +251,54 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         }
         break;
     case 7:;
-        addr_in_pc  = (address_word_t) pdp_reg_get_var(pdp, 7);
-        word_in_mem = w_read(pdp, (word_t)(addr_in_pc + 2));
-        pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc));
+        addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
+        PRINT_RESULT("\naddr_in_pc = %o\n", addr_in_pc);
 
-        res.addr = pdp_reg_get_var(pdp, num_register);
-        res.addr = (word_t)(res.addr + word_in_mem);
+        pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
+        PRINT_RESULT("\npdp_reg_set_var = %o + 2\n", addr_in_pc);
 
-        res.value = w_read(pdp, res.addr);
         if (num_register == 7) {
-            res.addr = (word_t)(pdp_reg_get_var(pdp, 7) + 2);
-            pdp_reg_set_var(pdp, 7, res.addr);
-            // res.addr = (word_t)(pdp_reg_get_var(pdp, 7) + 2);
-            res.addr = (word_t)(res.addr + word_in_mem);
+            word_in_mem = w_read(pdp, (word_t)(addr_in_pc + 2));
+            PRINT_RESULT("\nword_in_mem = %o\n", word_in_mem);
 
-            res.value = w_read(pdp, res.addr);
-            PRINT_RESULT("@%o ", res.addr + 2);
+            addr_in_pc = (address_word_t)(pdp_reg_get_var(pdp, 7) + 2);
+            PRINT_RESULT("\n7_addr_in_pc = %o\n", addr_in_pc);
+
+            pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
+            PRINT_RESULT("\npdp_reg_set_var = %o + 2\n", addr_in_pc);
+
+            // res.addr = (word_t)(addr_in_pc + word_in_mem);
+            res.addr = (address_word_t)(addr_in_pc
+                                        - (2 * ((addr_in_pc + 2) & 7)) + 2);
+            PRINT_RESULT("\n7_res.addr_2 = %o\n", res.addr);
+
+            word_t temp_addr = (word_t) w_read(pdp, (word_t)(res.addr));
+            PRINT_RESULT("\ntemp_addr = %o\n", temp_addr);
+
+            res.value = w_read(pdp, temp_addr);
+            PRINT_RESULT("\nres.value = %o\n", res.value);
+
+            PRINT_RESULT("@%o ", res.addr);
         } else {
+            word_in_mem = w_read(pdp, (word_t)(addr_in_pc));
+            PRINT_RESULT("\nword_in_mem = %o\n", word_in_mem);
+
+            res.addr = pdp_reg_get_var(pdp, num_register);
+            PRINT_RESULT("\nres.addr = %o\n", res.addr);
+
+            res.addr
+                = (address_word_t)(addr_in_pc - (2 * ((res.addr) & 7)) + 2);
+            PRINT_RESULT("\nres.addr_2 = %o\n", res.addr);
+
+            word_t temp_addr = (word_t) w_read(pdp, (word_t)(res.addr));
+            PRINT_RESULT("\ntemp_addr = %o\n", temp_addr);
+
+            res.value = w_read(pdp, temp_addr);
+            PRINT_RESULT("\nres.value = %o\n", res.value);
+
             PRINT_RESULT("@%o(R%o) ", word_in_mem, num_register);
         }
+
         break;
     //мы еще не дописали другие моды
     default:

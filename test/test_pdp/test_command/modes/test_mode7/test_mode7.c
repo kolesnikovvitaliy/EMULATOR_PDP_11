@@ -32,6 +32,7 @@ test_pc_reg_1(struct pdp_11_t *pdp)
 
     pdp_reg_set_var(pdp, 3, 0200);
     w_write(pdp, 0204, (word_t) 05);
+    w_write(pdp, 0204, (word_t) 0100);
     w_write(pdp, 01010, (word_t) -0606);
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
