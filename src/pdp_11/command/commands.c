@@ -172,20 +172,33 @@ command_do_sob(struct pdp_11_t *pdp,
 
     opcode = __get_mr(pdp, word_command, params);
 
-    word_t num_register     = (word_command >> 6) & 7;
-    word_t number_of_cycles = opcode.dd.addr;
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    word_t num_register = (word_command >> 6) & 7;
+    PRINT_RESULT("\nSOB_num_register = %o\n", num_register);
+
+    PRINT_RESULT("\nSOB_opcode.dd.addr = %o\n", opcode.dd.addr);
+    PRINT_RESULT("\nSOB_opcode.dd.value = %o\n", opcode.dd.value);
+    PRINT_RESULT("\nSOB_opcode.ss.addr = %o\n", opcode.ss.addr);
+    PRINT_RESULT("\nSOB_opcode.ss.value = %o\n", opcode.ss.value);
+
+    // word_t number_of_cycles = opcode.dd.addr;
+    // PRINT_RESULT("\nSOB_number_of_cycles = %o\n", opcode.dd.addr);
+
     word_t count_cycles = pdp_reg_get_var(pdp, num_register);
+    PRINT_RESULT("\nSOB_count_cycles = %o\n", count_cycles);
 
     pdp_reg_set_var(pdp, num_register, --count_cycles);
     count_cycles = pdp_reg_get_var(pdp, num_register);
+    PRINT_RESULT("\nSOB_count_cycles-- = %o\n", count_cycles);
 
     if (count_cycles != 0) {
         word_t PC = pdp_reg_get_var(pdp, 7);
-        pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * number_of_cycles))));
+        PRINT_RESULT("\nSOB_PC = %o\n", (word_t)(PC));
+        PRINT_RESULT("\nSOB_pdp_reg_set_var = %o\n",
+                     (word_t)((PC - (2 * count_cycles))));
+        pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * count_cycles))));
     }
 
-    // __command_reg_dump(pdp);
+    __command_reg_dump(pdp);
     // sleep(5);
 }
 
