@@ -38,6 +38,8 @@ test_pc_reg_1(struct pdp_11_t *pdp)
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
     //! < Привязка указателя на команду
+    // do_command(pdp_11_t *pdp, command_t **commands, const address_word_t
+    // addr)
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
 
