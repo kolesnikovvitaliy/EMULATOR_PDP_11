@@ -165,13 +165,7 @@ command_do_sob(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
-    if (!pdp) {
-        return;
-    }
-
-    opcode = __get_mr(pdp, word_command, params);
-    (void) opcode;
+    (void) params;
 
     word_t offset_word  = (word_command & 077);
     word_t num_register = (word_command >> 6) & 7;
@@ -184,6 +178,14 @@ command_do_sob(struct pdp_11_t *pdp,
     if (count_cycles != 0) {
         word_t PC = pdp_reg_get_var(pdp, 7);
         pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * offset_word))));
+        PC = pdp_reg_get_var(pdp, 7);
+
+        PRINT_RESULT("R%d %o", num_register, (word_t)(PC + 2));
+    } else {
+        PRINT_RESULT(
+            "R%d %o",
+            num_register,
+            (word_t)((pdp_reg_get_var(pdp, 7)) - (2 * offset_word) + 2));
     }
 
     //__command_reg_dump(pdp);

@@ -34,27 +34,28 @@ test_pc_reg_1(struct pdp_11_t *pdp)
     w_write(pdp, 0204, (word_t) 05);
     w_write(pdp, 0204, (word_t) 0100);
     w_write(pdp, 01010, (word_t) -0606);
-
+    //#######################################
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
+    //#######################################
+
     //! < Привязка указателя на команду
-    // do_command(pdp_11_t *pdp, command_t **commands, const address_word_t
-    // addr)
+    //#######################################
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-
+    //#######################################
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
     TRACE("%s", "test_mode7_pc_reg ");
 
     //! < Контроль расчетных значений декодера для автодекремента
     //! < Исполнение команды с триггером автодекремента регистров
-
+    //#######################################
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
-
+    //#######################################
     //! < Проверка измененного состояния памяти после выполнения операции
-
+    assert(pdp_reg_get_var(pdp, 1) == 05);
     // __command_reg_dump(pdp);
     PRINT_RESULT("  %s", " ... OK\n");
     pdp_reg_clear(pdp);
@@ -70,10 +71,10 @@ test_valid_reg_1(struct pdp_11_t *pdp)
 
     w_write(pdp, addr, (word_t) 0017301);
 
+    w_write(pdp, 01010, (word_t) 04);
     pdp_reg_set_var(pdp, 3, 0200);
     w_write(pdp, 0204, (word_t) 0100);
     w_write(pdp, 0100, (word_t) 05);
-    w_write(pdp, 01010, (word_t) 04);
 
     pdp_11_t * ptr_pdp = (pdp_11_t *) pdp;
     command_t *run_command;
@@ -92,7 +93,7 @@ test_valid_reg_1(struct pdp_11_t *pdp)
         pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверка измененного состояния памяти после выполнения операции
-    // assert(pdp_reg_get_var(pdp, 1) == 015);
+    assert(pdp_reg_get_var(pdp, 1) == 05);
     // pdp_reg_clear(pdp);
     // __command_reg_dump(pdp);
     pdp_reg_clear(pdp);

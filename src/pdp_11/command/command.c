@@ -139,22 +139,128 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     byte_t mode         = (word_command >> 3) & 7;
 
     switch (mode) {
+        /**
+         * @name      Режим адресации: Регистровый прямой (Register Direct)
+         * @anchor    addressing_mode_0
+         * @see       http://pdp-11.org.ru
+         * @{
+         */
+
+        /**
+         * @brief     Обработка **Режима 0** адресации PDP-11 (Прямая
+         * регистрация).
+         * @details   Данный `case` выполняется, когда метод адресации операнда
+         * равен 0. Это самый быстрый режим работы процессора, так как он **не
+         * обращается к оперативной памяти**. Операндом является
+         * непосредственно содержимое выбранного регистра общего назначения
+         * (РОН).
+         *
+         * ### Схема работы (Data Flow):
+         * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         * [ Регистр (num_register) ] ---------------> [ res.value ]
+         *    содержит сам операнд                       готовое значение для
+         * операции
+         *              |
+         *              v
+         *          [ res.addr ] (сохраняет индекс регистра для возможной
+         * записи)
+         * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         *
+         * @param[in]  pdp          Указатель на структуру виртуальной машины
+         * PDP-11.
+         * @param[in]  num_register Номер целевого регистра общего назначения
+         * (R0..R7).
+         * @param[out] res.addr     В данном режиме — не адрес памяти, а
+         * **номер (индекс) регистра**. Это критически важно для
+         * инструкций-приемников (destination), чтобы знать, в какой РОН
+         * записать результат.
+         * @param[out] res.value    Считанное 16-битное значение
+         * непосредственно из регистра @p res.addr.
+         *
+         * @note       Этот режим обозначается в ассемблере просто именем
+         * регистра: `Rn`.
+         * @warning    В режиме 0 значение @p res.addr трактуется кодом
+         * выполнения команды как индекс в массиве регистров, а не как
+         * указатель на ОЗУ. Попытка передать @p res.addr в функции типа
+         * `w_read()` или `w_write()` приведет к критической ошибке эмуляции!
+         *
+         * @code
+         * // Пример на ассемблере PDP-11:
+         * MOV R1, R2      ; Скопировать чистое содержимое регистра R1 в
+         * регистр R2 ADD R0, R3      ; Прибавить значение из R0 к значению в
+         * R3
+         * @endcode
+         */
     case 0:
-        res.addr  = num_register;
+        // мода 0, R1
+        /* Шаг 1: Эффективным "адресом" становится сам номер регистра */
+        res.addr = num_register;
+
+        /* Шаг 2: Извлекаем 16-битное значение напрямую из этого регистра */
         res.value = pdp_reg_get_var(pdp, res.addr);
 
-        // ss -откуда, dd - куда;
-
+        /* Шаг 3: Логируем операцию в стандартном для ассемблера формате Rn */
         PRINT_RESULT("R%d ", res.addr);
 
         break;
-    // мода 1, (R1)
+        /** @} */
+        // мода 1, (R1)
+        /**
+         * @name      Режим адресации: Регистровый косвенный (Register
+         * Indirect)
+         * @anchor    addressing_mode_1
+         * @see       http://pdp-11.org.ru
+         * @{
+         */
+
+        /**
+         * @brief     Обработка **Режима 1** адресации PDP-11 (Косвенная
+         регистрация).
+         * @details   Данный `case` выполняется, когда метод адресации операнда
+         равен 1.
+         *            В этом режиме указанный регистр содержит не сам операнд,
+         а его
+         *            **16-битный память-адрес**. Процессор считывает этот
+         адрес из
+         *            регистра, а затем выполняет физическое чтение данных из
+         памяти.
+         *
+         * ### Схема работы (Data Flow):
+         * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         * [ Регистр (num_register) ] -------> [ Память (res.addr) ] -------> [
+         res.value ]
+         *   содержит адрес ссылки                хранит целевое значение
+         готовый операнд
+         * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         *
+         * @param[in]  pdp          Указатель на структуру виртуальной машины
+         PDP-11.
+         * @param[in]  num_register Номер целевого регистра общего назначения
+         (R0..R7).
+         * @param[out] res.addr     Вычисленный эффективный адрес в памяти
+         процессора.
+         * @param[out] res.value    Считанное 16-битное значение (слово) по
+         адресу @p res.addr.
+         *
+         * @note       Этот режим часто обозначается в ассемблере как `(Rn)`.
+
+         *
+         * @code
+         * // Пример на ассемблере PDP-11:
+         * MOV (R1), R2    ; Переслать значение из адреса, лежащего в R1, в
+         регистр R2
+         * @endcode
+         */
     case 1:
-        res.addr = pdp_reg_get_var(pdp, num_register); // в регистре адрес
-        res.value = w_read(pdp, res.addr); // по адресу - значение
-        // ss -откуда, dd - куда;
+        /* Шаг 1: Извлекаем из регистра адрес ячейки памяти */
+        res.addr = pdp_reg_get_var(pdp, num_register);
+        /* Шаг 2: Выполняем чтение 16-битного слова из шины памяти по этому
+         * адресу */
+        res.value = w_read(pdp, res.addr);
+        /* Шаг 3: Логируем операцию для отладки в формате (Rn) */
         PRINT_RESULT("(R%d) ", num_register);
         break;
+        /** @} */
     // мода 2, (R1)+ или #3
     case 2:
         res.addr = pdp_reg_get_var(pdp, num_register);
@@ -190,7 +296,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             res.addr  = addr_reg_pc;
             res.value = w_read(pdp, (address_word_t)(res.addr));
 
-            PRINT_RESULT("@#%o ", res.value);
+            PRINT_RESULT("@#%o ", res.addr);
         } else {
 
             address_word_t addr_top = (address_word_t)(
@@ -205,11 +311,14 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         break;
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
+
         pdp_reg_set_var(
             pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
+
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
 
         res.value = w_read(pdp, (address_word_t)(res.addr));
+
         PRINT_RESULT("-(R%d) ", num_register);
         break;
     case 5:; //  для объявления типа данных word_t требуется " ; " после метки
@@ -226,8 +335,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         res.addr  = addr_top;
         res.value = w_read(pdp, (address_word_t)(res.addr));
         // ss -откуда, dd - куда;
-        // pdp_reg_set_var(
-        //     pdp, num_register, (address_word_t)(inc_addr_offset - 2));
+
         PRINT_RESULT("@-(R%d) ", num_register);
 
         break;
@@ -251,27 +359,24 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         }
         break;
     case 7:;
-        address_word_t temp_addr   = 0x0000;
-        address_word_t temp_addr_2 = 0x0000;
+        word_t temp_addr = 00;
+        addr_in_pc       = (address_word_t) pdp_reg_get_var(pdp, 7);
+        pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
 
-        addr_in_pc  = (address_word_t) pdp_reg_get_var(pdp, 7);
-        word_in_mem = w_read(pdp, (word_t)(addr_in_pc + 2));
+        addr_in_pc = (address_word_t) pdp_reg_get_var(pdp, 7);
+
+        word_t offset = w_read(pdp, (word_t)(addr_in_pc));
+
+        pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
 
         if (num_register == 7) {
-            addr_in_pc = (address_word_t)(pdp_reg_get_var(pdp, 7));
-            pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
+            res.addr = pdp_reg_get_var(pdp, 7);
 
-            res.addr = pdp_reg_get_var(pdp, num_register);
-            pdp_reg_set_var(pdp, 7, (address_word_t)(res.addr + 2));
+            res.addr = (word_t)(offset + res.addr);
 
-            res.addr = pdp_reg_get_var(pdp, num_register);
-
-            temp_addr_2 = res.addr;
-
-            res.addr  = (word_t)((res.addr + word_in_mem));
             temp_addr = w_read(pdp, res.addr);
 
-            res.value = w_read(pdp, res.addr);
+            res.value = w_read(pdp, temp_addr);
 
             PRINT_RESULT("@%o ", res.addr);
 
@@ -279,20 +384,13 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             res.addr = pdp_reg_get_var(pdp, num_register);
 
-            temp_addr_2
-                = (word_t)(((addr_in_pc) - (2 * ((word_in_mem + 02) & 7))));
+            res.addr = (word_t)(offset + res.addr);
 
-            res.addr = (word_t)((res.addr + (2 * ((word_in_mem - 02) & 7))));
+            res.addr = w_read(pdp, res.addr);
 
-            temp_addr = w_read(pdp, res.addr);
+            res.value = w_read(pdp, res.addr);
 
-            res.addr = temp_addr_2;
-
-            res.value = w_read(pdp, temp_addr);
-
-            PRINT_RESULT("@%o(R%o) ",
-                         (word_in_mem) ? word_in_mem : temp_addr_2,
-                         num_register);
+            PRINT_RESULT("@%o(R%d) ", offset, num_register);
         }
 
         break;
