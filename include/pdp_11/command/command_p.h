@@ -8,6 +8,7 @@
 #    define HAS_NN    (1 << 2) // 4
 #    define HAS_XX    (1 << 3) // 8
 #    define HAS_R     (1 << 4) // 16
+#    define HAS_N     (1 << 5) // 32
 
 struct pdp_11_t;
 typedef struct {

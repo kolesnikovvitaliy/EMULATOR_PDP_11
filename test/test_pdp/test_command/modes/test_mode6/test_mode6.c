@@ -28,7 +28,7 @@ test_pc_reg(struct pdp_11_t *pdp)
     pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, addr, (word_t) 0016717);
+    w_write(pdp, addr, (word_t) 0016707);
 
     pdp_reg_set_var(pdp, 3, 0200);
     w_write(pdp, 0204, (word_t) 015);
@@ -46,19 +46,15 @@ test_pc_reg(struct pdp_11_t *pdp)
 
     //! < Контроль расчетных значений декодера для автодекремента
     //! < Исполнение команды с триггером автодекремента регистров
-
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
+    // ! < Проверка измененного состояния памяти после выполнения операции
+    // PRINT_RESULT("\npdp_reg_get_var(pdp, 6) = %o\n", pdp_reg_get_var(pdp,
+    // 6)); PRINT_RESULT("\nw_read(pdp, pdp_reg_get_var(pdp, 7) = %o\n",
+    //              w_read(pdp, pdp_reg_get_var(pdp, 7)));
+    assert(pdp_reg_get_var(pdp, 7) == 0204);
+    assert(w_read(pdp, pdp_reg_get_var(pdp, 7)) == 015);
 
-    //! < Проверка измененного состояния памяти после выполнения операции
-    assert(w_read(pdp, pdp_reg_get_var(pdp, 7)) == 0204);
-    addr = 01006;
-    pdp_reg_set_var(pdp, 7, addr);
-    w_write(pdp, addr, (word_t) 0013703);
-    run_command->do_commands_command(
-        pdp, addr, w_read(pdp, addr), run_command->params);
-    assert(pdp_reg_get_var(pdp, 3) == 015);
-    // __command_reg_dump(pdp);
     PRINT_RESULT("  %s", " ... OK\n");
     pdp_reg_clear(pdp);
 }

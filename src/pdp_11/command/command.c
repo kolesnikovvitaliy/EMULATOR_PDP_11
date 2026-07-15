@@ -135,8 +135,8 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 {
 
     arg_t  res          = { 0, 0 };
-    word_t num_register = word_command & 7;
-    byte_t mode         = (word_command >> 3) & 7;
+    word_t num_register = word_command & 07;
+    byte_t mode         = (word_command >> 3) & 07;
 
     switch (mode) {
         /**
@@ -350,11 +350,15 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         res.value = w_read(pdp, res.addr);
 
         if (num_register == 7) {
-            addr_in_pc  = (address_word_t)(pdp_reg_get_var(pdp, 7) + 2);
+            addr_in_pc = (address_word_t)(pdp_reg_get_var(pdp, 7));
+            pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
+            addr_in_pc  = (address_word_t)(pdp_reg_get_var(pdp, 7));
             word_in_mem = (word_t)(addr_in_pc + word_in_mem);
-            res.value   = word_in_mem;
+
+            res.value = word_in_mem;
             PRINT_RESULT("%o ", res.value);
         } else {
+
             PRINT_RESULT("%d(R%d) ", word_in_mem, num_register);
         }
         break;
@@ -438,24 +442,74 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 op_code_t
 __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
 {
+
+    word_t temp_word_command = word_command;
+    word_t flag              = 0;
+
     op_code_t opcode = { { 0, 0 }, { 0, 0 } };
 
     // ss -откуда, dd - куда;
     // Выделяем 6 бит источника (сдвиг на 6 вправо)
+    if (param & NO_PARAMS) {
+        return opcode;
+    }
+    // if (param & (HAS_SS  HAS_DD)) {
+    //     opcode.ss         = __get_args(pdp, word_command >> 6);
+    //     opcode.dd         = __get_args(pdp, word_command);
+    //     temp_word_command = temp_word_command >> 12;
+    //     flag              = 1;
+    // }
     if (param & HAS_SS) {
-        opcode.ss = __get_args(pdp, word_command >> 6);
+        opcode.ss         = __get_args(pdp, word_command >> 6);
+        temp_word_command = temp_word_command >> 6;
     }
     // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
     if (param & HAS_DD) {
-        opcode.dd = __get_args(pdp, word_command);
+        opcode.dd         = __get_args(pdp, word_command);
+        temp_word_command = temp_word_command >> 6;
+    }
+
+    // if (param & (HAS_DD)) {
+    //     opcode.dd         = __get_args(pdp, temp_word_command & 077);
+    //     temp_word_command = temp_word_command >> 6;
+    // }
+    // // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
+    // if (param & (HAS_SS)) {
+    //     opcode.ss         = __get_args(pdp, temp_word_command & 077);
+    //     temp_word_command = temp_word_command >> 6;
+    // }
+
+    // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
+
+    if (param & HAS_NN) {
+        opcode.dd         = __get_args(pdp, temp_word_command & 077);
+        temp_word_command = temp_word_command >> 6;
+    }
+
+    if (param & HAS_R) {
+        opcode.dd         = __get_args(pdp, temp_word_command & 07);
+        temp_word_command = temp_word_command >> 3;
     }
     // Выделяем 6 бит приемника (маскирование происходит внутри __get_args)
-    if (param & HAS_NN) {
-        opcode.dd = __get_args(pdp, word_command);
+
+    if (param & HAS_N) {
+        opcode.dd         = __get_args(pdp, temp_word_command & 07);
+        temp_word_command = temp_word_command >> 3;
     }
-    if (param & HAS_R) {
-        opcode.ss = __get_args(pdp, word_command >> 6);
+    if (param & HAS_XX) {
+        opcode.ss         = __get_args(pdp, temp_word_command & 0377);
+        temp_word_command = temp_word_command >> 8;
     }
+    /*
+        TODO:
+        B	0 for word, 1 for byte (1 bit)
+        DD	Destination field (6 bits)
+        N	Number (3 bits)
+        NN	Number (6 bits)
+        R	Register (3 bits, R0-5/SP/PC)
+        SS	Source field (6 bits)
+        TT	Number (8 bits)
+        XX	Offset (8 bits, -128 to +127)*/
 
     return opcode;
 }
