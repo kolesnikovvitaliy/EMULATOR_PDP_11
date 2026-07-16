@@ -35,7 +35,7 @@ test_mode0(struct pdp_11_t *pdp)
     pdp_reg_set_var(pdp, 3, 012); ///< Данные приемника (Destination) в R3
     pdp_reg_set_var(pdp, 5, 034); ///< Данные источника (Source) в R5
 
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (pdp) {
         //! < Декодируем макет инструкции (0010503) для извлечения модов и
         //! номеров регистров

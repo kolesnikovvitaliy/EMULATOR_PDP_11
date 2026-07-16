@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+// TODO: ADD commands
 command_t template_commands[] = {
     { 0000000, 0111111, (byte_t *) "unknown", command_do_unknown, NO_PARAMS },
     { 0177777, 0000000, (byte_t *) "halt", command_do_halt, NO_PARAMS },

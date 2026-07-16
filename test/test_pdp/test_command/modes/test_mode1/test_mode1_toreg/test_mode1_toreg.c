@@ -36,7 +36,7 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
     w_write(pdp, 0200, 034);
     //! @}
 
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (pdp) {
         //! < Читаем инструкцию из памяти по заданному адресу и парсим операнды
         opcode

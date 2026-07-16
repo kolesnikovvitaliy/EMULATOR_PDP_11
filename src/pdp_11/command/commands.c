@@ -72,7 +72,7 @@ command_do_add(struct pdp_11_t *pdp,
 
     (void) addr;
     //(void) params;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -90,7 +90,7 @@ command_do_mov(struct pdp_11_t *pdp,
 
     (void) addr;
     //(void) params;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
@@ -108,7 +108,7 @@ command_do_movb(struct pdp_11_t *pdp,
 
     (void) addr;
     //(void) params;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
@@ -125,7 +125,7 @@ command_do_inc(struct pdp_11_t *pdp,
 {
     (void) addr;
     //(void) params;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
@@ -142,7 +142,7 @@ command_do_clr(struct pdp_11_t *pdp,
 {
     (void) addr;
     //(void) params;
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
@@ -166,9 +166,13 @@ command_do_sob(struct pdp_11_t *pdp,
 {
     (void) addr;
     (void) params;
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+    // word_t offset_word  = (word_command & 077);
+    word_t offset_word = opcode.value_nn;
 
-    word_t offset_word  = (word_command & 077);
-    word_t num_register = (word_command >> 6) & 7;
+    // word_t num_register = (word_command >> 6) & 7;
+    word_t num_register = opcode.r_reg;
 
     word_t count_cycles = pdp_reg_get_var(pdp, num_register);
 

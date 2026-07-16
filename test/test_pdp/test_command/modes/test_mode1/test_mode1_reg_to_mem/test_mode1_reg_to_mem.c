@@ -44,7 +44,7 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     w_write(pdp, 0200, 034);
     //! @}
 
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (pdp) {
         //! < Извлечение битовой маски операции
         opcode

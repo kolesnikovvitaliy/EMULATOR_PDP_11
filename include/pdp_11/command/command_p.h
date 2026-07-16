@@ -3,12 +3,20 @@
 #    include "types/types.h"
 
 #    define NO_PARAMS 0
-#    define HAS_DD    (1 << 0) // 1
-#    define HAS_SS    (1 << 1) // 2
-#    define HAS_NN    (1 << 2) // 4
-#    define HAS_XX    (1 << 3) // 8
-#    define HAS_R     (1 << 4) // 16
-#    define HAS_N     (1 << 5) // 32
+#    define HAS_DD    (1 << 0) // 1 DD Поле приемника (Destination field) 6 бит
+#    define HAS_SS    (1 << 1) // 2 SS Поле источника (Source field) 6 бит
+#    define HAS_NN    (1 << 2) // 4 NN Числовое значение 6 бит
+#    define HAS_XX                                                            \
+        (1 << 3) // 8 XX Смещение (Адрес относительного перехода от -128 до
+                 // +127) 8 бит
+#    define HAS_R (1 << 4) // 16 R Индекс регистра (R0-R5, SP, PC) 3 бита
+#    define HAS_N (1 << 5) // 32 N Числовое значение 3 бита
+#    define HAS_B                                                             \
+        (1 << 7) // 64 B Признак разрядности: 0 — слово (word), 1 — байт (byte)
+                 // 1 бит
+#    define HAS_TT (1 << 8) // 128 TT Числовое значение 8 бит
+
+#    define OP_CODE_T_INIT op_code_t opcode = { 0 };
 
 struct pdp_11_t;
 typedef struct {
@@ -28,8 +36,17 @@ typedef struct {
 } arg_t;
 
 typedef struct {
-    arg_t ss;
-    arg_t dd;
+    arg_t  ss; // SS Поле источника (Source field) 6 бит
+    arg_t  dd; // DD Поле приемника (Destination field) 6 бит
+    byte_t r_reg; // R Индекс регистра (R0-R5, SP, PC) 3 бита
+    byte_t value_nn;  // NN Числовое значение 6 бит
+    byte_t value_n;   // N Числовое значение 3 бита
+    byte_t offset_xx; // XX Смещение (Адрес относительного перехода от -128 до
+                      // +127) 8 бит
+    byte_t value_b; // B Признак разрядности: 0 — слово (word), 1 — байт (byte)
+                    // 1 бит
+    byte_t value_tt; // TT Числовое значение 8 бит
+
 } op_code_t;
 
 op_code_t __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param);

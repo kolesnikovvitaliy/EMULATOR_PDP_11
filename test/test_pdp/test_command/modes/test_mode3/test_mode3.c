@@ -39,7 +39,7 @@ test_mode_3_valid_register(struct pdp_11_t *pdp)
     command_t *run_command;
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-    // op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    // OP_CODE_T_INIT
     // if (pdp) {
     //     //! < Декодирование аргументов инкрементной операции
     //     opcode
@@ -101,7 +101,7 @@ test_mode_3_register_ps(struct pdp_11_t *pdp)
     command_t *run_command;
     run_command = __ptr_command(
         (pdp_11_t *) pdp, (command_t **) ptr_pdp->command, addr);
-    // op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    // OP_CODE_T_INIT
     // if (pdp) {
     //     //! < Декодирование аргументов инкрементной операции
     //     opcode

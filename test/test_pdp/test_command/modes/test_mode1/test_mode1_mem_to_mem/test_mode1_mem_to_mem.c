@@ -40,7 +40,7 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     w_write(pdp, 0210, 011); ///< Старые данные в целевой ячейке
     //! @}
 
-    op_code_t opcode = { { 0, 0 }, { 0, 0 } };
+    OP_CODE_T_INIT
     if (pdp) {
         //! < Чтение и разбор опкода
         opcode
