@@ -10,8 +10,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// TODO : ADD COMMAND CLR, SOB:
+// TODO : ADD COMMAND
 
+//##########################################################################
 void
 __command_reg_dump(struct pdp_11_t *pdp)
 {
@@ -28,8 +29,9 @@ __command_reg_dump(struct pdp_11_t *pdp)
                  ptr_reg->SP,
                  ptr_reg->PC);
 }
+//##########################################################################
 // COMMANDS
-
+//##########################################################################
 void
 command_do_halt(struct pdp_11_t *pdp,
                 address_word_t   addr,
@@ -52,6 +54,7 @@ command_do_halt(struct pdp_11_t *pdp,
     free(pdp);
     exit(0);
 }
+//##########################################################################
 
 /**
 @brief Выполняет операцию сложения (ADD) для процессора PDP-11.
@@ -80,7 +83,9 @@ command_do_add(struct pdp_11_t *pdp,
     pdp_reg_set_var(
         pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
 }
+//##########################################################################
 
+//##########################################################################
 void
 command_do_mov(struct pdp_11_t *pdp,
                address_word_t   addr,
@@ -95,10 +100,16 @@ command_do_mov(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    if (opcode.dd.addr <= 7) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    } else {
+        w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    }
+    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
-
+//##########################################################################
+//##########################################################################
 void
 command_do_movb(struct pdp_11_t *pdp,
                 address_word_t   addr,
@@ -113,10 +124,15 @@ command_do_movb(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    if (opcode.dd.addr <= 7) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+    } else {
+        b_write(pdp, opcode.dd.addr, (byte_t) opcode.ss.value);
+    }
 }
+//##########################################################################
 
+//##########################################################################
 void
 command_do_inc(struct pdp_11_t *pdp,
                address_word_t   addr,
@@ -133,7 +149,9 @@ command_do_inc(struct pdp_11_t *pdp,
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
     pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
+//##########################################################################
 
+//##########################################################################
 void
 command_do_clr(struct pdp_11_t *pdp,
                address_word_t   addr,
@@ -157,7 +175,9 @@ command_do_clr(struct pdp_11_t *pdp,
     // pdp_mem_dump(pdp, 0x200, 0x26);
     // __command_reg_dump(pdp);
 }
+//##########################################################################
 
+//##########################################################################
 void
 command_do_sob(struct pdp_11_t *pdp,
                address_word_t   addr,
@@ -165,14 +185,14 @@ command_do_sob(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    (void) params;
+    //(void) params;
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
     // word_t offset_word  = (word_command & 077);
-    word_t offset_word = opcode.value_nn;
+    word_t offset_word = (word_t) opcode.value_nn;
 
     // word_t num_register = (word_command >> 6) & 7;
-    word_t num_register = opcode.r_reg;
+    word_t num_register = (word_t) opcode.r_reg;
 
     word_t count_cycles = pdp_reg_get_var(pdp, num_register);
 
@@ -195,7 +215,9 @@ command_do_sob(struct pdp_11_t *pdp,
     //__command_reg_dump(pdp);
     // sleep(5);
 }
+//##########################################################################
 
+//##########################################################################
 void
 command_do_unknown(struct pdp_11_t *pdp,
                    address_word_t   addr,
@@ -208,3 +230,7 @@ command_do_unknown(struct pdp_11_t *pdp,
     __print_command(addr, word_command, (byte_t *) "unknown\n");
     // pdp_reg_set_var(pdp, addr, (word_t)(addr + 4));
 }
+//##########################################################################
+
+//##########################################################################
+//##########################################################################

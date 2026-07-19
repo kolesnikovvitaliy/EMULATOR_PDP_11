@@ -25,6 +25,7 @@
  * @brief Внешний массив шаблонов базовых команд процессора
  */
 extern command_t template_commands[];
+byte_t           set_has_b = 0;
 
 /**
  * @brief 📦 Инициализатор контейнера: Выделение памяти под массив команд
@@ -41,7 +42,7 @@ command_t **
 command_new(void)
 {
     return (command_t **) malloc(
-        commands_list
+        (size_t) commands_list
         * sizeof(command_t *)); // Выделение памяти для объекта command_t
 }
 
@@ -335,14 +336,26 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 2:
         res.addr
             = pdp_reg_get_var(pdp, num_register); // ss -откуда, dd - куда;
-        pdp_reg_set_var(pdp, num_register, (address_word_t)(res.addr + 2));
+
+        if (set_has_b && (!(num_register == 7 || num_register == 6))) {
+            pdp_reg_set_var(pdp, num_register, (address_byte_t)(res.addr + 1));
+        } else {
+            pdp_reg_set_var(pdp, num_register, (address_word_t)(res.addr + 2));
+        }
 
         // печать разной мнемоники для PC и других регистров
-        if (num_register == 7) {
-            res.value = w_read(pdp, (address_word_t)(res.addr + 2));
+        if (num_register == 7 || num_register == 6) {
+            res.value = (word_t) w_read(pdp, (address_word_t)(res.addr + 2));
             PRINT_RESULT("#%o ", res.value);
+            break;
         } else {
-            res.value = w_read(pdp, (address_word_t)(res.addr));
+            if (set_has_b) {
+                res.value
+                    = (word_t)((b_read(pdp, (address_byte_t)(res.addr))));
+                set_has_b = 0;
+            } else {
+                res.value = (word_t) w_read(pdp, (address_word_t)(res.addr));
+            }
             PRINT_RESULT("(R%d)+ ", num_register);
         }
 
@@ -413,7 +426,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         pdp_reg_set_var(pdp, num_register, (address_word_t)(inc_addr_offset));
 
         if (num_register == 7) {
-
             address_word_t addr_reg_pc = (address_word_t)(
                 w_read(pdp, (address_word_t)(inc_addr_offset)));
 
@@ -422,7 +434,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             PRINT_RESULT("@#%o ", res.addr);
         } else {
-
             address_word_t addr_top = (address_word_t)(
                 w_read(pdp, (address_word_t)(temp_value_register)));
 
@@ -491,13 +502,20 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
          */
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
-
-        pdp_reg_set_var(
-            pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
+        if (!set_has_b) {
+            pdp_reg_set_var(
+                pdp, num_register, (address_word_t)(t_var_reg - 2));
+        } else if (!(num_register == 7 || num_register == 6)) {
+            pdp_reg_set_var(
+                pdp, num_register, (address_byte_t)(t_var_reg - 1));
+        }
 
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
-
-        res.value = w_read(pdp, (address_word_t)(res.addr));
+        if (!set_has_b) {
+            res.value = (word_t) w_read(pdp, (address_word_t)(res.addr));
+        } else {
+            res.value = (word_t) b_read(pdp, (address_byte_t)(res.addr));
+        }
 
         PRINT_RESULT("-(R%d) ", num_register);
         break;
@@ -653,7 +671,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             res.value = word_in_mem;
             PRINT_RESULT("%o ", res.value);
         } else {
-
             PRINT_RESULT("%d(R%d) ", word_in_mem, num_register);
         }
         break;
@@ -739,7 +756,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             PRINT_RESULT("@%o ", res.addr);
 
         } else {
-
             res.addr = pdp_reg_get_var(pdp, num_register);
 
             res.addr = (word_t)(offset + res.addr);
@@ -793,7 +809,10 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
     if (param & NO_PARAMS) {
         return opcode;
     }
-
+    if (param & HAS_B) {
+        // Сдвигаем на 6 бит вправо и накладываем маску 077 (6 бит)
+        set_has_b = 1;
+    }
     // 1. Извлечение поля SOURCE (SS): всегда биты [6..11]
     if (param & HAS_SS) {
         // Сдвигаем на 6 бит вправо и накладываем маску 077 (6 бит)

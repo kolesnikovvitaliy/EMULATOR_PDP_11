@@ -3,7 +3,7 @@
 #    include <stdio.h>
 
 enum { size_buffer_default = 0xFFFF };
-typedef unsigned char      byte_t;
+typedef signed char        byte_t;
 typedef unsigned short int word_t;
 
 typedef int                bool_t;

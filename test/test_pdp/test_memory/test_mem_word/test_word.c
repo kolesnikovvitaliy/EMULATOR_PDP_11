@@ -22,7 +22,7 @@ test_rw_byte_w(struct pdp_11_t *pdp)
     TRACE("Пишем и читаем байт по четному адресу", "");
 
     b_write(pdp, adr, (byte_t) b0);
-    bres = b_read(pdp, adr);
+    bres = (word_t) b_read(pdp, adr);
     assert(bres == b0);
 
     PRINT_RESULT("%s", " ... OK");
@@ -62,8 +62,8 @@ test_w2b_rword_w(struct pdp_11_t *pdp)
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
-    b0 = 0xb2;
-    b1 = 0xa1;
+    b0 = (byte_t) 0xb2;
+    b1 = (byte_t) 0xa1;
     b_write(pdp, a, b0);
     b_write(pdp, (address_byte_t)(a + 1), b1);
     wres = w_read(pdp, a);
@@ -84,8 +84,8 @@ test_wword_r2b_w(struct pdp_11_t *pdp)
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
-    res_b0 = 0xb2;
-    res_b1 = 0xa1;
+    res_b0 = (byte_t) 0xb2;
+    res_b1 = (byte_t) 0xa1;
     w_write(pdp, a, w);
     b0 = b_read(pdp, a);
     b1 = b_read(pdp, (address_byte_t)(a + 1));

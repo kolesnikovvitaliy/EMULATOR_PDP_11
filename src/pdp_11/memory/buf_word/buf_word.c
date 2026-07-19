@@ -80,7 +80,8 @@ __byte_read_w(void *mem_word, address_byte_t addr)
     // Читаем байт из слова по адресу;
     mem_word_t *ptr = (mem_word_t *) mem_word;
 
-    return (byte_t) * (ptr->buf_w + addr) & 0xFF;
+    // return (byte_t) * (ptr->buf_w + addr) & 0xFF;
+    return (byte_t) * (ptr->buf_w + addr);
 }
 //------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////

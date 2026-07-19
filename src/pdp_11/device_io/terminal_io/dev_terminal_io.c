@@ -18,9 +18,9 @@ load_data_term(struct pdp_11_t *pdp)
 
     addr = count_str = data = res_input = 0x00;
     res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
-    // printf("RES INPUT DATA = %d\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
+    // printf("RES INPUT DATA = %hx\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
     //                res_input, addr, count_str);
-    DEBUG("\nRES INPUT DATA = %d\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
+    DEBUG("\nRES INPUT DATA = %hx\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
           res_input,
           addr,
           count_str);
