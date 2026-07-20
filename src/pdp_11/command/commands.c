@@ -100,11 +100,17 @@ command_do_mov(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
+
     if (opcode.dd.addr <= 7) {
         pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
     } else {
         w_write(pdp, opcode.dd.addr, opcode.ss.value);
     }
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
+    __command_reg_dump(pdp);
     // w_write(pdp, opcode.dd.addr, opcode.ss.value);
     // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
