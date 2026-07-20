@@ -350,8 +350,8 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             break;
         } else {
             if (set_has_b) {
-                res.value
-                    = (word_t)((b_read(pdp, (address_byte_t)(res.addr))));
+                res.value = (word_t)(
+                    signed char) ((b_read(pdp, (address_byte_t)(res.addr))));
                 set_has_b = 0;
             } else {
                 res.value = (word_t) w_read(pdp, (address_word_t)(res.addr));
@@ -501,13 +501,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
          * @see w_read()
          */
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
-        // word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
-        // pdp_reg_set_var(
-        //     pdp, num_register, (address_word_t)(t_var_reg - 2)); // TODO: +1
-        // res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
-        //
-        // res.value = w_read(pdp, (address_word_t)(res.addr));
-        // PRINT_RESULT("-(R%d) ", num_register);
+
         word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
 
         if (set_has_b && (!(num_register == 7 || num_register == 6))) {
@@ -520,16 +514,13 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
 
-        PRINT_RESULT("\nres.addr = %o\n", res.addr);
-
         if (set_has_b && (!(num_register == 7 || num_register == 6))) {
-            res.value = (word_t) b_read(
-                pdp, (address_byte_t)(pdp_reg_get_var(pdp, num_register)));
+            res.value = (word_t) b_read(pdp, (address_byte_t)(t_var_reg + 1));
         } else {
-            res.value = (word_t) w_read(pdp, t_var_reg); // TODO:
+            res.value = (word_t) w_read(pdp, (address_word_t)(t_var_reg + 2));
         }
 
-        //__command_reg_dump(pdp);
+        // __command_reg_dump(pdp);
         PRINT_RESULT("-(R%d) ", num_register);
         break;
         /**
@@ -826,17 +817,22 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
         // Сдвигаем на 6 бит вправо и накладываем маску 077 (6 бит)
         set_has_b = 1;
     }
+    // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
+    if (param & HAS_DD) {
+        // Младшие 6 бит слова команды
+        opcode.dd = __get_args(pdp, word_command & 077);
+    }
     // 1. Извлечение поля SOURCE (SS): всегда биты [6..11]
     if (param & HAS_SS) {
         // Сдвигаем на 6 бит вправо и накладываем маску 077 (6 бит)
         opcode.ss = __get_args(pdp, (word_command >> 6) & 077);
     }
 
-    // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
-    if (param & HAS_DD) {
-        // Младшие 6 бит слова команды
-        opcode.dd = __get_args(pdp, word_command & 077);
-    }
+    // // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
+    // if (param & HAS_DD) {
+    //     // Младшие 6 бит слова команды
+    //     opcode.dd = __get_args(pdp, word_command & 077);
+    // }
 
     // 3. Извлечение чистого регистра R (например, в JSR R, DD или RTS R)
     if (param & HAS_R) {
