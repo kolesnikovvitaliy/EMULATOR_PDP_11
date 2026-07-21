@@ -16,9 +16,9 @@ __is_valid_address(pdp_11_t *pdp, const address_byte_t addr)
     (void) pdp;
     unsigned char size = 0x0;
 
-    // if (addr <= *pdp->PC && addr >= *pdp->R0) {
-    //     return 1;
-    // } // TODO: ПРОВЕРИТЬ
+    if (addr <= *pdp->PC && addr >= *pdp->R0) {
+        return 1;
+    } // TODO: ПРОВЕРИТЬ
     if ((addr > ~(-__get_size_buffer())) || (addr < size)) {
         return 0; // замена (__get_size_buffer() - 1)  на ~(-);
     }

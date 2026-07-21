@@ -8,7 +8,7 @@ CC = gcc
 
 CFLAGS = -O2 -g3 -Wall -Wextra -Wpedantic -Wpointer-arith -Wstrict-prototypes \
 	-std=c11 -Iinclude -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough\
-	-fsanitize=address -fsanitize=undefined\
+	-fsanitize=address -fsanitize=undefined -static-libasan -static-libubsan\
 	-Werror=format-security -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS\
 	-Warray-bounds -fstack-clash-protection -fstack-protector-strong -Wl,-z,nodlopen -Wl,-z,noexecstack -Wl,-z,relro \
 	-Wl,-z,now

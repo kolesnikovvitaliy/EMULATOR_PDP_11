@@ -515,7 +515,8 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
 
         if (set_has_b && (!(num_register == 7 || num_register == 6))) {
-            res.value = (word_t) b_read(pdp, (address_byte_t)(t_var_reg + 1));
+            res.value = (word_t)(
+                signed char) (b_read(pdp, (address_byte_t)(t_var_reg + 1)));
         } else {
             res.value = (word_t) w_read(pdp, (address_word_t)(t_var_reg + 2));
         }
