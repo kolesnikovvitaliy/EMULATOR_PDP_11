@@ -13,16 +13,21 @@
 int
 __is_valid_address(pdp_11_t *pdp, const address_byte_t addr)
 {
-    (void) pdp;
-    unsigned char size = 0x0;
-
-    if (addr <= *pdp->PC && addr >= *pdp->R0) {
-        return 1;
-    } // TODO: ПРОВЕРИТЬ
-    if ((addr > ~(-__get_size_buffer())) || (addr < size)) {
-        return 0; // замена (__get_size_buffer() - 1)  на ~(-);
+    // Защита от передачи пустого указателя на контекст процессора
+    if (pdp == NULL) {
+        return 0;
     }
-    return 1;
+
+    // Получаем максимальный размер буфера памяти эмулятора
+    // (например, 64 * 1024 для полных 64 КБ)
+    unsigned int mem_size = __get_size_buffer();
+
+    // Адрес валиден, если он строго меньше размера буфера памяти.
+    if (addr < mem_size) {
+        return 1;
+    }
+    // }
+    return 0;
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
