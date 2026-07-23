@@ -15,6 +15,17 @@
         (1 << 6) // 64 B Признак разрядности: 0 — слово (word), 1 — байт
                  // (byte) 1 бит
 //#    define HAS_TT (1 << 8) // 128 TT Числовое значение 8 бит
+// NZVC
+#    define N    3
+#    define Z    2
+#    define V    1
+#    define C    0
+#    define ONE  1
+#    define ZERO 0
+
+#    define SET_PSW_BIT(                                                      \
+        process_state_word, bit /* NZVC */, value /* 1 | 0 */)                \
+        (process_state_word |= (value << bit))
 
 #    define OP_CODE_T_INIT op_code_t opcode = { 0 };
 

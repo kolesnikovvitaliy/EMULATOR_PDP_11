@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+extern word_t psw;
+extern word_t tick;
+
 // TODO : ADD COMMAND
 
 //##########################################################################
@@ -19,15 +22,31 @@ __command_reg_dump(struct pdp_11_t *pdp)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
 
-    PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
+    // PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
+    //              ptr_reg->R0,
+    //              ptr_reg->R1,
+    //              ptr_reg->R2,
+    //              ptr_reg->R3,
+    //              ptr_reg->R4,
+    //              ptr_reg->R5,
+    //              ptr_reg->SP,
+    //              ptr_reg->PC);
+    PRINT_RESULT("\nr0=%06o r2=%06o r4=%06o sp=%06o\nr1=%06o r3=%06o r5=%06o "
+                 "pc=%06o\n\npsw=%06o: cm=k pm=k pri=0     z  [%d]",
                  ptr_reg->R0,
-                 ptr_reg->R1,
                  ptr_reg->R2,
-                 ptr_reg->R3,
                  ptr_reg->R4,
-                 ptr_reg->R5,
                  ptr_reg->SP,
-                 ptr_reg->PC);
+                 ptr_reg->R1,
+                 ptr_reg->R3,
+                 ptr_reg->R5,
+                 ptr_reg->PC,
+                 psw,
+                 tick);
+    /*---------------- halted ---------------
+r0=000133 r2=000105 r4=000000 sp=000000
+r1=000000 r3=000000 r5=000000 pc=001020
+psw=000004: cm=k pm=k pri=0    z   [21]*/
 }
 //##########################################################################
 // COMMANDS
@@ -44,12 +63,13 @@ command_do_halt(struct pdp_11_t *pdp,
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     word_t *  ptr_pc  = ptr_pdp->PC;
     *ptr_pc           = (word_t)(*ptr_pc + 2);
+    tick++;
+    PRINT_RESULT("\n\n---------------- halted ---------------", "");
     __command_reg_dump(pdp);
     // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x20);
-    PRINT_RESULT("THE END!!!\n", "");
-
+    PRINT_RESULT("\n\nTHE END!!!\n", "");
     pdp_destroy(pdp);
     free(pdp);
     exit(0);
@@ -106,6 +126,7 @@ command_do_mov(struct pdp_11_t *pdp,
     } else {
         w_write(pdp, opcode.dd.addr, opcode.ss.value);
     }
+    SET_PSW_BIT(psw, V, ZERO);
 }
 //##########################################################################
 //##########################################################################

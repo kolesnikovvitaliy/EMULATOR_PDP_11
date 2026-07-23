@@ -819,21 +819,21 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
         set_has_b = 1;
     }
     // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
-    if (param & HAS_DD) {
-        // Младшие 6 бит слова команды
-        opcode.dd = __get_args(pdp, word_command & 077);
-    }
+    // if (param & HAS_DD) {
+    //     // Младшие 6 бит слова команды
+    //     opcode.dd = __get_args(pdp, word_command & 077);
+    // }
     // 1. Извлечение поля SOURCE (SS): всегда биты [6..11]
     if (param & HAS_SS) {
         // Сдвигаем на 6 бит вправо и накладываем маску 077 (6 бит)
         opcode.ss = __get_args(pdp, (word_command >> 6) & 077);
     }
 
-    // // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
-    // if (param & HAS_DD) {
-    //     // Младшие 6 бит слова команды
-    //     opcode.dd = __get_args(pdp, word_command & 077);
-    // }
+    // 2. Извлечение поля DESTINATION (DD): всегда биты [0..5]
+    if (param & HAS_DD) {
+        // Младшие 6 бит слова команды
+        opcode.dd = __get_args(pdp, word_command & 077);
+    }
 
     // 3. Извлечение чистого регистра R (например, в JSR R, DD или RTS R)
     if (param & HAS_R) {

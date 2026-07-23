@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+word_t psw  = 0;
+word_t tick = 0;
+
 /**
  * @brief Создает новый экземпляр структуры PDP-11.
  * @return Указатель на выделенную память для pdp_11_t.
@@ -254,7 +257,7 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
         commands[0]->do_commands_command(
             (struct pdp_11_t *) pdp, addr, word_command, commands[0]->params);
     }
-
+    tick++;
     *ptr_pc = (word_t)(*ptr_pc + 2);
     return ptr_pc;
 }
