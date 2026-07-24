@@ -22,15 +22,6 @@ __command_reg_dump(struct pdp_11_t *pdp)
     pdp_11_t *ptr_pdp = (pdp_11_t *) pdp;
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
 
-    // PRINT_RESULT("\nr0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n",
-    //              ptr_reg->R0,
-    //              ptr_reg->R1,
-    //              ptr_reg->R2,
-    //              ptr_reg->R3,
-    //              ptr_reg->R4,
-    //              ptr_reg->R5,
-    //              ptr_reg->SP,
-    //              ptr_reg->PC);
     PRINT_RESULT("\nr0=%06o r2=%06o r4=%06o sp=%06o\nr1=%06o r3=%06o r5=%06o "
                  "pc=%06o\n\npsw=%06o: cm=k pm=k pri=0     z  [%d]",
                  ptr_reg->R0,
@@ -149,6 +140,7 @@ command_do_movb(struct pdp_11_t *pdp,
     } else {
         b_write(pdp, opcode.dd.addr, (byte_t)((word_t) opcode.ss.value));
     }
+    SET_PSW_BIT(psw, V, ZERO);
     //__command_reg_dump(pdp);
 }
 //##########################################################################
@@ -250,6 +242,26 @@ command_do_unknown(struct pdp_11_t *pdp,
         return;
     __print_command(addr, word_command, (byte_t *) "unknown\n");
     // pdp_reg_set_var(pdp, addr, (word_t)(addr + 4));
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_adcb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    (void) addr;
+    //(void) params;
+    OP_CODE_T_INIT
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command, params);
+    // test w_write TODO: Исправить
+    w_write(pdp, opcode.dd.addr, opcode.ss.value);
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
 //##########################################################################
 

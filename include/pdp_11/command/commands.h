@@ -14,6 +14,7 @@ void command_do_inc(struct pdp_11_t *, address_word_t, word_t, byte_t);
 void command_do_sob(struct pdp_11_t *, address_word_t, word_t, byte_t);
 void command_do_clr(struct pdp_11_t *, address_word_t, word_t, byte_t);
 void command_do_unknown(struct pdp_11_t *, address_word_t, word_t, byte_t);
+void command_do_adcb(struct pdp_11_t *, address_word_t, word_t, byte_t);
 
 #endif
 #pragma once
