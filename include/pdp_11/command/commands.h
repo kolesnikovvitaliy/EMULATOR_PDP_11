@@ -2,19 +2,26 @@
 #    define COMMANDS_H
 #    include "types/types.h"
 
+#    define MAKRO_COMMAND_PROTOTYPE(NAME_COMMANDS)                            \
+        void command_do_##NAME_COMMANDS(                                      \
+            struct pdp_11_t *, address_word_t, word_t, byte_t)
+
 struct pdp_11_t;
 
 void __command_reg_dump(struct pdp_11_t *pdp);
 
-void command_do_halt(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_add(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_mov(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_movb(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_inc(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_sob(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_clr(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_unknown(struct pdp_11_t *, address_word_t, word_t, byte_t);
-void command_do_adcb(struct pdp_11_t *, address_word_t, word_t, byte_t);
+// void command_do_halt(struct pdp_11_t *, address_word_t, word_t, byte_t);
 
-#endif
+MAKRO_COMMAND_PROTOTYPE(halt);
+MAKRO_COMMAND_PROTOTYPE(add);
+MAKRO_COMMAND_PROTOTYPE(mov);
+MAKRO_COMMAND_PROTOTYPE(movb);
+MAKRO_COMMAND_PROTOTYPE(inc);
+MAKRO_COMMAND_PROTOTYPE(sob);
+
+MAKRO_COMMAND_PROTOTYPE(clr);
+MAKRO_COMMAND_PROTOTYPE(unknown);
+MAKRO_COMMAND_PROTOTYPE(adcb);
+
+#endif // COMMANDS_H
 #pragma once
