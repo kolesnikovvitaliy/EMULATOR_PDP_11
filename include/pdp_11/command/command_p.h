@@ -25,7 +25,7 @@
 
 #    define SET_PSW_BIT(                                                      \
         process_state_word, bit /* NZVC */, value /* 1 | 0 */)                \
-        (process_state_word |= (value << bit))
+        (process_state_word |= (word_t)(value << bit))
 
 #    define OP_CODE_T_INIT op_code_t opcode = { 0 };
 

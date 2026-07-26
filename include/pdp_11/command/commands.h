@@ -12,6 +12,10 @@ void __command_reg_dump(struct pdp_11_t *pdp);
 
 // void command_do_halt(struct pdp_11_t *, address_word_t, word_t, byte_t);
 
+void set_flag_C(word_t);
+void set_flag_NZ(word_t);
+void set_flag_V(word_t);
+
 MAKRO_COMMAND_PROTOTYPE(halt);
 MAKRO_COMMAND_PROTOTYPE(add);
 MAKRO_COMMAND_PROTOTYPE(mov);

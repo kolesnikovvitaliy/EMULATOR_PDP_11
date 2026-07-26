@@ -14,6 +14,7 @@ extern word_t psw;
 extern word_t tick;
 
 // TODO : ADD COMMAND
+// TODO : set_flag_Z, set_flag_NZ, set_flag_V
 
 //##########################################################################
 void
@@ -39,6 +40,66 @@ r0=000133 r2=000105 r4=000000 sp=000000
 r1=000000 r3=000000 r5=000000 pc=001020
 psw=000004: cm=k pm=k pri=0    z   [21]*/
 }
+//##########################################################################
+//
+//##########################################################################
+// SET_FLAGS_NZVC
+//##########################################################################
+
+//-------------------------------------------------------------------------
+void
+set_flag_C(word_t value)
+{
+    word_t res      = 0;
+    byte_t shift    = 16;
+    word_t temp_val = value;
+
+    if (HAS_B) {
+        shift = 8;
+    }
+    res = (word_t)((temp_val >> shift) & ONE);
+
+    SET_PSW_BIT(psw, C, res);
+    return;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+set_flag_NZ(word_t value)
+{
+    word_t res      = 0;
+    byte_t shift    = 15;
+    word_t temp_val = value;
+
+    if (HAS_B) {
+        byte_t temp_val = temp_val & 0xFF;
+        shift           = 7;
+    }
+
+    res = (temp_val == 0) ? ONE : ZERO;
+    SET_PSW_BIT(psw, Z, res);
+
+    res = (word_t)((temp_val >> shift) & ONE);
+    SET_PSW_BIT(psw, N, res);
+
+    return;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+set_flag_V(word_t value)
+{
+
+    SET_PSW_BIT(psw, V, (word_t) value);
+
+    // word_t v = (word_t)(((src ^ res) & (dst ^ res)) >> 15);
+    // word_t v = (word_t)(((dst ^ src) & (dst ^ res)) >> 15);
+}
+//--------------------------------------------------------------------------
+//##########################################################################
+//
 //##########################################################################
 // COMMANDS
 //##########################################################################
@@ -90,9 +151,17 @@ command_do_add(struct pdp_11_t *pdp,
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
-    w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
-    pdp_reg_set_var(
-        pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
+
+    word_t src = opcode.ss.value;
+    word_t dst = opcode.dd.value;
+    word_t res = (word_t)(src + dst);
+
+    w_write(pdp, opcode.dd.addr, (word_t)(res));
+    pdp_reg_set_var(pdp, opcode.dd.addr, (word_t)(res));
+
+    word_t v = (word_t)(((src ^ res) & (dst ^ res)) >> 15);
+
+    set_flag_V((word_t) v);
 }
 //##########################################################################
 
@@ -117,7 +186,8 @@ command_do_mov(struct pdp_11_t *pdp,
     } else {
         w_write(pdp, opcode.dd.addr, opcode.ss.value);
     }
-    SET_PSW_BIT(psw, V, ZERO);
+    set_flag_NZ(opcode.ss.value);
+    set_flag_V(ZERO);
 }
 //##########################################################################
 //##########################################################################
@@ -140,8 +210,8 @@ command_do_movb(struct pdp_11_t *pdp,
     } else {
         b_write(pdp, opcode.dd.addr, (byte_t)((word_t) opcode.ss.value));
     }
-    SET_PSW_BIT(psw, V, ZERO);
-    //__command_reg_dump(pdp);
+    set_flag_NZ(opcode.ss.value);
+    set_flag_V(ZERO);
 }
 //##########################################################################
 
