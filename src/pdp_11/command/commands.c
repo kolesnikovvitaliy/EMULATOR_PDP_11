@@ -41,7 +41,12 @@ r1=000000 r3=000000 r5=000000 pc=001020
 psw=000004: cm=k pm=k pri=0    z   [21]*/
 }
 //##########################################################################
-//
+// GET_PSW_BIT(psw, FLAG(NZVC))
+byte_t
+get_flag(word_t flag)
+{
+    return (byte_t) GET_PSW_BIT(psw, flag);
+}
 //##########################################################################
 // SET_FLAGS_NZVC
 //##########################################################################
@@ -59,7 +64,7 @@ set_flag_C(word_t value)
     }
     res = (word_t)((temp_val >> shift) & ONE);
 
-    SET_PSW_BIT(psw, C, res);
+    SET_PSW_BIT(psw, C, (word_t) res);
     return;
 }
 //--------------------------------------------------------------------------
@@ -78,10 +83,10 @@ set_flag_NZ(word_t value)
     }
 
     res = (temp_val == 0) ? ONE : ZERO;
-    SET_PSW_BIT(psw, Z, res);
+    SET_PSW_BIT(psw, Z, (word_t) res);
 
     res = (word_t)((temp_val >> shift) & ONE);
-    SET_PSW_BIT(psw, N, res);
+    SET_PSW_BIT(psw, N, (word_t) res);
 
     return;
 }
@@ -100,6 +105,21 @@ set_flag_V(word_t value)
 //--------------------------------------------------------------------------
 //##########################################################################
 //
+// EXEMPLE function
+//##########################################################################
+// void
+// command_do_br(struct pdp_11_t *pdp,
+//                 address_word_t   addr,
+//                 word_t           word_command,
+//                 byte_t           params)
+// {
+//     (void) addr;
+//     (void) params;
+//     (void) word_command;
+//     (void) pdp;
+//
+// }
+//##########################################################################
 //##########################################################################
 // COMMANDS
 //##########################################################################
@@ -162,6 +182,8 @@ command_do_add(struct pdp_11_t *pdp,
     word_t v = (word_t)(((src ^ res) & (dst ^ res)) >> 15);
 
     set_flag_V((word_t) v);
+    set_flag_NZ(opcode.ss.value);
+    set_flag_C(opcode.ss.value);
 }
 //##########################################################################
 
@@ -188,6 +210,7 @@ command_do_mov(struct pdp_11_t *pdp,
     }
     set_flag_NZ(opcode.ss.value);
     set_flag_V(ZERO);
+    // __command_reg_dump(pdp);
 }
 //##########################################################################
 //##########################################################################
@@ -252,6 +275,10 @@ command_do_clr(struct pdp_11_t *pdp,
     //  __command_reg_dump(pdp);
     //
     w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
+    SET_PSW_BIT(psw, N, (word_t) ZERO);
+    SET_PSW_BIT(psw, Z, (word_t) ONE);
+    SET_PSW_BIT(psw, V, (word_t) ZERO);
+    SET_PSW_BIT(psw, C, (word_t) ZERO);
     // PRINT_RESULT("\n", "");
     // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
     // pdp_mem_dump(pdp, 0x40, 0x20);
@@ -287,10 +314,10 @@ command_do_sob(struct pdp_11_t *pdp,
         pdp_reg_set_var(pdp, 7, (word_t)((PC - (2 * offset_word))));
         PC = pdp_reg_get_var(pdp, 7);
 
-        PRINT_RESULT("R%d %o", num_register, (word_t)(PC + 2));
+        PRINT_RESULT("R%d %06o", num_register, (word_t)(PC + 2));
     } else {
         PRINT_RESULT(
-            "R%d %o",
+            "R%d %06o",
             num_register,
             (word_t)((pdp_reg_get_var(pdp, 7)) - (2 * offset_word) + 2));
     }
@@ -335,5 +362,49 @@ command_do_adcb(struct pdp_11_t *pdp,
 }
 //##########################################################################
 
+//##########################################################################
+void
+command_do_br(struct pdp_11_t *pdp,
+              address_word_t   addr,
+              word_t           word_command,
+              byte_t           params)
+{
+    (void) addr;
+
+    if (!pdp) {
+        return;
+    }
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+
+    word_t PC = pdp_reg_get_var(pdp, 7);
+    pdp_reg_set_var(pdp, 7, (word_t)(PC + opcode.offset_xx * 2));
+    PRINT_RESULT("%06o", (word_t)(pdp_reg_get_var(pdp, 7) + 2));
+    return;
+    // __command_reg_dump(pdp);
+}
+//##########################################################################
+//##########################################################################
+void
+command_do_beq(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+
+    if (!pdp) {
+        return;
+    }
+    // __command_reg_dump(pdp);
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+    if (get_flag(Z)) {
+        command_do_br(pdp, addr, word_command, params);
+        return;
+    }
+    PRINT_RESULT("%06o",
+                 (word_t)((pdp_reg_get_var(pdp, 7) + opcode.offset_xx * 2))
+                     + 2);
+}
 //##########################################################################
 //##########################################################################

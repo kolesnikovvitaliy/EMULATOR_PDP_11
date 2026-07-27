@@ -856,7 +856,7 @@ __get_mr(struct pdp_11_t *pdp, word_t word_command, byte_t param)
     // 5. Извлечение знакового смещения XX для ветвлений (Branch instructions)
     if (param & HAS_XX) {
         // Младшие 8 бит интерпретируются как значащее число от -128 до +127
-        opcode.offset_xx = (byte_t)(word_command & 0377);
+        opcode.offset_xx = (word_t)(signed char) (word_command & 0xFF);
     }
 
     return opcode;

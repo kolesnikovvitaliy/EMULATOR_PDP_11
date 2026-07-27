@@ -25,7 +25,13 @@
 
 #    define SET_PSW_BIT(                                                      \
         process_state_word, bit /* NZVC */, value /* 1 | 0 */)                \
-        (process_state_word |= (word_t)(value << bit))
+        ((process_state_word)                                                 \
+         = ((word_t)(value)                                                   \
+                ? (word_t)((process_state_word) | ((word_t) 1 << (bit)))      \
+                : (word_t)((process_state_word) & ~((word_t) 1 << (bit)))))
+
+#    define GET_PSW_BIT(process_state_word, bit /* NZVC */)                   \
+        ((process_state_word >> bit) & 1);
 
 #    define OP_CODE_T_INIT op_code_t opcode = { 0 };
 
@@ -52,7 +58,7 @@ typedef struct {
     byte_t r_reg; // R Индекс регистра (R0-R5, SP, PC) 3 бита
     byte_t value_nn;  // NN Числовое значение 6 бит
     byte_t value_n;   // N Числовое значение 3 бита
-    byte_t offset_xx; // XX Смещение (Адрес относительного перехода от -128 до
+    word_t offset_xx; // XX Смещение (Адрес относительного перехода от -128 до
                       // +127) 8 бит
     byte_t value_b; // B Признак разрядности: 0 — слово (word), 1 — байт (byte)
                     // 1 бит

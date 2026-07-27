@@ -24,6 +24,8 @@ command_t template_commands[] = {
       HAS_B | HAS_SS | HAS_DD },
     { 0177000, 0077000, (byte_t *) "sob", command_do_sob, HAS_R | HAS_NN },
     { 0177700, 0005000, (byte_t *) "clr", command_do_clr, HAS_DD },
+    { 0177400, 0000400, (byte_t *) "br", command_do_br, HAS_XX },
+    { 0177400, 0001400, (byte_t *) "beq", command_do_beq, HAS_XX },
 
     // добавить остальные команды
 };
