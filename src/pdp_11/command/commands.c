@@ -55,14 +55,22 @@ get_flag(word_t flag)
 void
 set_flag_C(word_t value)
 {
+    word_t res_neg  = 0;
     word_t res      = 0;
     byte_t shift    = 16;
     word_t temp_val = value;
+    res_neg         = (word_t)(signed char) temp_val;
 
-    if (HAS_B) {
+    if (HAS_B && (!res_neg)) {
         shift = 8;
     }
-    res = (word_t)((temp_val >> shift) & ONE);
+
+    if (GET_PSW_BIT(psw, N)) {
+        temp_val = (word_t)(~temp_val);
+        res      = (word_t)(((signed short) temp_val >> shift) & ONE);
+    } else {
+        res = (word_t)(((word_t) temp_val >> shift) & ONE);
+    }
 
     SET_PSW_BIT(psw, C, (word_t) res);
     return;
@@ -73,13 +81,16 @@ set_flag_C(word_t value)
 void
 set_flag_NZ(word_t value)
 {
+    word_t res_neg  = 0;
     word_t res      = 0;
     byte_t shift    = 15;
     word_t temp_val = value;
 
-    if (HAS_B) {
-        byte_t temp_val = temp_val & 0xFF;
-        shift           = 7;
+    res_neg = (word_t)(signed char) temp_val;
+
+    if (HAS_B && (!res_neg)) {
+        temp_val = (word_t)(temp_val & 0xFF);
+        shift    = 7;
     }
 
     res = (temp_val == 0) ? ONE : ZERO;
@@ -182,8 +193,8 @@ command_do_add(struct pdp_11_t *pdp,
     word_t v = (word_t)(((src ^ res) & (dst ^ res)) >> 15);
 
     set_flag_V((word_t) v);
-    set_flag_NZ(opcode.ss.value);
-    set_flag_C(opcode.ss.value);
+    set_flag_C(res);
+    set_flag_NZ(res);
 }
 //##########################################################################
 
@@ -197,10 +208,11 @@ command_do_mov(struct pdp_11_t *pdp,
 
     (void) addr;
     //(void) params;
-    OP_CODE_T_INIT
+
     if (!pdp) {
         return;
     }
+    OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
 
     if (opcode.dd.addr <= 7) {
@@ -223,10 +235,11 @@ command_do_movb(struct pdp_11_t *pdp,
 
     (void) addr;
     //(void) params;
-    OP_CODE_T_INIT
+
     if (!pdp) {
         return;
     }
+    OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
     if (opcode.dd.addr <= 7) {
         pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) opcode.ss.value);

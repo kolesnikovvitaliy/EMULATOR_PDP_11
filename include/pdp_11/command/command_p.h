@@ -31,7 +31,7 @@
                 : (word_t)((process_state_word) & ~((word_t) 1 << (bit)))))
 
 #    define GET_PSW_BIT(process_state_word, bit /* NZVC */)                   \
-        ((process_state_word >> bit) & 1);
+        ((process_state_word >> bit) & 1)
 
 #    define OP_CODE_T_INIT op_code_t opcode = { 0 };
 
