@@ -1,5 +1,40 @@
-TARGET = pdp.out
-all: format_code_webfit_style $(TARGET) doxygen
+# 1. Определение операционной системы
+ifeq ($(OS),Windows_NT)
+    # Настройки для Windows (MinGW/Cygwin/MSYS2)
+    TARGET_EXT = .exe
+    # Проверяем, запущен ли Make в окружении MSYS/Cygwin (где есть rm и mkdir)
+    # Если запущен в обычном cmd.exe, используем встроенные команды Windows
+    ifeq ($(SHELL),amd64.exe)
+        FIX_PATH = $(subst /,\,$1)
+        RM = del /Q /F
+        RMDIR = rmdir /S /Q
+        MKDIR = mkdir
+    else ifeq ($(SHELL),cmd.exe)
+        FIX_PATH = $(subst /,\,$1)
+        RM = del /Q /F
+        RMDIR = rmdir /S /Q
+        MKDIR = mkdir
+    else
+        # Окружение со shell-эмуляцией (Cygwin, MSYS2, Git Bash)
+        FIX_PATH = $1
+        RM = rm -f
+        RMDIR = rm -rf
+        MKDIR = mkdir -p
+    endif
+else
+    # Настройки для Linux / macOS
+    TARGET_EXT = .out
+    FIX_PATH = $1
+    RM = rm -f
+    RMDIR = rm -rf
+    MKDIR = mkdir -p
+endif
+
+
+TARGET = pdp$(TARGET_EXT)
+
+.PHONY: all format_code_webfit_style doxygen clean
+all: format_code_webfit_style $(TARGET) clean doxygen
 
 DOXYFILE = Doxyfile
 DOC_DIR = doc/html/
@@ -17,29 +52,43 @@ SRC_DIR = src
 OBJ_DIR = build
 INC_DIR = include
 
-SRC_DIRS := $(shell find $(SRC_DIR) -type d)
-SRC_FILES := $(shell find . -type f -name "*.c")
+# Рекурсивный поиск файлов (функция rwildcard)
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
-OBJS = $(patsubst $(SRC_DIRS)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
-#DEPS = $(wildcard $(INC_DIR)/*.h)
-DEPS = $(shell find $(INC_DIR) -type f -name "*.h")
+# 1. Находим вообще ВСЕ файлы .c в текущем каталоге и подкаталогах
+ALL_C_FILES := $(call rwildcard,.,*.c)
 
+# 2. ИСКЛЮЧАЕМ из поиска файлы, которые могут случайно оказаться в папке build
+SRC_FILES   := $(filter-out $(OBJ_DIR)/%, $(ALL_C_FILES))
+
+# 3. Находим заголовочные файлы
+DEPS        := $(call rwildcard,$(INC_DIR),*.h)
+
+# 4. Превращаем пути исходников в пути для объектных файлов внутри build/
+# Элегантно обрабатывает файлы как в корне (./main.c -> build/main.o), так и в подпапках
+OBJS := $(patsubst ./%, $(OBJ_DIR)/%, $(SRC_FILES:.c=.o))
+
+# Главная цель сборки
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
-	@mkdir -p $(OBJ_DIR)
+# Универсальное шаблонное правило компиляции.
+# На входе принимает 'build/path/file.o', а компилирует './path/file.c'
+$(OBJ_DIR)/%.o: ./%.c $(DEPS)
+# 	@$(call MKDIR,$(dir $@))
+	@$(MKDIR) $(call FIX_PATH,$(dir $@))
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Кросплатформенная очистка
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET)
-	rm -rf $(DOC_DIR)
+	@$(call RM, $(subst /,$(if $(filter Windows_NT,$(OS)),\,/),$(OBJS)))
+
+
+# Объединяем все файлы, которые нужно отформатировать
+FORMAT_FILES := $(SRC_FILES) $(DEPS)
 
 format_code_webfit_style:
-	$(shell find . -iname "*.c" -o -iname "*.h" | xargs clang-format -i)
+	clang-format -i $(FORMAT_FILES)
 
 doxygen:
 	doxygen $(DOXYFILE) > /dev/null 2>&1
-
-
-
-.PHONY: all clean format_code_webfit_style doxygen
