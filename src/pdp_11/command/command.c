@@ -501,24 +501,30 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
          * @see w_read()
          */
     case 4:; //  для объявления типа данных word_t требуется " ; " после метки
-
-        word_t t_var_reg = pdp_reg_get_var(pdp, num_register);
-
-        if (!set_has_b && (!(num_register == 7 || num_register == 6))) {
-            pdp_reg_set_var(
-                pdp, num_register, (address_byte_t)(t_var_reg - 1));
-        } else {
-            pdp_reg_set_var(
-                pdp, num_register, (address_word_t)(t_var_reg - 2));
-        }
-
         res.addr = (address_word_t)(pdp_reg_get_var(pdp, num_register));
 
-        if (!set_has_b && (!(num_register == 7 || num_register == 6))) {
+        if (set_has_b && (!(num_register == 7 || num_register == 6))) {
+
             res.value = (word_t)(
-                signed char) (b_read(pdp, (address_byte_t)(t_var_reg + 1)));
+                signed char) (b_read(pdp, (address_byte_t)(res.addr)));
+
         } else {
-            res.value = (word_t) w_read(pdp, (address_word_t)(t_var_reg + 2));
+
+            res.value = (word_t) w_read(pdp, (address_word_t)(res.addr));
+        }
+
+        if (set_has_b && (!(num_register == 7 || num_register == 6))) {
+
+            pdp_reg_set_var(pdp, num_register, (address_byte_t)(res.addr - 1));
+
+        } else {
+
+            pdp_reg_set_var(pdp, num_register, (address_word_t)(res.addr - 2));
+        }
+
+        if (res.addr <= 010) {
+
+            res.value = 0;
         }
 
         // __command_reg_dump(pdp);
