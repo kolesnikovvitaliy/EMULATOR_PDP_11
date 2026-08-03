@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-// TODO: ADD commands
+// TODO: ADD commands: tstb, bpl,
 command_t template_commands[] = {
     { 0000000, 0111111, (byte_t *) "unknown", command_do_unknown, NO_PARAMS },
     { 0177777, 0000000, (byte_t *) "halt", command_do_halt, NO_PARAMS },
@@ -26,6 +26,8 @@ command_t template_commands[] = {
     { 0177700, 0005000, (byte_t *) "clr", command_do_clr, HAS_DD },
     { 0177400, 0000400, (byte_t *) "br", command_do_br, HAS_XX },
     { 0177400, 0001400, (byte_t *) "beq", command_do_beq, HAS_XX },
+    { 0177400, 0100000, (byte_t *) "bpl", command_do_bpl, HAS_XX },
+    { 0177700, 0105700, (byte_t *) "tstb", command_do_tstb, HAS_DD },
 
     // добавить остальные команды
 };

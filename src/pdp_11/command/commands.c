@@ -428,3 +428,63 @@ command_do_beq(struct pdp_11_t *pdp,
 }
 //##########################################################################
 //##########################################################################
+
+//##########################################################################
+void
+command_do_tstb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    (void) addr;
+    //(void) params;
+    OP_CODE_T_INIT
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command, params);
+    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    //  __command_reg_dump(pdp);
+    //
+    w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
+    SET_PSW_BIT(psw, N, (word_t) ZERO);
+    SET_PSW_BIT(psw, Z, (word_t) ONE);
+    SET_PSW_BIT(psw, V, (word_t) ZERO);
+    SET_PSW_BIT(psw, C, (word_t) ZERO);
+    // PRINT_RESULT("\n", "");
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_bpl(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    //(void) params;
+    if (!pdp) {
+        return;
+    }
+    // __command_reg_dump(pdp);
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+    if (get_flag(Z)) {
+        command_do_br(pdp, addr, word_command, params);
+        return;
+    }
+    PRINT_RESULT("%06o",
+                 (word_t)((pdp_reg_get_var(pdp, 7) + opcode.offset_xx * 2))
+                     + 2);
+    // PRINT_RESULT("\n", "");
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
+}
+//##########################################################################
