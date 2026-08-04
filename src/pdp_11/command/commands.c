@@ -10,8 +10,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-extern word_t psw;
-extern word_t tick;
+extern word_t psw; // Переменная флагов состояния (NZVC)
+extern word_t      tick; // Количество выполненных машинных команд;
+extern log_level_t current_log_level; // Уровень логирования;
 
 // TODO : ADD COMMAND
 // TODO : set_flag_Z, set_flag_NZ, set_flag_V
@@ -159,6 +160,9 @@ command_do_halt(struct pdp_11_t *pdp,
     // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x20);
+    if (!current_log_level) {
+        fprintf(stdout, "\n");
+    }
     PRINT_RESULT("\n\nTHE END!!!\n", "");
     pdp_destroy(pdp);
     free(pdp);
@@ -248,6 +252,9 @@ command_do_movb(struct pdp_11_t *pdp,
     }
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
+    if (opcode.dd.addr == 0177566) {
+        putchar(pdp_reg_get_var(pdp, 0));
+    }
     if (opcode.dd.addr <= 7) {
         pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) opcode.ss.value);
     } else {
@@ -446,11 +453,11 @@ command_do_tstb(struct pdp_11_t *pdp,
     // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
     //  __command_reg_dump(pdp);
     //
-    w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
-    SET_PSW_BIT(psw, N, (word_t) ZERO);
-    SET_PSW_BIT(psw, Z, (word_t) ONE);
-    SET_PSW_BIT(psw, V, (word_t) ZERO);
-    SET_PSW_BIT(psw, C, (word_t) ZERO);
+    set_flag_NZ(opcode.dd.value);
+
+    set_flag_V((word_t) 0);
+    set_flag_C((word_t) 0);
+
     // PRINT_RESULT("\n", "");
     // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
     // pdp_mem_dump(pdp, 0x40, 0x20);
@@ -474,7 +481,7 @@ command_do_bpl(struct pdp_11_t *pdp,
     // __command_reg_dump(pdp);
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
-    if (get_flag(Z)) {
+    if (get_flag(N)) {
         command_do_br(pdp, addr, word_command, params);
         return;
     }
