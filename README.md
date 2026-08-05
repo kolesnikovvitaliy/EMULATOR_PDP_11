@@ -3,7 +3,7 @@
 
 
 
-Документирвание  проекта "https://kolesnikovvitaliy.github.io/EMULATOR_PDP_11/"
+[--> Документирвание  проекта](https://kolesnikovvitaliy.github.io/EMULATOR_PDP_11)
 ---
 
 ## 🛠 Ключевые возможности системы
@@ -54,6 +54,7 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 
 | 💠 Флаг | 🧊 Название | 🌐 Описание |
 | :---: | :--- | :--- |
+| `-f` | **READ_FILE**| Чтение данных из файла. |
 | `-t` | **Trace** | Включает пошаговую трассировку: вывод состояния всех регистров и флагов `PSW` после каждой исполненной команды. |
 | `-d` | **Debug/Tests** | Запуск встроенного набора модульных тестов для верификации корректности работы памяти, регистров и системы команд. |
 | `-disable_logs` | **Printf** | Выключает пошаговую трассировку: выводит напечатанные на экране символы. Пример "Hello, world!\n". |
@@ -61,16 +62,16 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 ---
 ## Запуск
 ```bash
-./pdp.exe -t ./data/test.txt
+./pdp.exe -f ./data/test.txt
 ```
 ---
 ## Для запуска модульных тестов
 ```bash
-./pdp.exe -t -d ./data/test.txt
+./pdp.exe -f -d ./data/test.txt
 ```
 ## Для вывода напечатанных символов
 ```bash
-./pdp.exe -t -disable_logs ./data/test.txt
+./pdp.exe -f -disable_logs ./data/test.txt
 ```
 
 ### 🚀 Детальный обзор:

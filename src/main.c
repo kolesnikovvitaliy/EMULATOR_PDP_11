@@ -118,11 +118,11 @@ start_test_if_mode_debug(int argc, char **argv)
     if (argv == NULL || argc < 1) {
         return 0;
     }
-    char log_flag = 0;
     for (int i = 0; i < argc; i++) {
         if (strcmp("-disable_logs", argv[i]) == 0) {
-            log_flag = 1;
-            continue;
+
+            set_log_level(NONE);
+            return 0;
         }
         if (strcmp("-d", argv[i]) == 0) {
             WARNING("ЗАПУСК ПРОВЕРКИ КОНФИГУРАЦИИ", "");
@@ -131,12 +131,12 @@ start_test_if_mode_debug(int argc, char **argv)
 
             set_log_level(log_level);
             WARNING("ПРОВЕРКА КОНФИГУРАЦИИ ЗАВЕРШИЛАСЬ УСПЕШНО\n", "");
-            continue;
+            return 1;
         }
     }
-    if (log_flag) {
-        set_log_level(NONE);
-    }
+    // if (log_flag) {
+    //     set_log_level(NONE);
+    // }
 
     return 0;
 }
