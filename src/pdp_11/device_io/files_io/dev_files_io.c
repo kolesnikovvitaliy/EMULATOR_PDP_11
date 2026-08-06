@@ -28,7 +28,7 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
     if (!(res_input == res_input_data)) {
         pdp_file_close(fp);
         // fprintf(stderr,"Error Readeng Files file\r\n");
-        ERROR("Error Readeng File [%s]\r\n", filename);
+        ERROR_LOG("Error Readeng File [%s]\r\n", filename);
         assert(res_input == res_input_data);
         abort();
     }
@@ -41,7 +41,7 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
         res_input = (word_t) fscanf(fp, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD FILE EXIT\n\n");
-    INFO("READ FILE EXIT", "");
+    INFO_LOG("READ FILE EXIT", "");
     pdp_file_close(fp);
     return;
 }

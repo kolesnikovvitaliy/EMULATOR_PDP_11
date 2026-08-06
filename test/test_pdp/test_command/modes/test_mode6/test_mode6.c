@@ -42,7 +42,7 @@ test_pc_reg(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode6_pc_reg ");
+    TRACE_LOG("%s", "test_mode6_pc_reg ");
 
     //! < Контроль расчетных значений декодера для автодекремента
     //! < Исполнение команды с триггером автодекремента регистров
@@ -81,7 +81,7 @@ test_valid_reg(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode6_valid_reg ");
+    TRACE_LOG("%s", "test_mode6_valid_reg ");
 
     //! < Контроль расчетных значений декодера для автодекремента
     //! < Исполнение команды с триггером автодекремента регистров

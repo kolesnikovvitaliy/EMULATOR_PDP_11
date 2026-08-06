@@ -14,7 +14,7 @@ test_io(struct pdp_11_t *pdp, int argc, char **argv)
 {
     assert(pdp);
     byte_t *filename = pdp_parse_filename(argc, argv);
-    TRACE("TEST PDP LOAD DATA", "");
+    TRACE_LOG("TEST PDP LOAD DATA", "");
     pdp_load_data(pdp, (byte_t *) filename);
     PRINT_RESULT("%s", "   ...OK\n");
     // pdp_mem_dump(pdp, 0x40, 0x20);

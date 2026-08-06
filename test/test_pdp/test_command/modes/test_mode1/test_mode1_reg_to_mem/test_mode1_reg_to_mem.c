@@ -53,7 +53,7 @@ test_mode1_reg_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode1_reg_to_mem  ");
+    TRACE_LOG("%s", "test_mode1_reg_to_mem  ");
 
     //! < Контроль декодирования: SS ссылается на R3, DD указывает на адрес
     //! 0200 в памяти

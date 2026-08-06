@@ -45,7 +45,7 @@ test_mode0(struct pdp_11_t *pdp)
     PRINT_RESULT("\r      ", "");
     PRINT_RESULT("\x1b[F", "");
     //! < Логируем запуск теста нулевого режима адресации
-    TRACE("%s\t", "test_mode0");
+    TRACE_LOG("%s\t", "test_mode0");
 
     //! < Проверяем корректность декодирования источника (SS): R5 с содержимым
     //! 034

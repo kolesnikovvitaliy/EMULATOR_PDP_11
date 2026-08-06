@@ -18,7 +18,7 @@ test_rw_byte_b(struct pdp_11_t *pdp)
     adr = 0;
     b0  = 0x12;
 
-    TRACE("Пишем и читаем байт по четному адресу", "");
+    TRACE_LOG("Пишем и читаем байт по четному адресу", "");
 
     b_write(pdp, adr, b0);
     bres = b_read(pdp, adr);
@@ -39,7 +39,7 @@ test_rw_word_b(struct pdp_11_t *pdp)
     adr = 8;
     w   = 0x3456;
 
-    TRACE("Пишем и читаем слово", "");
+    TRACE_LOG("Пишем и читаем слово", "");
 
     w_write(pdp, adr, w);
     wres = w_read(pdp, adr);
@@ -58,7 +58,7 @@ test_w2b_rword_b(struct pdp_11_t *pdp)
     address_word_t a;
     byte_t         b0, b1;
     word_t         w, wres;
-    TRACE("Пишем 2 байта, читаем слово", "");
+    TRACE_LOG("Пишем 2 байта, читаем слово", "");
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
@@ -82,7 +82,7 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
     address_word_t a;
     byte_t         b0, b1, res_b0, res_b1;
     word_t         w;
-    TRACE("Пишем слово читаем 2 байта", "");
+    TRACE_LOG("Пишем слово читаем 2 байта", "");
     a = 4; // другой адрес
     w = 0xa1b2;
     // little-endian, младшие разряды по меньшему адресу
@@ -101,12 +101,12 @@ test_wword_r2b_b(struct pdp_11_t *pdp)
 void
 test_byte_buffer(struct pdp_11_t *pdp)
 {
-    INFO("TEST MEMORY TYPE ==BYTE== START", "");
+    INFO_LOG("TEST MEMORY TYPE ==BYTE== START", "");
 
     test_rw_byte_b(pdp);
     test_rw_word_b(pdp);
     test_w2b_rword_b(pdp);
     test_wword_r2b_b(pdp);
-    INFO("TEST MEMORY TYPE ==BYTE== WAS PASSED SUCCESSFULLY\n", "");
+    INFO_LOG("TEST MEMORY TYPE ==BYTE== WAS PASSED SUCCESSFULLY\n", "");
 }
 //////////////////////////////////////////////////////////////////////

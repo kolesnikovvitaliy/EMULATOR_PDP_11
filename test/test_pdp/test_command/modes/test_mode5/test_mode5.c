@@ -42,7 +42,7 @@ test_mode5(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode5 ");
+    TRACE_LOG("%s", "test_mode5 ");
 
     //! < Контроль расчетных значений декодера для автодекремента
     //! < Исполнение команды с триггером автодекремента регистров

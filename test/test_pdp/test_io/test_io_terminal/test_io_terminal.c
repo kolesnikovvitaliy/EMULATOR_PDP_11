@@ -7,7 +7,7 @@ int
 test_io_terminal(struct pdp_11_t *pdp)
 {
 
-    TRACE("TEST LOAD DATA FROM TERMINAL", "");
+    TRACE_LOG("TEST LOAD DATA FROM TERMINAL", "");
     pdp_load_data((struct pdp_11_t *) pdp, NULL);
     return 0;
 }

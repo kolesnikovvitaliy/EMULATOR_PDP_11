@@ -6,7 +6,7 @@
 int
 test_io_files(struct pdp_11_t *pdp, byte_t *filename)
 {
-    TRACE("TEST LOAD DATA FROM FILES", "");
+    TRACE_LOG("TEST LOAD DATA FROM FILES", "");
     pdp_load_data((struct pdp_11_t *) pdp, (byte_t *) filename);
     return 1;
 }

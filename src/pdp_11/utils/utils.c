@@ -42,7 +42,7 @@ file_t *
 pdp_file_open(const byte_t *filename, const byte_t *mode)
 {
     file_t *fd;
-    DEBUG("FILENAME = %s", filename);
+    DEBUG_LOG("FILENAME = %s", filename);
     if ((fd = fopen((char *) filename, (char *) mode)) == NULL) {
         perror((char *) filename);
         exit(errno);

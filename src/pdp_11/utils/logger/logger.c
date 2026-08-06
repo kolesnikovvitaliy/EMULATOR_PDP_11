@@ -22,7 +22,7 @@
  * @details Все сообщения с уровнем строго выше, чем @p current_log_level,
  * будут автоматически игнорироваться функцией log_message().
  */
-log_level_t current_log_level = DEBUG;
+log_level_t current_log_level = NONE_LOG;
 
 /**
  * @brief Выводит форматированное сообщение в консоль с учетом уровня
@@ -46,8 +46,9 @@ void
 log_message(log_level_t level, const char *fmt, ...)
 {
     /** Текстовые представления доступных уровней логирования. */
-    const char *levels[] = { "NONE",    "PRINT_RESULT", "ERROR", "INFO",
-                             "WARNING", "TRACE",        "DEBUG" };
+    const char *levels[]
+        = { "NONE_LOG",    "PRINT_RESULT", "ERROR_LOG", "INFO_LOG",
+            "WARNING_LOG", "TRACE_LOG",    "DEBUG_LOG" };
 
     /** ANSI цветовые коды для визуального разделения уровней в консоли. */
     const char *level_colors[]

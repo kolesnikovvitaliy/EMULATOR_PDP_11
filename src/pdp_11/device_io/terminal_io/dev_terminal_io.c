@@ -20,13 +20,13 @@ load_data_term(struct pdp_11_t *pdp)
     res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
     // printf("RES INPUT DATA = %hx\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
     //                res_input, addr, count_str);
-    DEBUG("\nRES INPUT DATA = %hx\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
-          res_input,
-          addr,
-          count_str);
+    DEBUG_LOG("\nRES INPUT DATA = %hx\r\nADDR = %hx\r\nCOUNT_STR = %hx\r\n",
+              res_input,
+              addr,
+              count_str);
 
     if (!(res_input == res_input_data)) {
-        ERROR("\nError Readeng With TERMINAL\r\n", "");
+        ERROR_LOG("\nError Readeng With TERMINAL\r\n", "");
         assert((res_input == res_input_data));
         abort();
     }
@@ -39,6 +39,6 @@ load_data_term(struct pdp_11_t *pdp)
         res_input = (word_t) fscanf(stdin, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
     // fprintf(stdout, "\nREAD TERMINAL EXIT\r\n\n");
-    INFO("READ TERMINAL EXIT", "");
+    INFO_LOG("READ TERMINAL EXIT", "");
     return;
 }

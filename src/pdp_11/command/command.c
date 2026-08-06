@@ -781,7 +781,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         break;
     default:
-        ERROR("\nMode %d not implemented yet!\n", mode);
+        ERROR_LOG("\nMode %d not implemented yet!\n", mode);
         exit(1);
     }
     return res;

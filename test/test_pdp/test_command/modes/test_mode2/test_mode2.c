@@ -49,7 +49,7 @@ test_mode2(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode2 ");
+    TRACE_LOG("%s", "test_mode2 ");
 
     //! < Контроль расчетных значений декодера для автоинкремента
     // PRINT_RESULT("\nRES = %o \n", w_read(pdp, pdp_reg_get_var(pdp, 3)));

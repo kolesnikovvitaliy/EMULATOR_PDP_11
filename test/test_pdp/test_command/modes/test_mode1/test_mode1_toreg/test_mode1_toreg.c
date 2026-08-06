@@ -45,7 +45,7 @@ test_mode1_toreg(struct pdp_11_t *pdp, const address_word_t addr)
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode1_toreg  ");
+    TRACE_LOG("%s", "test_mode1_toreg  ");
 
     //! < Валидация декодера: проверяем, что данные считались из памяти по
     //! адресу из R5

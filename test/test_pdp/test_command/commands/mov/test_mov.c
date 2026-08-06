@@ -24,7 +24,7 @@ void
 test_parse_mov(command_t *ptr_command)
 {
     //! < Выводим в лог имя текущего теста для трассировки
-    TRACE("%s\t", "test_parse_mov");
+    TRACE_LOG("%s\t", "test_parse_mov");
 
     //! < Критическая проверка: имя команды обязано строго соответствовать
     //! "mov"
@@ -62,7 +62,7 @@ test_mov(struct pdp_11_t *pdp, const address_word_t addr)
     //! (регистр-регистр)
     // test_mode0(pdp);
 
-    TRACE("%s", "test_move  ");
+    TRACE_LOG("%s", "test_move  ");
     //! < Выполнение основной тестируемой операции MOV
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);

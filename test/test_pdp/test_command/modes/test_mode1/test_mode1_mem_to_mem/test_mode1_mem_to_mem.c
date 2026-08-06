@@ -49,7 +49,7 @@ test_mode1_mem_to_mem(struct pdp_11_t *pdp, const address_word_t addr)
     // PRINT_RESULT("\x1b[F", "");
     PRINT_RESULT("\r          ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode1_mem_to_mem  ");
+    TRACE_LOG("%s", "test_mode1_mem_to_mem  ");
 
     //! < Проверяем корректность связки "Регистр -> Адрес памяти -> Значение"
     assert(opcode.ss.value == 055);

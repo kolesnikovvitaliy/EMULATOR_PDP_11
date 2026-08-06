@@ -79,7 +79,7 @@ main(int argc, char **argv)
     struct pdp_11_t *pdp = pdp_new();
     assert(pdp != NULL);
 
-    TRACE("PDP_11 ИНИЦИАЛИЗИРОВАНА\n", "");
+    TRACE_LOG("PDP_11 ИНИЦИАЛИЗИРОВАНА\n", "");
 
     /* Запуск исполнительного цикла */
     run(pdp, argc, argv, flag_tests);
@@ -118,25 +118,25 @@ start_test_if_mode_debug(int argc, char **argv)
     if (argv == NULL || argc < 1) {
         return 0;
     }
+    int test_flag = 0;
     for (int i = 0; i < argc; i++) {
-        if (strcmp("-disable_logs", argv[i]) == 0) {
+        if (strcmp("-t", argv[i]) == 0) {
 
-            set_log_level(NONE);
-            return 0;
+            set_log_level(PRINT_RESULT);
+            continue;
         }
         if (strcmp("-d", argv[i]) == 0) {
-            WARNING("ЗАПУСК ПРОВЕРКИ КОНФИГУРАЦИИ", "");
-            log_level_t log_level = set_log_level(NONE);
+            set_log_level(DEBUG_LOG);
+            WARNING_LOG("ЗАПУСК ПРОВЕРКИ КОНФИГУРАЦИИ", "");
+            set_log_level(NONE_LOG);
             test_pdp(argc, argv);
 
-            set_log_level(log_level);
-            WARNING("ПРОВЕРКА КОНФИГУРАЦИИ ЗАВЕРШИЛАСЬ УСПЕШНО\n", "");
-            return 1;
+            set_log_level(DEBUG_LOG);
+            WARNING_LOG("ПРОВЕРКА КОНФИГУРАЦИИ ЗАВЕРШИЛАСЬ УСПЕШНО\n", "");
+            test_flag = 1;
+            continue;
         }
     }
-    // if (log_flag) {
-    //     set_log_level(NONE);
-    // }
 
-    return 0;
+    return test_flag;
 }

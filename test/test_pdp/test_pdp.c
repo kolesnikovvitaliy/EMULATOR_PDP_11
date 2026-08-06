@@ -128,31 +128,31 @@ test_pdp(int argc, char **argv)
      */
 
     /* ЭТАП 1: Тестирование эмуляции с побайтовым доступом к памяти */
-    WARNING("ALLOCAT MEMORY FOR CLASS MEM_BYTE_T < BYTE >", "");
-    INFO("ALLOCAT MEMORY TYPE ==BYTE==", "");
+    WARNING_LOG("ALLOCAT MEMORY FOR CLASS MEM_BYTE_T < BYTE >", "");
+    INFO_LOG("ALLOCAT MEMORY TYPE ==BYTE==", "");
 
     /* Проверка условий запуска: если аргументов недостаточно, файлы прошивок
      * отсутствуют */
     if (3 >= argc) {
         /* Запуск сокращенного цикла тестов только для BYTE-моды */
         test_pdp_memory(type_memory_byte, argc, argv);
-        WARNING("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
+        WARNING_LOG("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
         return 0;
     }
 
     /* Альтернативная ветка: аргументов достаточно, запускаем полный цикл */
     test_pdp_memory(type_memory_byte, argc, argv);
-    WARNING("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
+    WARNING_LOG("MEMORY TYPE ==BYTE== DESTROY !!! \n", "");
 
     /* ЭТАП 2: Тестирование эмуляции со словесным (16-бит) доступом к памяти */
-    WARNING("ALLOCAT MEMORY FOR CLASS MEM_WORD_T < WORD >", "");
-    INFO("ALLOCAT MEMORY TYPE ==WORD== !!!", "");
+    WARNING_LOG("ALLOCAT MEMORY FOR CLASS MEM_WORD_T < WORD >", "");
+    INFO_LOG("ALLOCAT MEMORY TYPE ==WORD== !!!", "");
 
     /* Запуск цикла тестов для WORD-моды */
     test_pdp_memory(type_memory_word, argc, argv);
-    WARNING("MEMORY ==WORD== DESTROY !!! \n", "");
+    WARNING_LOG("MEMORY ==WORD== DESTROY !!! \n", "");
 
     /* Финальный лог, свидетельствующий о прохождении всех тестовых наборов */
-    INFO("ALL TESTS PDP_11 PASSED SUCCESSFULLY\n", "");
+    INFO_LOG("ALL TESTS PDP_11 PASSED SUCCESSFULLY\n", "");
     return 1;
 }

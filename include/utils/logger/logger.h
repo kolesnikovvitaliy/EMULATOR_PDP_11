@@ -14,7 +14,7 @@
  * #include "logger.h"
  *
  * int main() {
- *     set_log_level(INFO);
+ *     set_log_level(INFO_LOG);
  *     INFO("Приложение успешно запущено. Код: %d", 200);
  *     ERROR("Произошла критическая ошибка: %s", "Доступ запрещен");
  *     return 0;
@@ -32,13 +32,13 @@
  * Используются для фильтрации выводимых сообщений и определения их цвета.
  */
 typedef enum {
-    NONE = 0, /**< Отсутствие логирования / Чистый вывод без префиксов. */
+    NONE_LOG = 0, /**< Отсутствие логирования / Чистый вывод без префиксов. */
     PRINT_RESULT, /**< Вывод результатов работы программы. */
-    ERROR, /**< Критические ошибки, сбои выполнения. */
-    INFO, /**< Информационные сообщения о штатной работе. */
-    WARNING, /**< Предупреждения о потенциальных проблемах. */
-    TRACE, /**< Подробная трассировка шагов алгоритма. */
-    DEBUG /**< Отладочная информация для разработчиков. */
+    ERROR_LOG, /**< Критические ошибки, сбои выполнения. */
+    INFO_LOG, /**< Информационные сообщения о штатной работе. */
+    WARNING_LOG, /**< Предупреждения о потенциальных проблемах. */
+    TRACE_LOG, /**< Подробная трассировка шагов алгоритма. */
+    DEBUG_LOG /**< Отладочная информация для разработчиков. */
 } log_level_t;
 
 /**
@@ -96,46 +96,46 @@ log_level_t set_log_level(log_level_t new_level);
 
 /**
  * @def NONE(fmt, ...)
- * @brief Вывод сообщения без явного указания уровня (обычный белый текст).
+ * @brief Сообщения не выводятся.
  */
-#    define NONE(fmt, ...) log_message(NONE, fmt, ##__VA_ARGS__)
+#    define NONE_LOG(...) ((void) 0)
 
 /**
  * @def PRINT_RESULT(fmt, ...)
- * @brief Вывод итогового результата выполнения.
+ * @brief Вывод итогового результата выполнения белый текст.
  */
 #    define PRINT_RESULT(fmt, ...)                                            \
         log_message(PRINT_RESULT, fmt, ##__VA_ARGS__)
 
 /**
- * @def ERROR(fmt, ...)
+ * @def ERROR_LOG(fmt, ...)
  * @brief Вывод сообщения об ошибке (окрашивается в @b красный цвет).
  */
-#    define ERROR(fmt, ...) log_message(ERROR, fmt, ##__VA_ARGS__)
+#    define ERROR_LOG(fmt, ...) log_message(ERROR_LOG, fmt, ##__VA_ARGS__)
 
 /**
- * @def INFO(fmt, ...)
+ * @def INFO_LOG(fmt, ...)
  * @brief Вывод информационного сообщения (окрашивается в @b зеленый цвет).
  */
-#    define INFO(fmt, ...) log_message(INFO, fmt, ##__VA_ARGS__)
+#    define INFO_LOG(fmt, ...) log_message(INFO_LOG, fmt, ##__VA_ARGS__)
 
 /**
- * @def WARNING(fmt, ...)
+ * @def WARNING_LOG(fmt, ...)
  * @brief Вывод предупреждения (окрашивается в @b желтый цвет).
  */
-#    define WARNING(fmt, ...) log_message(WARNING, fmt, ##__VA_ARGS__)
+#    define WARNING_LOG(fmt, ...) log_message(WARNING_LOG, fmt, ##__VA_ARGS__)
 
 /**
- * @def TRACE(fmt, ...)
+ * @def TRACE_LOG(fmt, ...)
  * @brief Вывод лога трассировки (окрашивается в @b светло-синий цвет).
  */
-#    define TRACE(fmt, ...) log_message(TRACE, fmt, ##__VA_ARGS__)
+#    define TRACE_LOG(fmt, ...) log_message(TRACE_LOG, fmt, ##__VA_ARGS__)
 
 /**
- * @def DEBUG(fmt, ...)
+ * @def DEBUG_LOG(fmt, ...)
  * @brief Вывод отладочного сообщения (окрашивается в @b циан/голубой цвет).
  */
-#    define DEBUG(fmt, ...) log_message(DEBUG, fmt, ##__VA_ARGS__)
+#    define DEBUG_LOG(fmt, ...) log_message(DEBUG_LOG, fmt, ##__VA_ARGS__)
 
 /** @} */
 

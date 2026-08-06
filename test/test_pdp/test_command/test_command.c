@@ -48,7 +48,7 @@ test_command(struct pdp_11_t *pdp)
     *ptr_pc        = addr;
 
     //----------------------------------------------------------------------;
-    INFO("THE COMMAND TEST STARTED", "");
+    INFO_LOG("THE COMMAND TEST STARTED", "");
     //////////////////////////////////////////////////////////////////////////;
 
     // TODO
@@ -68,7 +68,7 @@ test_command(struct pdp_11_t *pdp)
     pdp_reg_clear(pdp);
 
     PRINT_RESULT("\x1b[F", "");
-    INFO("THE COMMAND TEST WAS SUCCESSFUL\n", "");
+    INFO_LOG("THE COMMAND TEST WAS SUCCESSFUL\n", "");
 
     return 0;
 }

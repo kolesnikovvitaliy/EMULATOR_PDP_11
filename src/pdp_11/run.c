@@ -45,7 +45,7 @@ run(struct pdp_11_t *pdp, int argc, char **argv, int flag_tests)
     /* Запус тестов */
     if (flag_tests) {
         all_tests(pdp, argc, argv);
-        TRACE("ALL TESTS PASSED SUCCESSFULLY\n", "");
+        TRACE_LOG("ALL TESTS PASSED SUCCESSFULLY\n", "");
     }
     /* Определение целевого файла из аргументов командной строки */
     byte_t *filename = pdp_parse_filename(argc, argv);

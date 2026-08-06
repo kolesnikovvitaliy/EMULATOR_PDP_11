@@ -17,11 +17,11 @@ test_reg(struct pdp_11_t *pdp)
     // DEBUG("\n\n*(pdp->R5) = 0;\n", "");
     pdp_11_t *ptr_pdp    = (pdp_11_t *) pdp;
     reg_t *   ptr_regist = (reg_t *) ptr_pdp->regist;
-    TRACE("TEST REGISTERS PDP_11", "");
+    TRACE_LOG("TEST REGISTERS PDP_11", "");
     assert(*(ptr_pdp->R5) == ptr_regist->R5);
     // DEBUG("\n\npdp->regist->R5 = %o;\n\n", ptr_regist->R5);
     // DEBUG("\n\n(*(pdp->R5) == pdp->regist->R5)\n", "SUCCES");
     PRINT_RESULT("%s", " ... OK");
-    INFO("THE REGISTER TEST WAS SUCCESSFUL\n", "");
+    INFO_LOG("THE REGISTER TEST WAS SUCCESSFUL\n", "");
     return 0;
 }

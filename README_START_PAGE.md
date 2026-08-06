@@ -2,10 +2,10 @@
 # 📟 PDP-11 Emulator   *В РАЗРАБОТКЕ*
 ### *Учебный проект по реализации легендарной 16-битной вычислительной машины*
 
-
-
-Документирвание  проекта "https://kolesnikovvitaliy.github.io/EMULATOR_PDP_11/"
 ---
+[--> Документирвание  проекта](https://kolesnikovvitaliy.github.io/EMULATOR_PDP_11)
+---
+
 
 ## 🛠 Ключевые возможности системы
 
@@ -36,7 +36,7 @@ make
 ```
 ## или
 ```bash
-gcc -O2 -g3 -Iinclude -o pdp.out src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode6/test_mode6.c test/test_pdp/test_command/modes/test_mode5/test_mode5.c test/test_pdp/test_command/modes/test_mode4/test_mode4.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/test_command.c test/test.c
+gcc -O2 -g3 -Iinclude -o pdp.out src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode6/test_mode6.c test/test_pdp/test_command/modes/test_mode5/test_mode5.c test/test_pdp/test_command/modes/test_mode4/test_mode4.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/modes/test_mode7/test_mode7.c test/test_pdp/test_command/test_command.c test/test.c
 ```
 Для сборки проекта Windows:
 
@@ -45,7 +45,7 @@ git clone https://github.com/kolesnikovvitaliy/EMULATOR_PDP_11.git
 cd EMULATOR_PDP_11
 ```
 ```bash
-mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode6/test_mode6.c test/test_pdp/test_command/modes/test_mode5/test_mode5.c test/test_pdp/test_command/modes/test_mode4/test_mode4.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/test_command.c test/test.c
+mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c src/pdp_11/utils/logger/logger.c src/pdp_11/run.c src/pdp_11/memory/mem.c src/pdp_11/memory/buf_byte/buf_byte.c src/pdp_11/memory/buf_word/buf_word.c src/pdp_11/register/register.c src/pdp_11/size_buffer.c src/pdp_11/device_io/device_io.c src/pdp_11/device_io/terminal_io/dev_terminal_io.c src/pdp_11/device_io/files_io/dev_files_io.c src/pdp_11/pdp_11.c src/pdp_11/command/command.c src/pdp_11/command/commands.c src/pdp_11/command/commands_list.c test/test_pdp/test_io/test_io.c test/test_pdp/test_io/test_io_files/test_io_files.c test/test_pdp/test_io/test_io_terminal/test_io_terminal.c test/test_pdp/test_pdp.c test/test_pdp/test_memory/test_mem_word/test_word.c test/test_pdp/test_memory/test_mem_byte/test_byte.c test/test_pdp/test_memory/test_memory.c test/test_pdp/test_reg/test_reg.c test/test_pdp/test_command/commands/mov/test_mov.c test/test_pdp/test_command/commands/halt/test_halt.c test/test_pdp/test_command/modes/test_mode0/test_mode0.c test/test_pdp/test_command/modes/test_mode3/test_mode3.c test/test_pdp/test_command/modes/test_mode1/test_mode1_toreg/test_mode1_toreg.c test/test_pdp/test_command/modes/test_mode1/test_mode1_reg_to_mem/test_mode1_reg_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1_mem_to_mem/test_mode1_mem_to_mem.c test/test_pdp/test_command/modes/test_mode1/test_mode1.c test/test_pdp/test_command/modes/test_mode6/test_mode6.c test/test_pdp/test_command/modes/test_mode5/test_mode5.c test/test_pdp/test_command/modes/test_mode4/test_mode4.c test/test_pdp/test_command/modes/test_mode2/test_mode2.c test/test_pdp/test_command/modes/test_mode7/test_mode7.c test/test_pdp/test_command/test_command.c test/test.c
 ```
 
 ## 💎 Параметры запуска
@@ -55,19 +55,27 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 
 | 💠 Флаг | 🧊 Название | 🌐 Описание |
 | :---: | :--- | :--- |
-| `-t` | **Trace** | Включает пошаговую трассировку: вывод состояния всех регистров и флагов `PSW` после каждой исполненной команды. |
+| `-f` | **READ_FILE**| Чтение данных из файла. Отсутствие флага означает ввод программы в терминале. |
+| `-t` | **Trace** | Включает пошаговую трассировку: вывод состояния всех регистров и флагов `PSW` после каждой исполненной команды. Отсутствие флага выключает трассировку, запускается стандартный режим исполнения. |
 | `-d` | **Debug/Tests** | Запуск встроенного набора модульных тестов для верификации корректности работы памяти, регистров и системы команд. |
 
 ---
-## Запуск
+## Запуск:
 ```bash
-./pdp.exe -t ./data/test.txt
+./pdp.exe -f ./data/test.txt
+```
+
+## Для вывода трассировки выполнения программы:
+```bash
+./pdp.exe -f -t ./data/test.txt
+```
+
+## Для запуска модульных тестов:
+```bash
+./pdp.exe -f -t -d ./data/test.txt
 ```
 ---
-## Для запуска модульных тестов
-```bash
-./pdp.exe -t -d ./data/test.txt
-```
+
 
 ### 🚀 Детальный обзор:
 
@@ -156,11 +164,11 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 ### 📜 [LOGGER] Система логирования
 Используются макросы для управления выводом:
 *   ⚪ `PRINT_RESULT` — Замена стандартному `printf`.
-*   🔴 `ERROR` — Критические ошибки.
-*   🟢 `INFO` — Общая информация.
-*   🟡 `WARNING` — Предупреждения о нештатных ситуациях.
-*   🔵 `TRACE` — Трассировка вызова функций.
-*   🟣 `DEBUG` — Подробные данные для разработки.
+*   🔴 `ERROR_LOG` — Критические ошибки.
+*   🟢 `INFO_LOG` — Общая информация.
+*   🟡 `WARNING_LOG` — Предупреждения о нештатных ситуациях.
+*   🔵 `TRACE_LOG` — Трассировка вызова функций.
+*   🟣 `DEBUG_LOG` — Подробные данные для разработки.
 
 ---
 ### ⚙️ [COMMAND] Исполнение команд
@@ -171,7 +179,7 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 > Текущая задача: Реализация полного цикла *Fetch-Decode-Execute*.
 
 ## ⚙️ Система команд (Instruction Set)
-## На текущем этапе реализованы (или находятся в процессе реализации) следующие основные инструкции:
+## На текущем этапе реализованы следующие основные инструкции:
 | Мнемоника | Опкод | Описание | Тип |
 | :--- | :--- | :--- | :--- |
 | **MOV** | 1SSDD | Пересылка данных (Source → Destination) | Double Operand |
@@ -187,12 +195,17 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 🔍 Особенности реализации адресации
 Эмулятор поддерживает стандартные режимы адресации PDP-11 для каждого операнда:
 
-| Режим (Mode) | Название | Синтаксис | Описание |
-| :--- | :--- | :--- | :--- |
-| **0** | Register | `Rn` | Прямая работа с регистрами `R0-R7`. |
-| **1** | Register Deferred | `@Rn` или `(Rn)` | Косвенная адресация через регистр. |
-| **2** | Autoincrement | `(Rn)+` | Автоинкремент (также для немедленных значений `#val` через `PC`). |
-| **4** | Autodecrement | `-(Rn)` | Автодекремент перед выполнением операции. |
+
+| Режим | Название (En) | Название (Ru) | Синтаксис | Описание |
+| :---: | :--- | :--- | :--- | :--- |
+| **0** | Register | Регистровый | `Rn` | Прямая работа с регистрами `R0–R7`. |
+| **1** | Register Deferred | Регистровый косвенный | `@Rn` или `(Rn)` | Регистр содержит адрес операнда в памяти. |
+| **2** | Autoincrement | Автоинкрементный | `(Rn)+` | Регистр содержит адрес, после обращения увеличивается на 1 или 2. Используется для немедленных значений (`#val` через `PC`). |
+| **3** | Autoincrement Deferred | Автоинкрементный косвенный | `@(Rn)+` | Регистр содержит адрес адреса. После обращения увеличивается на 2. Используется для абсолютной адресации (`@#val` через `PC`). |
+| **4** | Autodecrement | Автодекрементный | `-(Rn)` | Регистр сначала уменьшается на 1 или 2, затем используется как адрес операнда. |
+| **5** | Autodecrement Deferred | Автодекрементный косвенный | `@-(Rn)` | Регистр сначала уменьшается на 2, затем используется как адрес, где лежит адрес операнда. |
+| **6** | Index | Индексный | `X(Rn)` | Адрес равен сумме содержимого регистра `Rn` и смещения `X`. Используется для относительной адресации (`val` через `PC`). |
+| **7** | Index Deferred | Индексный косвенный | `@X(Rn)` | Адрес равен сумме `Rn` и `X`, но указывает на ячейку, где хранится адрес операнда. Используется для относительной косвенной адресации (`@val` через `PC`). |
 
 
 
@@ -223,12 +236,14 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 Регистр PSW (адрес 177776) хранит текущий статус выполнения и приоритет процессора.
 Особое внимание в эмуляторе уделено флагам условий (Condition Codes):
 
+
 | Бит | Флаг | Название | Описание |
-| :--- | :---: | :--- | :--- |
-| 3 | Н | Отрицательный | Устанавливается, если результат операции отрицательный. |
-| 2 | С | Ноль | Устанавливается, если результат операции равен нулю. |
-| 1 | В | Переполнение | Устанавливается при арифметическом переполнении. |
-| 0 | С | Нести | Устанавливается при переносе из старшего разряда. |
+| :---: | :---: | :--- | :--- |
+| **3** | **N** | Отрицательный (Negative) | Устанавливается, если результат операции отрицательный (старший бит равен 1). |
+| **2** | **Z** | Ноль (Zero) | Устанавливается, если результат операции равен нулю. |
+| **1** | **V** | Переполнение (oVerflow) | Устанавливается при арифметическом переполнении для чисел со знаком. |
+| **0** | **C** | Перенос (Carry) | Устанавливается при переносе из старшего разряда или заёме (для беззнаковых чисел). |
+
 
 #### Эти флаги критически важны для работы инструкций ветвления (например, BEQ, BNE, BMI).
 
@@ -241,18 +256,17 @@ mingw32-gcc -O2 -g3 -Iinclude  -o pdp.exe src/main.c src/pdp_11/utils/utils.c sr
 ### 🔍 Пример логирования
 В проекте реализована наглядная система отладки для контроля за состоянием процессора:
 
-> 🟩 **[INFO]** — Общая информация о загрузке дампа.
-> 🟦 **[DEBUG]** — Состояние регистров `(R0-R7)` после каждой инструкции.
-> 🟥 **[ERROR]** — Ошибки обращения к памяти или неизвестные опкоды.
+> 🟩 **[INFO_LOG]** — Общая информация о загрузке дампа.
+> 🟦 **[DEBUG_LOG]** — Состояние регистров `(R0-R7)` после каждой инструкции.
+> 🟥 **[ERROR_LOG]** — Ошибки обращения к памяти или неизвестные опкоды.
 
 ---
 
 ### 📈 План разработки (Roadmap)
 - [x] 🏗️ **Этап 1:** Базовая структура проекта и логгер.
-- [ ] ⚙️ **Этап 2:** Полная реализация системы команд (*Instruction Set*).
-- [ ] ⚡ **Этап 3:** Поддержка прерываний.
-- [ ] ⌨️ **Этап 4:** Эмуляция терминала и простейшего ввода/вывода.
-- [ ] 🧪 **Этап 5:** Запуск оригинальных тестов **PDP-11**.
+- [x] ⚙️ **Этап 2:** Полная реализация системы команд (*Instruction Set*).
+- [x] ⌨️ **Этап 3:** Эмуляция терминала и простейшего ввода/вывода.
+- [x] 🧪 **Этап 4:** Запуск оригинальных тестов **PDP-11**.
 
 ---
 

@@ -171,7 +171,10 @@ pdp_parse_filename(int argc, char **argv)
         for (int i = 0; i < argc; i++) {
             if (!strcmp("-f", argv[i])) {
                 for (int j = (i + 1); j < argc; j++) {
-                    if (strcmp("-disable_logs", argv[j]) == 0) {
+                    if (strcmp("-t", argv[j]) == 0) {
+                        continue;
+                    }
+                    if (strcmp("-d", argv[j]) == 0) {
                         continue;
                     }
 

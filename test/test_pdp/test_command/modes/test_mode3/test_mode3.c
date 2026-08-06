@@ -52,7 +52,7 @@ test_mode_3_valid_register(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode3 ");
+    TRACE_LOG("%s", "test_mode3 ");
 
     //! < Контроль расчетных значений декодера для автоинкремента
     //! < Исполнение команды с триггером автоинкремента регистров
@@ -114,7 +114,7 @@ test_mode_3_register_ps(struct pdp_11_t *pdp)
 
     PRINT_RESULT("\r                            ", "");
     PRINT_RESULT("\x1b[F", "");
-    TRACE("%s", "test_mode3_reg7 ");
+    TRACE_LOG("%s", "test_mode3_reg7 ");
 
     //! < Контроль расчетных значений декодера для автоинкремента
     //! < Исполнение команды с триггером автоинкремента регистров
