@@ -65,7 +65,7 @@ set_flag_C(word_t value)
     word_t temp_val = value;
     res_neg         = (word_t)(signed char) temp_val;
 
-    if (HAS_B && (!res_neg)) {
+    if ((word_t) HAS_B && (!res_neg)) {
         shift = 8;
     }
 
@@ -92,7 +92,7 @@ set_flag_NZ(word_t value)
 
     res_neg = (word_t)(signed char) temp_val;
 
-    if (HAS_B && (!res_neg)) {
+    if ((word_t) HAS_B && (!res_neg)) {
         temp_val = (word_t)(temp_val & 0xFF);
         shift    = 7;
     }

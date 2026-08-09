@@ -34,7 +34,7 @@ __is_valid_address(pdp_11_t *pdp, const address_byte_t addr)
 void
 usage(const byte_t *progname)
 {
-    fprintf(stderr, "USAGE: %s [-t] filename - input data\n", progname);
+    fprintf(stderr, "USAGE: %s [-f] filename - input data\n", progname);
 }
 //------------------------------------------------------------------;
 //------------------------------------------------------------------;
