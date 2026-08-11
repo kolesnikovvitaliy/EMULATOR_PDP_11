@@ -130,6 +130,9 @@ set_flag_V(word_t value)
 //     (void) params;
 //     (void) word_command;
 //     (void) pdp;
+    // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x20);
 //
 // }
 //##########################################################################
@@ -152,9 +155,7 @@ command_do_halt(struct pdp_11_t *pdp,
     tick++;
     PRINT_RESULT("\n\n---------------- halted ---------------", "");
     __command_reg_dump(pdp);
-    // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x20);
+
     if (!current_log_level) {
         fprintf(stdout, "\n");
     }
