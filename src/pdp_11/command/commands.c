@@ -214,7 +214,6 @@ command_do_mov(struct pdp_11_t *pdp,
 {
 
     (void) addr;
-    //(void) params;
 
     if (!pdp) {
         return;
@@ -229,7 +228,6 @@ command_do_mov(struct pdp_11_t *pdp,
     }
     set_flag_NZ(opcode.ss.value);
     set_flag_V(ZERO);
-    // __command_reg_dump(pdp);
 }
 //##########################################################################
 //##########################################################################
@@ -269,7 +267,7 @@ command_do_inc(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    //(void) params;
+
     OP_CODE_T_INIT
     if (!pdp) {
         return;
@@ -294,19 +292,13 @@ command_do_clr(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    //  __command_reg_dump(pdp);
-    //
+
     w_write(pdp, opcode.dd.addr, (word_t)(opcode.ss.value + opcode.dd.value));
     SET_PSW_BIT(psw, N, (word_t) ZERO);
     SET_PSW_BIT(psw, Z, (word_t) ONE);
     SET_PSW_BIT(psw, V, (word_t) ZERO);
     SET_PSW_BIT(psw, C, (word_t) ZERO);
-    // PRINT_RESULT("\n", "");
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x26);
-    // __command_reg_dump(pdp);
+
 }
 //##########################################################################
 
