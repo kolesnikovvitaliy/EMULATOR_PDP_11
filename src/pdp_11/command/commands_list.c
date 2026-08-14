@@ -28,6 +28,8 @@ command_t template_commands[] = {
     { 0177400, 0001400, (byte_t *) "beq", command_do_beq, HAS_XX },
     { 0177400, 0100000, (byte_t *) "bpl", command_do_bpl, HAS_XX },
     { 0177700, 0105700, (byte_t *) "tstb", command_do_tstb, HAS_DD },
+    { 0177000, 0004000, (byte_t *) "jsr", command_do_jsr, HAS_R | HAS_DD },
+    { 0177770, 0000200, (byte_t *) "rts", command_do_rts, HAS_R },
 
     // добавить остальные команды
 };

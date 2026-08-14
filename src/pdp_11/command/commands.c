@@ -130,9 +130,9 @@ set_flag_V(word_t value)
 //     (void) params;
 //     (void) word_command;
 //     (void) pdp;
-    // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x20);
+// PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
+// pdp_mem_dump(pdp, 0x40, 0x20);
+// pdp_mem_dump(pdp, 0x200, 0x20);
 //
 // }
 //##########################################################################
@@ -298,7 +298,6 @@ command_do_clr(struct pdp_11_t *pdp,
     SET_PSW_BIT(psw, Z, (word_t) ONE);
     SET_PSW_BIT(psw, V, (word_t) ZERO);
     SET_PSW_BIT(psw, C, (word_t) ZERO);
-
 }
 //##########################################################################
 
@@ -481,5 +480,79 @@ command_do_bpl(struct pdp_11_t *pdp,
     // pdp_mem_dump(pdp, 0x40, 0x20);
     // pdp_mem_dump(pdp, 0x200, 0x26);
     // __command_reg_dump(pdp);
+}
+//##########################################################################
+// JSR
+//##########################################################################
+void
+command_do_jsr(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
+
+    if (!pdp) {
+        return;
+    }
+    // __command_reg_dump(pdp);
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+    // word_t temp_pc = opcode.dd.value;
+
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.s.value = %o\n", opcode.ss.value);
+
+#if 0
+    void do_jsr(void)
+    {
+    Word target_pc = dd.adr;
+    SP -= 2;
+    w_write(SP, reg[r], MEMSPACE);
+    reg[r] = PC;
+    PC = target_pc;
+    }
+#endif
+}
+//##########################################################################
+// RTS
+//##########################################################################
+void
+command_do_rts(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
+
+    if (!pdp) {
+        return;
+    }
+    // __command_reg_dump(pdp);
+    OP_CODE_T_INIT
+    opcode = __get_mr(pdp, word_command, params);
+    // word_t temp_pc = opcode.dd.value;
+
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.s.value = %o\n", opcode.ss.value);
+
+#if 0
+    void do_rts(void) {
+    int link_reg = r;
+    PC = reg[link_reg];
+    reg[link_reg] = w_read(SP);
+    SP += 2;
+    }
+#endif
 }
 //##########################################################################
