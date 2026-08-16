@@ -246,8 +246,14 @@ command_do_movb(struct pdp_11_t *pdp,
     }
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
-    if (opcode.dd.addr == 0177566) {
-        putchar(pdp_reg_get_var(pdp, 0));
+
+    if ((word_t) opcode.dd.addr == 0177566) {
+
+        if (opcode.dd.num_reg == 7) {
+            putchar(b_read(pdp, pdp_reg_get_var(pdp, 0)));
+        } else {
+            putchar(pdp_reg_get_var(pdp, 0));
+        }
     }
     if (opcode.dd.addr <= 7) {
         pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) opcode.ss.value);
@@ -256,6 +262,9 @@ command_do_movb(struct pdp_11_t *pdp,
     }
     set_flag_NZ(opcode.ss.value);
     set_flag_V(ZERO);
+
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x20);
 }
 //##########################################################################
 

@@ -156,7 +156,7 @@ arg_t
 __get_args(struct pdp_11_t *pdp, word_t word_command)
 {
 
-    arg_t  res          = { 0, 0 };
+    arg_t  res          = { 0, 0, 0 };
     word_t num_register = word_command & 07;
     byte_t mode         = (word_command >> 3) & 07;
 
@@ -667,26 +667,28 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
     case 6:;
         address_word_t addr_in_pc  = (address_word_t) pdp_reg_get_var(pdp, 7);
         word_t         word_in_mem = w_read(pdp, (word_t)(addr_in_pc + 2));
+
         pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
 
         res.addr = pdp_reg_get_var(pdp, num_register);
-        res.addr = (word_t)(res.addr + word_in_mem);
 
-        res.value = (word_t) w_read(pdp, res.addr);
+        res.addr = (word_t)(res.addr + word_in_mem + 2);
+
+        res.value = (word_t) w_read(pdp, (word_t)(res.addr));
 
         if (num_register == 7) {
-            // addr_in_pc = (address_word_t)(pdp_reg_get_var(pdp, 7));
 
-            addr_in_pc = (address_word_t)(pdp_reg_get_var(pdp, 7));
-            // PRINT_RESULT("\nADR_IN_PC = %o\n", addr_in_pc);
-            word_in_mem = (word_t)(addr_in_pc + word_in_mem);
-            // PRINT_RESULT("\nword_in_mem = %o\n", word_in_mem);
+            res.addr = pdp_reg_get_var(pdp, num_register);
 
-            res.value = word_in_mem;
-            PRINT_RESULT("%o ", res.value);
+            res.addr = (word_t)((res.addr + word_in_mem) + 2);
+
+            res.value = (word_t) w_read(pdp, (word_t)(res.addr));
+
+            PRINT_RESULT("%o ", res.addr);
         } else {
             PRINT_RESULT("%o(R%d) ", word_in_mem, num_register);
         }
+        res.num_reg = num_register;
         break;
         /**
          * @brief Обработка режима адресации 7: Косвенный индексный / Косвенный
@@ -780,6 +782,7 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             PRINT_RESULT("@%o(R%d) ", offset, num_register);
         }
+        res.num_reg = num_register;
 
         break;
     default:

@@ -50,11 +50,13 @@ typedef struct {
 typedef struct {
     word_t value;
     word_t addr;
+    word_t num_reg;
 } arg_t;
 
 typedef struct {
-    arg_t  ss; // SS Поле источника (Source field) 6 бит
-    arg_t  dd; // DD Поле приемника (Destination field) 6 бит
+    arg_t ss; // SS Поле источника (Source field) 6 бит
+    arg_t dd; // DD Поле приемника (Destination field) 6 бит
+
     byte_t r_reg; // R Индекс регистра (R0-R5, SP, PC) 3 бита
     byte_t value_nn;  // NN Числовое значение 6 бит
     byte_t value_n;   // N Числовое значение 3 бита
