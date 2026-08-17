@@ -28,9 +28,8 @@ test_pc_reg(struct pdp_11_t *pdp)
     pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, addr, (word_t) 0016707);
+    w_write(pdp, addr, (word_t) 0016700);
 
-    pdp_reg_set_var(pdp, 3, 0200);
     w_write(pdp, 0204, (word_t) 015);
     w_write(pdp, 01010, (word_t) -0606);
 
@@ -48,12 +47,8 @@ test_pc_reg(struct pdp_11_t *pdp)
     //! < Исполнение команды с триггером автодекремента регистров
     run_command->do_commands_command(
         pdp, addr, w_read(pdp, addr), run_command->params);
-    // ! < Проверка измененного состояния памяти после выполнения операции
-    // PRINT_RESULT("\npdp_reg_get_var(pdp, 6) = %o\n", pdp_reg_get_var(pdp,
-    // 6)); PRINT_RESULT("\nw_read(pdp, pdp_reg_get_var(pdp, 7) = %o\n",
-    //              w_read(pdp, pdp_reg_get_var(pdp, 7)));
-    assert(pdp_reg_get_var(pdp, 7) == 0204);
-    assert(w_read(pdp, pdp_reg_get_var(pdp, 7)) == 015);
+
+    assert(pdp_reg_get_var(pdp, 0) == 015);
 
     PRINT_RESULT("  %s", " ... OK\n");
     pdp_reg_clear(pdp);
@@ -67,7 +62,7 @@ test_valid_reg(struct pdp_11_t *pdp)
     pdp_reg_clear(pdp);
     pdp_reg_set_var(pdp, 7, addr);
 
-    w_write(pdp, addr, (word_t) 0016301);
+    w_write(pdp, addr, (word_t) 0016300);
 
     pdp_reg_set_var(pdp, 3, 0200);
     w_write(pdp, 0204, (word_t) 015);
@@ -90,7 +85,7 @@ test_valid_reg(struct pdp_11_t *pdp)
         pdp, addr, w_read(pdp, addr), run_command->params);
 
     //! < Проверка измененного состояния памяти после выполнения операции
-    assert(pdp_reg_get_var(pdp, 1) == 015);
+    assert(pdp_reg_get_var(pdp, 0) == 015);
     pdp_reg_clear(pdp);
 
     PRINT_RESULT("  %s", " ... OK\n");

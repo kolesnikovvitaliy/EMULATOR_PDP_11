@@ -499,26 +499,21 @@ command_do_jsr(struct pdp_11_t *pdp,
     if (!pdp) {
         return;
     }
-    // __command_reg_dump(pdp);
+
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
-    // word_t temp_pc = opcode.dd.value;
 
-    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
-    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
-    PRINT_RESULT("\nopcode.s.value = %o\n", opcode.ss.value);
+    word_t target_pc = pdp_reg_get_var(pdp, 7);
 
-#if 0
-    void do_jsr(void)
-    {
-    Word target_pc = dd.adr;
-    SP -= 2;
-    w_write(SP, reg[r], MEMSPACE);
-    reg[r] = PC;
-    PC = target_pc;
-    }
-#endif
+    word_t target_sp = pdp_reg_get_var(pdp, 6);
+    pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
+
+    target_sp = pdp_reg_get_var(pdp, 6);
+
+    w_write(pdp, target_sp, target_pc);
+
+    pdp_reg_set_var(pdp, 7, (word_t)(opcode.dd.addr - 2));
+    //TODO: NUM_REGISTERS SET VALUE
 }
 //##########################################################################
 // RTS
@@ -537,23 +532,13 @@ command_do_rts(struct pdp_11_t *pdp,
     if (!pdp) {
         return;
     }
-    // __command_reg_dump(pdp);
-    OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
-    // word_t temp_pc = opcode.dd.value;
 
-    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
-    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
-    PRINT_RESULT("\nopcode.s.value = %o\n", opcode.ss.value);
+    word_t target_sp = pdp_reg_get_var(pdp, 6);
 
-#if 0
-    void do_rts(void) {
-    int link_reg = r;
-    PC = reg[link_reg];
-    reg[link_reg] = w_read(SP);
-    SP += 2;
-    }
-#endif
+    pdp_reg_set_var(pdp, 7, w_read(pdp, target_sp));
+
+    pdp_reg_set_var(pdp, 6, (word_t)(target_sp + 2));
+
+    PRINT_RESULT(" %o ", (word_t)(w_read(pdp, target_sp) + 2));
 }
 //##########################################################################
