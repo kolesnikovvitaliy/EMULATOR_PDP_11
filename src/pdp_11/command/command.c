@@ -670,22 +670,22 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
         pdp_reg_set_var(pdp, 7, (address_word_t)(addr_in_pc + 2));
 
-        res.addr = pdp_reg_get_var(pdp, num_register);
-
-        res.addr = (word_t)(res.addr + word_in_mem + 2);
-
-        res.value = (word_t) w_read(pdp, (word_t)(res.addr));
-
         if (num_register == 7) {
 
             res.addr = pdp_reg_get_var(pdp, num_register);
 
             res.addr = (word_t)((res.addr + word_in_mem) + 2);
 
-            res.value = (word_t) w_read(pdp, (word_t)(res.addr));
+            res.value = (word_t) b_read(pdp, (word_t)(res.addr));
 
             PRINT_RESULT("%o ", res.addr);
         } else {
+            res.addr = pdp_reg_get_var(pdp, num_register);
+
+            res.addr = (word_t)(res.addr + word_in_mem);
+
+            res.value = (word_t) b_read(pdp, (word_t)(res.addr));
+
             PRINT_RESULT("%o(R%d) ", word_in_mem, num_register);
         }
         res.num_reg = num_register;

@@ -25,7 +25,7 @@ for file in "$TARGET_DIR"/*; do
         # Запуск программы с одним файлом в качестве аргумента
         # Запуск с флагом -disable_logs выводиться на экран только напечатанные символы
         # Пример "Hello, world!\n"
-        "$PROGRAM" -t "../../../test/test_repo/pdp11_tests_succes/$clean_name" 2>&1 | tail -n 8
+        "$PROGRAM" -f -t "../../../test/test_repo/pdp11_tests_succes/$clean_name" 2>&1 | tail -n 8
 
         echo "--------------------------------------"
     fi
