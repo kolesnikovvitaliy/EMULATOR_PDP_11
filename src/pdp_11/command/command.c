@@ -156,7 +156,7 @@ arg_t
 __get_args(struct pdp_11_t *pdp, word_t word_command)
 {
 
-    arg_t  res          = { 0, 0, 0 };
+    arg_t  res          = { 0, 0 };
     word_t num_register = word_command & 07;
     byte_t mode         = (word_command >> 3) & 07;
 
@@ -688,7 +688,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             PRINT_RESULT("%o(R%d) ", word_in_mem, num_register);
         }
-        res.num_reg = num_register;
         break;
         /**
          * @brief Обработка режима адресации 7: Косвенный индексный / Косвенный
@@ -782,7 +781,6 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
 
             PRINT_RESULT("@%o(R%d) ", offset, num_register);
         }
-        res.num_reg = num_register;
 
         break;
     default:

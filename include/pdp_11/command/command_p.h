@@ -50,7 +50,6 @@ typedef struct {
 typedef struct {
     word_t value;
     word_t addr;
-    word_t num_reg;
 } arg_t;
 
 typedef struct {
