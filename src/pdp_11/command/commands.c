@@ -511,9 +511,10 @@ command_do_jsr(struct pdp_11_t *pdp,
     word_t target_pc = pdp_reg_get_var(pdp, 7);
 
     word_t target_sp = pdp_reg_get_var(pdp, 6);
-    pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
+    // pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
 
-    target_sp = pdp_reg_get_var(pdp, 6);
+    // target_sp = pdp_reg_get_var(pdp, 6);
+
     if (opcode.r_reg != 7) {
         w_write(pdp, target_sp, pdp_reg_get_var(pdp, opcode.r_reg));
     } else {
@@ -524,14 +525,17 @@ command_do_jsr(struct pdp_11_t *pdp,
         pdp_reg_set_var(
             pdp, opcode.r_reg, (word_t)(pdp_reg_get_var(pdp, 7) + 2));
     } else {
-        pdp_reg_set_var(pdp, 7, (word_t)((opcode.dd.addr) + 2)); //TODO: +- 2;
+        pdp_reg_set_var(pdp, 7, (word_t)((opcode.dd.addr) + 2));
     }
     pdp_reg_set_var(pdp, 7, (word_t)((opcode.dd.addr) - 2));
 
-    PRINT_RESULT("\n *SP = %o\n", w_read(pdp, pdp_reg_get_var(pdp, 6)));
+    // PRINT_RESULT("\n SP = %o \n*SP = %o\n",
+    //              pdp_reg_get_var(pdp, 6),
+    //              w_read(pdp, pdp_reg_get_var(pdp, 6)));
+    pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
     __command_reg_dump(pdp);
     // pdp_reg_set_var(pdp, opcode.r_reg, (word_t)(opcode.dd.addr));
-    // TODO: NUM_REGISTERS SET VALUE
+    // TODO: 5 LOOP
 }
 //##########################################################################
 // RTS
@@ -555,15 +559,19 @@ command_do_rts(struct pdp_11_t *pdp,
     // opcode = __get_mr(pdp, word_command, params);
 
     word_t target_sp = pdp_reg_get_var(pdp, 6);
+    // PRINT_RESULT(" TARGET_SP = %o ", target_sp + 2);
+    // PRINT_RESULT(" %o ", (word_t)(w_read(pdp, target_sp + 2)));
 
-    pdp_reg_set_var(pdp, 7, w_read(pdp, target_sp));
+    pdp_reg_set_var(
+        pdp, 7, (word_t)(w_read(pdp, (word_t)(target_sp + 2)) - 2));
     // if (opcode.r_reg != 7) {
-    //     pdp_reg_set_var(pdp, opcode.r_reg, (word_t)(w_read(pdp,
-    //     target_sp)));
+    //     pdp_reg_set_var(
+    //         pdp, opcode.r_reg, (word_t)(w_read(pdp, target_sp) - 2));
     // }
 
     pdp_reg_set_var(pdp, 6, (word_t)(target_sp + 2));
+    // __command_reg_dump(pdp);
 
-    PRINT_RESULT(" %o ", (word_t)(w_read(pdp, target_sp) + 2));
+    PRINT_RESULT(" %o ", (word_t)(w_read(pdp, (word_t)(target_sp + 2))));
 }
 //##########################################################################
