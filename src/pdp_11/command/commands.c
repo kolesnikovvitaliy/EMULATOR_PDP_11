@@ -502,37 +502,25 @@ command_do_jsr(struct pdp_11_t *pdp,
 
     OP_CODE_T_INIT
     opcode = __get_mr(pdp, word_command, params);
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    // PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
-    // PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
-    // PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
-    // PRINT_RESULT("\nopcode.r_reg = %o\n", opcode.r_reg);
 
     word_t target_pc = pdp_reg_get_var(pdp, 7);
 
     word_t target_sp = pdp_reg_get_var(pdp, 6);
-    // pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
 
-    // target_sp = pdp_reg_get_var(pdp, 6);
-
+    // __command_reg_dump(pdp);
     if (opcode.r_reg != 7) {
-        w_write(pdp, target_sp, pdp_reg_get_var(pdp, opcode.r_reg));
-    } else {
-        w_write(pdp, target_sp, target_pc);
-    }
-
-    if (opcode.r_reg != 7) {
+        w_write(pdp, target_sp, (word_t)(target_pc + 2));
         pdp_reg_set_var(
             pdp, opcode.r_reg, (word_t)(pdp_reg_get_var(pdp, 7) + 2));
     } else {
+        w_write(pdp, target_sp, pdp_reg_get_var(pdp, opcode.r_reg));
         pdp_reg_set_var(pdp, 7, (word_t)((opcode.dd.addr) + 2));
     }
+
     pdp_reg_set_var(pdp, 7, (word_t)((opcode.dd.addr) - 2));
 
-    // PRINT_RESULT("\n SP = %o \n*SP = %o\n",
-    //              pdp_reg_get_var(pdp, 6),
-    //              w_read(pdp, pdp_reg_get_var(pdp, 6)));
     pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
+    // PRINT_RESULT(" \nopcode.r_reg = %o\n ", opcode.r_reg);
     __command_reg_dump(pdp);
     // pdp_reg_set_var(pdp, opcode.r_reg, (word_t)(opcode.dd.addr));
     // TODO: 5 LOOP
@@ -557,20 +545,21 @@ command_do_rts(struct pdp_11_t *pdp,
 
     // OP_CODE_T_INIT
     // opcode = __get_mr(pdp, word_command, params);
-
-    word_t target_sp = pdp_reg_get_var(pdp, 6);
+    word_t target_reg = (word_t)(word_command & 07);
+    word_t target_sp  = pdp_reg_get_var(pdp, 6);
     // PRINT_RESULT(" TARGET_SP = %o ", target_sp + 2);
     // PRINT_RESULT(" %o ", (word_t)(w_read(pdp, target_sp + 2)));
-
     pdp_reg_set_var(
         pdp, 7, (word_t)(w_read(pdp, (word_t)(target_sp + 2)) - 2));
-    // if (opcode.r_reg != 7) {
-    //     pdp_reg_set_var(
-    //         pdp, opcode.r_reg, (word_t)(w_read(pdp, target_sp) - 2));
-    // }
+    if (target_reg != 7) {
+        pdp_reg_set_var(
+            pdp, target_reg, (word_t)(w_read(pdp, (word_t)(target_sp + 2))));
+    }
 
     pdp_reg_set_var(pdp, 6, (word_t)(target_sp + 2));
+    // INFO_LOG("##############################", "");
     // __command_reg_dump(pdp);
+    // TRACE_LOG("##############################", "");
 
     PRINT_RESULT(" %o ", (word_t)(w_read(pdp, (word_t)(target_sp + 2))));
 }
