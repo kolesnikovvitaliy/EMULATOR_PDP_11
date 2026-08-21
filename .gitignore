@@ -47,13 +47,13 @@
 # documents
 ./doc/html/*
 /doc/html/
-./test/test_repo/*
-/test/test_repo/
+./test/test_repo/pdp11_tests*
+/test/test_repo/pdp11_tests
 !test/test_repo/**
 
 
-./test/test_repo/*
-/test/test_repo/
+./test/test_repo/pdp11_tests*
+/test/test_repo/pdp11_tests
 !test/test_repo/**
 # Kernel Module Compile Results
 *.mod*
