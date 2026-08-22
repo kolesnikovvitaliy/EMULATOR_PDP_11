@@ -13,6 +13,7 @@ CFLAGS = -O2 -g3 -Wall -Wextra -Wpedantic -Wpointer-arith -Wstrict-prototypes \
 	-Warray-bounds -fstack-clash-protection -fstack-protector-strong -Wl,-z,nodlopen -Wl,-z,noexecstack -Wl,-z,relro \
 	-Wl,-z,now
 
+
 SRC_DIR = src
 OBJ_DIR = build
 INC_DIR = include

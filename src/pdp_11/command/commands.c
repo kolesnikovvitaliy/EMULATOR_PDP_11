@@ -440,8 +440,8 @@ command_do_tstb(struct pdp_11_t *pdp,
     }
     opcode = __get_mr(pdp, word_command, params);
     // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    //  __command_reg_dump(pdp);
-    //
+    // __command_reg_dump(pdp);
+
     set_flag_NZ(opcode.dd.value);
 
     set_flag_V((word_t) 0);

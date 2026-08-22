@@ -48,8 +48,8 @@ __word_write_w(void *mem_word, address_word_t addr, word_t data)
     // Записываем слово по адресу;
     mem_word_t *ptr = (mem_word_t *) mem_word;
 
-    *(ptr->buf_w + addr)     = data & 0xFF;
-    *(ptr->buf_w + addr + 1) = (data >> 8) & 0xFF;
+    *(ptr->buf_w + addr)     = (word_t)(data & 0xFF);
+    *(ptr->buf_w + addr + 1) = (word_t)((data >> 8) & 0xFF);
 }
 
 //------------------------------------------------------------------
@@ -58,6 +58,7 @@ __word_read_w(void *mem_word, address_word_t addr)
 {
     // Читаем слово по адресу;
     mem_word_t *ptr = (mem_word_t *) mem_word;
+
     return (word_t)((*(ptr->buf_w + addr) & 0xFF)
                     | *(ptr->buf_w + addr + 1) << 8);
 }
