@@ -24,8 +24,8 @@ void
 mem_word_create(mem_word_t *mem_word, size_word_buffer size)
 {
     // Выделение памяти для работы PDP_11 в режие типа WORD;
-    mem_word->buf_w  = (word_t *) calloc(size / 2, sizeof(word_t));
-    mem_word->size_w = size / 2;
+    mem_word->buf_w  = (word_t *) calloc(size, sizeof(word_t));
+    mem_word->size_w = size;
 
     // Полморфные функции работы с памятью типа WORD или BYTE;
     mem_word->read_byte  = __byte_read_w;
@@ -58,6 +58,7 @@ __word_read_w(void *mem_word, address_word_t addr)
 {
     // Читаем слово по адресу;
     mem_word_t *ptr = (mem_word_t *) mem_word;
+    // printf("\nptr  =  %d\n", (byte_t)(ptr->size_w));
 
     return (word_t)((*(ptr->buf_w + addr) & 0xFF)
                     | *(ptr->buf_w + addr + 1) << 8);
@@ -81,7 +82,6 @@ __byte_read_w(void *mem_word, address_byte_t addr)
     // Читаем байт из слова по адресу;
     mem_word_t *ptr = (mem_word_t *) mem_word;
 
-    // return (byte_t) * (ptr->buf_w + addr) & 0xFF;
     return (byte_t) * (ptr->buf_w + addr);
 }
 //------------------------------------------------------------------

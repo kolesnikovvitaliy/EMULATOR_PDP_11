@@ -5,5 +5,5 @@
 address_byte_t
 __get_size_buffer(void)
 {
-    return size_buffer_default;
+    return 0xffff;
 }

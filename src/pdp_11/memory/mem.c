@@ -21,11 +21,13 @@ mem_create(mem_t *memory)
     memory->default_memory = g_default_memory;
 
     if (!(memory->default_memory)) {
+        memory->mem_word = NULL;
         memory->mem_byte = (mem_byte_t *) mem_byte_new();
         mem_byte_create((struct mem_byte_t *) memory->mem_byte,
                         __get_size_buffer());
         return;
     }
+    memory->mem_byte = NULL;
     memory->mem_word = (mem_word_t *) mem_word_new();
     mem_word_create((struct mem_word_t *) memory->mem_word,
                     __get_size_buffer());
