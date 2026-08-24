@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-byte_t g_default_memory = 0; // TODO: TEST
+byte_t g_default_memory = 0;
 mem_t *
 mem_new(void)
 {
@@ -53,29 +53,17 @@ __is_valid_addr(mem_t *memory, address_word_t addr, word_t len)
     if ((addr + len) < addr) {
         ERROR_LOG("\nВЫХОД ЗА ПРЕДЕЛЫ ДОПУСТИМОЙ ПАМЯТИ \n", "");
     }
-    // if (!(memory->default_memory)) {
-    //     if ((addr | len) > (memory->mem_byte->size_b - 1)) {
-    //         abort();
-    //     }
-    //     return 1;
-    // }
-    //
-    // if ((addr + len) > (memory->mem_word->size_w - 1)) {
-    //     abort();
-    // }
     if (!(memory->default_memory)) {
-        if ((addr + len) > memory->mem_byte->size_b) {
+        if ((addr | len) > (memory->mem_byte->size_b - 1)) {
             abort();
         }
         return 1;
     }
 
-    // Переводим размер из слов в байты (умножаем size_w на 2)
-    // Строгое ">" вместо "> (size - 1)", так как адрес конца (addr + len)
-    // указывает за предел читаемого блока
-    if ((addr + len) > (memory->mem_word->size_w * 2)) {
+    if ((addr + len) > (memory->mem_word->size_w - 1)) {
         abort();
     }
+
     return 1;
 }
 
