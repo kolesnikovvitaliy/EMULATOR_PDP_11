@@ -14,6 +14,20 @@
 extern word_t psw; // Переменная флагов состояния (NZVC)
 extern word_t      tick; // Количество выполненных машинных команд;
 extern log_level_t current_log_level; // Уровень логирования;
+// TODO: ADD COMMANDS tst
+/*
+adc
+ash
+ashc
+asl
+asr
+com
+div
+jmp
+mul
+rol
+ror
+*/
 
 //##########################################################################
 void
@@ -569,5 +583,405 @@ command_do_rts(struct pdp_11_t *pdp,
 
     // __command_reg_dump(pdp);
     PRINT_RESULT(" %s ", name_registers);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_adc(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst   = opcode.dd.value;
+    word_t carry = get_flag(C);
+    word_t res   = (word_t)(dst + carry);
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t v = (dst == 0077777 && carry == 1) ? 1 : 0;
+    word_t c = (dst == 0177777 && carry == 1) ? 1 : 0;
+
+    set_flag_V(v);
+    set_flag_C(c);
+    set_flag_NZ(res);
+
+    // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x20);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_asl(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst = opcode.dd.value;
+    word_t res = (word_t)(dst << 1);
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = (dst >> 15) & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_asr(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst = opcode.dd.value;
+    word_t res = (word_t)(((word_t) dst) >> 1);
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = dst & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_com(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst = opcode.dd.value;
+    word_t res = (word_t)(~dst);
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    set_flag_V(0);
+    set_flag_C(1);
+    set_flag_NZ(res);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_jmp(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    // JMP изменяет PC (регистр 7). Адрес назначения берется из структуры
+    // opcode.dd.addr
+    pdp_reg_set_var(pdp, 7, opcode.dd.addr);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_rol(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst   = opcode.dd.value;
+    word_t old_c = get_flag(C);
+    word_t res   = (word_t)((dst << 1) | (old_c & 1));
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = (dst >> 15) & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_ror(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst   = opcode.dd.value;
+    word_t old_c = get_flag(C);
+    word_t res   = (word_t)((dst >> 1) | ((old_c & 1) << 15));
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = dst & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
+//##########################################################################
+//##########################################################################
+void
+command_do_tst(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    //(void) params;
+    OP_CODE_T_INIT
+    if (!pdp) {
+        return;
+    }
+    opcode = __get_mr(pdp, word_command, params);
+    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+    // __command_reg_dump(pdp);
+
+    set_flag_NZ(opcode.dd.value);
+
+    set_flag_V((word_t) 0);
+    set_flag_C((word_t) 0);
+
+    // PRINT_RESULT("\n", "");
+    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
+    // pdp_mem_dump(pdp, 0x40, 0x20);
+    // pdp_mem_dump(pdp, 0x200, 0x26);
+    // __command_reg_dump(pdp);
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_mul(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    // (void) addr;
+    // OP_CODE_T_INIT
+    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
+    //
+    // int16_t src = (int16_t)opcode.ss.value; // Маска DD/SS зависит от вашей
+    // архитектуры парсера int16_t reg_val = (int16_t)pdp->regs[opcode.r.num];
+    //
+    // int32_t res = (int32_t)src * (int32_t)reg_val;
+    //
+    // word_t high = (word_t)((res >> 16) & 0xFFFF);
+    // word_t low = (word_t)(res & 0xFFFF);
+    //
+    // pdp->regs[opcode.r.num] = high;
+    // if ((opcode.r.num % 2) == 0) {
+    //     pdp->regs[opcode.r.num | 1] = low; // Если R четный, то результат в
+    //     R и Rv1
+    // }
+    //
+    // set_flag_C((res < -32768 || res > 32767) ? 1 : 0);
+    // set_flag_V(0);
+    //
+    // // Флаги N и Z выставляются по полному 32-битному результату
+    // set_flag_N((res >> 31) & 1);
+    // set_flag_Z(res == 0);
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
+}
+//##########################################################################
+//##########################################################################
+void
+command_do_div(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    // (void) addr;
+    // OP_CODE_T_INIT
+    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
+    //
+    // int16_t src = (int16_t)opcode.ss.value;
+    // word_t reg_num = opcode.r.num & ~1; // Деление всегда начинается с
+    // четного регистра пары
+    //
+    // int32_t dividend = ((int32_t)pdp->regs[reg_num] << 16) |
+    // pdp->regs[reg_num | 1];
+    //
+    // if (src == 0) {
+    //     set_flag_V(1);
+    //     set_flag_C(1); // Деление на ноль
+    //     return;
+    // }
+    //
+    // int32_t quot = dividend / src;
+    // int32_t rem = dividend % src;
+    //
+    // if (quot < -32768 || quot > 32767) {
+    //     set_flag_V(1); // Переполнение частного
+    //     return;
+    // }
+    //
+    // pdp->regs[reg_num] = (word_t)(quot & 0xFFFF);
+    // pdp->regs[reg_num | 1] = (word_t)(rem & 0xFFFF);
+    //
+    // set_flag_V(0);
+    // set_flag_C(0);
+    // set_flag_NZ((word_t)quot);
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
+}
+//##########################################################################
+//##########################################################################
+void
+command_do_ashc(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    // (void) addr;
+    // OP_CODE_T_INIT
+    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
+    //
+    // word_t reg_num = opcode.r.num;
+    // byte_t shift_count = (byte_t)(opcode.ss.value & 077);
+    // if (shift_count & 040) shift_count |= 0300;
+    //
+    // uint32_t combo = ((uint32_t)pdp->regs[reg_num] << 16) |
+    // pdp->regs[reg_num | 1]; uint32_t orig_combo = combo; uint32_t c = 0;
+    //
+    // if (shift_count > 0) {
+    //     if (shift_count > 32) shift_count = 32;
+    //     for (int i = 0; i < shift_count; i++) {
+    //         c = (combo >> 31) & 1;
+    //         combo <<= 1;
+    //     }
+    // } else if (shift_count < 0) {
+    //     int count = -shift_count;
+    //     if (count > 32) count = 32;
+    //     for (int i = 0; i < count; i++) {
+    //         c = combo & 1;
+    //         combo = (uint32_t)(((int32_t)combo) >> 1);
+    //     }
+    // }
+    //
+    // pdp->regs[reg_num] = (word_t)((combo >> 16) & 0xFFFF);
+    // pdp->regs[reg_num | 1] = (word_t)(combo & 0xFFFF);
+    //
+    // word_t v = ((orig_combo >> 31) & 1) ^ ((combo >> 31) & 1);
+    // set_flag_V(v);
+    // if (shift_count != 0) set_flag_C(c & 1);
+    //
+    // set_flag_N((combo >> 31) & 1);
+    // set_flag_Z(combo == 0);
+
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
+}
+//##########################################################################
+
+//##########################################################################
+void
+command_do_ash(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    // (void) addr;
+    // OP_CODE_T_INIT
+    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
+    //
+    // word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
+    // byte_t shift_count = (byte_t)(opcode.ss.value & 077); // 6 бит счетчика
+    // if (shift_count & 040) shift_count |= 0300; // Знак
+    //
+    // word_t res = reg_val;
+    // word_t c = 0;
+    //
+    // if (shift_count > 0) { // Сдвиг влево
+    //     if (shift_count > 16) shift_count = 16;
+    //     for (int i = 0; i < shift_count; i++) {
+    //         c = (res >> 15) & 1;
+    //         res <<= 1;
+    //     }
+    // } else if (shift_count < 0) { // Сдвиг вправо
+    //     int count = -shift_count;
+    //     if (count > 16) count = 16;
+    //     for (int i = 0; i < count; i++) {
+    //         c = res & 1;
+    //         res = (word_t)(((word_t)res) >> 1);
+    //     }
+    // }
+    // pdp_reg_set_var(pdp, opcode.r_reg, res);
+    //
+    // word_t v = ((reg_val >> 15) & 1) ^ ((res >> 15) & 1); // Изменился ли
+    // знаковый бит set_flag_V(v); if (shift_count != 0) set_flag_C(c);
+    // set_flag_NZ(res);
+
+    (void) addr;
+    (void) params;
+    (void) word_command;
+    (void) pdp;
 }
 //##########################################################################

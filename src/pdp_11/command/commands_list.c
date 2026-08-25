@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-// TODO: ADD commands: tstb, bpl,
+
 command_t template_commands[] = {
     { 0000000, 0111111, (byte_t *) "unknown", command_do_unknown, NO_PARAMS },
     { 0177777, 0000000, (byte_t *) "halt", command_do_halt, NO_PARAMS },
@@ -30,6 +30,20 @@ command_t template_commands[] = {
     { 0177700, 0105700, (byte_t *) "tstb", command_do_tstb, HAS_DD },
     { 0177000, 0004000, (byte_t *) "jsr", command_do_jsr, HAS_R | HAS_DD },
     { 0177770, 0000200, (byte_t *) "rts", command_do_rts, HAS_R },
+
+    { 0177700, 0005700, (byte_t *) "tst", command_do_tst, HAS_DD },
+
+    { 0177700, 0005500, (byte_t *) "adc", command_do_adc, HAS_DD },
+    { 0177000, 0072000, (byte_t *) "ash", command_do_ash, HAS_R | HAS_DD },
+    { 0177000, 0073000, (byte_t *) "ashc", command_do_ashc, HAS_R | HAS_DD },
+    { 0177700, 0006300, (byte_t *) "asl", command_do_asl, HAS_DD },
+    { 0177700, 0006200, (byte_t *) "asr", command_do_asr, HAS_DD },
+    { 0177700, 0005100, (byte_t *) "com", command_do_com, HAS_DD },
+    { 0177000, 0071000, (byte_t *) "div", command_do_div, HAS_R | HAS_DD },
+    { 0177700, 0000100, (byte_t *) "jmp", command_do_jmp, HAS_DD },
+    { 0177000, 0070000, (byte_t *) "mul", command_do_mul, HAS_R | HAS_DD },
+    { 0177700, 0006100, (byte_t *) "rol", command_do_rol, HAS_DD },
+    { 0177700, 0006000, (byte_t *) "ror", command_do_ror, HAS_DD },
 
     // добавить остальные команды
 };

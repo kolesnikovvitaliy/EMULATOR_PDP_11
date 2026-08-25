@@ -10,8 +10,6 @@ struct pdp_11_t;
 
 void __command_reg_dump(struct pdp_11_t *pdp);
 
-// void command_do_halt(struct pdp_11_t *, address_word_t, word_t, byte_t);
-
 void set_flag_C(word_t);
 void set_flag_NZ(word_t);
 void set_flag_V(word_t);
@@ -35,8 +33,9 @@ MAKRO_COMMAND_PROTOTYPE(tstb);
 
 MAKRO_COMMAND_PROTOTYPE(jsr);
 MAKRO_COMMAND_PROTOTYPE(rts);
-//TODO: ADD COMMANDS
-/*
+
+MAKRO_COMMAND_PROTOTYPE(tst);
+
 MAKRO_COMMAND_PROTOTYPE(adc);
 MAKRO_COMMAND_PROTOTYPE(ash);
 MAKRO_COMMAND_PROTOTYPE(ashc);
@@ -48,7 +47,6 @@ MAKRO_COMMAND_PROTOTYPE(jmp);
 MAKRO_COMMAND_PROTOTYPE(mul);
 MAKRO_COMMAND_PROTOTYPE(rol);
 MAKRO_COMMAND_PROTOTYPE(ror);
-*/
 
 #endif // COMMANDS_H
 #pragma once
