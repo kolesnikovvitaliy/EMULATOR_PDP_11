@@ -948,40 +948,58 @@ command_do_ash(struct pdp_11_t *pdp,
                word_t           word_command,
                byte_t           params)
 {
-    // (void) addr;
-    // OP_CODE_T_INIT
-    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
-    //
-    // word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
-    // byte_t shift_count = (byte_t)(opcode.ss.value & 077); // 6 бит счетчика
-    // if (shift_count & 040) shift_count |= 0300; // Знак
-    //
-    // word_t res = reg_val;
-    // word_t c = 0;
-    //
-    // if (shift_count > 0) { // Сдвиг влево
-    //     if (shift_count > 16) shift_count = 16;
-    //     for (int i = 0; i < shift_count; i++) {
-    //         c = (res >> 15) & 1;
-    //         res <<= 1;
-    //     }
-    // } else if (shift_count < 0) { // Сдвиг вправо
-    //     int count = -shift_count;
-    //     if (count > 16) count = 16;
-    //     for (int i = 0; i < count; i++) {
-    //         c = res & 1;
-    //         res = (word_t)(((word_t)res) >> 1);
-    //     }
-    // }
-    // pdp_reg_set_var(pdp, opcode.r_reg, res);
-    //
-    // word_t v = ((reg_val >> 15) & 1) ^ ((res >> 15) & 1); // Изменился ли
-    // знаковый бит set_flag_V(v); if (shift_count != 0) set_flag_C(c);
-    // set_flag_NZ(res);
-
     (void) addr;
-    (void) params;
-    (void) word_command;
-    (void) pdp;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+    PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
+    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
+    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
+    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
+
+    word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
+    int shift_count = (byte_t)(opcode.dd.value & 077); // 6 бит счетчика
+    PRINT_RESULT("\nshift_count__1 = %d\n", shift_count);//TODO: = 62;
+    if (shift_count & 040)
+        shift_count |= 0300; // Знак
+    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); //TODO: = 254;
+
+    word_t res = reg_val;
+    PRINT_RESULT("\nres = %o\n", reg_val);
+
+    word_t c = 0;
+
+    if (shift_count > 0) { // Сдвиг влево
+        if (shift_count > 16)
+            shift_count = 16;
+        for (int i = 0; i < shift_count; i++) {
+            c = (res >> 15) & 1;
+            res <<= 1;
+        }
+    } else if (shift_count < 0) { // Сдвиг вправо
+        int count = -shift_count;
+        if (count > 16)
+            count = 16;
+        for (int i = 0; i < count; i++) {
+            c   = res & 1;
+            res = (word_t)(((word_t) res) >> 1);
+        }
+    }
+    PRINT_RESULT("\nRes = %o\n", res);
+    pdp_reg_set_var(pdp, opcode.r_reg, res);
+    PRINT_RESULT("R%d ", opcode.r_reg);
+
+    word_t v = ((reg_val >> 15) & 1)
+               ^ ((res >> 15) & 1); // Изменился лизнаковый бит
+    set_flag_V(v);
+    if (shift_count != 0)
+        set_flag_C(c);
+    set_flag_NZ(res);
+
+    // (void) addr;
+    // (void) params;
+    // (void) word_command;
+    // (void) pdp;
 }
 //##########################################################################
