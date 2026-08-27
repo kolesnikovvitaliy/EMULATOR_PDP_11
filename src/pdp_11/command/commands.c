@@ -14,7 +14,7 @@
 extern word_t psw; // Переменная флагов состояния (NZVC)
 extern word_t      tick; // Количество выполненных машинных команд;
 extern log_level_t current_log_level; // Уровень логирования;
-// TODO: ADD COMMANDS tst
+// TODO: ADD COMMANDS ash, tst
 /*
 adc
 ash
@@ -959,11 +959,12 @@ command_do_ash(struct pdp_11_t *pdp,
     PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
 
     word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
-    int shift_count = (byte_t)(opcode.dd.value & 077); // 6 бит счетчика
-    PRINT_RESULT("\nshift_count__1 = %d\n", shift_count);//TODO: = 62;
-    if (shift_count & 040)
-        shift_count |= 0300; // Знак
-    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); //TODO: = 254;
+    short shift_count = (byte_t)(opcode.dd.value & 077); // 6 бит счетчика
+    // short shift_count = (byte_t) 15; // 6 бит счетчика
+    PRINT_RESULT("\nshift_count__1 = %d\n", shift_count); // TODO: = 62;
+    /*if (shift_count & 040)
+        shift_count |= 0300;     */                         // Знак
+    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); // TODO: = 254;
 
     word_t res = reg_val;
     PRINT_RESULT("\nres = %o\n", reg_val);
@@ -971,22 +972,22 @@ command_do_ash(struct pdp_11_t *pdp,
     word_t c = 0;
 
     if (shift_count > 0) { // Сдвиг влево
-        if (shift_count > 16)
-            shift_count = 16;
-        for (int i = 0; i < shift_count; i++) {
-            c = (res >> 15) & 1;
-            res <<= 1;
+        if (shift_count >= 16) {
+            shift_count = 15;
+            printf("AAAAAAAAAAA");
         }
+        c   = (word_t)((res >> 15) & 1);
+        res = (word_t)((res << shift_count) & 0xFFFF);
+
     } else if (shift_count < 0) { // Сдвиг вправо
         int count = -shift_count;
         if (count > 16)
-            count = 16;
-        for (int i = 0; i < count; i++) {
-            c   = res & 1;
-            res = (word_t)(((word_t) res) >> 1);
-        }
+            count = 15;
+        c   = (word_t)(res & count);
+        res = (word_t)(((word_t) res) >> count);
     }
     PRINT_RESULT("\nRes = %o\n", res);
+    PRINT_RESULT("\nRes_C = %o\n", c);
     pdp_reg_set_var(pdp, opcode.r_reg, res);
     PRINT_RESULT("R%d ", opcode.r_reg);
 
