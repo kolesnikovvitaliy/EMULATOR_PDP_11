@@ -959,11 +959,11 @@ command_do_ash(struct pdp_11_t *pdp,
     PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
 
     word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
-    short shift_count = (byte_t)(opcode.dd.value & 077); // 6 бит счетчика
+    short shift_count = (byte_t)(opcode.dd.value & 63); // 6 бит счетчика
     // short shift_count = (byte_t) 15; // 6 бит счетчика
     PRINT_RESULT("\nshift_count__1 = %d\n", shift_count); // TODO: = 62;
-    /*if (shift_count & 040)
-        shift_count |= 0300;     */                         // Знак
+    if (shift_count & 32)
+        shift_count |= ~63;                               // Знак
     PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); // TODO: = 254;
 
     word_t res = reg_val;
@@ -973,8 +973,7 @@ command_do_ash(struct pdp_11_t *pdp,
 
     if (shift_count > 0) { // Сдвиг влево
         if (shift_count >= 16) {
-            shift_count = 15;
-            printf("AAAAAAAAAAA");
+            shift_count = 16;
         }
         c   = (word_t)((res >> 15) & 1);
         res = (word_t)((res << shift_count) & 0xFFFF);
@@ -982,17 +981,17 @@ command_do_ash(struct pdp_11_t *pdp,
     } else if (shift_count < 0) { // Сдвиг вправо
         int count = -shift_count;
         if (count > 16)
-            count = 15;
-        c   = (word_t)(res & count);
-        res = (word_t)(((word_t) res) >> count);
+            count = 16;
+        c   = (word_t)((res >> 15) & 1);
+        res = (word_t)((res << count) & 0xFFFF);
     }
     PRINT_RESULT("\nRes = %o\n", res);
     PRINT_RESULT("\nRes_C = %o\n", c);
     pdp_reg_set_var(pdp, opcode.r_reg, res);
     PRINT_RESULT("R%d ", opcode.r_reg);
 
-    word_t v = ((reg_val >> 15) & 1)
-               ^ ((res >> 15) & 1); // Изменился лизнаковый бит
+    word_t v
+        = ((reg_val >> 8) & 1) ^ ((res >> 8) & 1); // Изменился лизнаковый бит
     set_flag_V(v);
     if (shift_count != 0)
         set_flag_C(c);
