@@ -939,9 +939,9 @@ command_do_ashc(struct pdp_11_t *pdp,
     (void) word_command;
     (void) pdp;
 }
-//##########################################################################
+// ##########################################################################
 
-//##########################################################################
+// ##########################################################################
 void
 command_do_ash(struct pdp_11_t *pdp,
                address_word_t   addr,
@@ -964,26 +964,35 @@ command_do_ash(struct pdp_11_t *pdp,
     PRINT_RESULT("\nshift_count__1 = %d\n", shift_count); // TODO: = 62;
     if (shift_count & 32)
         shift_count |= ~63;                               // Знак
-    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); // TODO: = 254;
+    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); // TODO: = ;
 
     word_t res = reg_val;
     PRINT_RESULT("\nres = %o\n", reg_val);
-
+    word_t temp_res_for = res;
+    for (int i = 15; i >= 0; i--) {
+        PRINT_RESULT("%o", (temp_res_for >> i) & 1);
+    }
     word_t c = 0;
 
     if (shift_count > 0) { // Сдвиг влево
         if (shift_count >= 16) {
             shift_count = 16;
         }
+        PRINT_RESULT("\nshift_count__3 = %d\n", shift_count);
         c   = (word_t)((res >> 15) & 1);
         res = (word_t)((res << shift_count) & 0xFFFF);
 
     } else if (shift_count < 0) { // Сдвиг вправо
         int count = -shift_count;
+        PRINT_RESULT("\nshift_count__3- = %d\n", count);
         if (count > 16)
             count = 16;
         c   = (word_t)((res >> 15) & 1);
-        res = (word_t)((res << count) & 0xFFFF);
+        res = (word_t)((res >> count) & 0xFFFF);
+    }
+    temp_res_for = res;
+    for (int i = 15; i >= 0; i--) {
+        PRINT_RESULT("%o", (temp_res_for >> i) & 1);
     }
     PRINT_RESULT("\nRes = %o\n", res);
     PRINT_RESULT("\nRes_C = %o\n", c);
