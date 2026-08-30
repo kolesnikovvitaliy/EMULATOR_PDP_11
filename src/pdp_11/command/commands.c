@@ -953,62 +953,49 @@ command_do_ash(struct pdp_11_t *pdp,
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
-    PRINT_RESULT("\nopcode.ss.value = %o\n", opcode.ss.value);
-    PRINT_RESULT("\nopcode.ss.addr = %o\n", opcode.ss.addr);
-    PRINT_RESULT("\nopcode.dd.value = %o\n", opcode.dd.value);
-    PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
 
-    word_t reg_val = pdp_reg_get_var(pdp, opcode.r_reg);
-    short shift_count = (byte_t)(opcode.dd.value & 63); // 6 бит счетчика
-    // short shift_count = (byte_t) 15; // 6 бит счетчика
-    PRINT_RESULT("\nshift_count__1 = %d\n", shift_count); // TODO: = 62;
+    word_t reg_val     = pdp_reg_get_var(pdp, opcode.r_reg);
+    short  shift_count = (byte_t)(opcode.dd.value & 63);
+
     if (shift_count & 32)
-        shift_count |= ~63;                               // Знак
-    PRINT_RESULT("\nshift_count__2 = %d\n", shift_count); // TODO: = ;
+        shift_count |= ~63; // Знак
 
     word_t res = reg_val;
-    PRINT_RESULT("\nres = %o\n", reg_val);
-    word_t temp_res_for = res;
-    for (int i = 15; i >= 0; i--) {
-        PRINT_RESULT("%o", (temp_res_for >> i) & 1);
-    }
-    word_t c = 0;
+    word_t c   = 0;
 
-    if (shift_count > 0) { // Сдвиг влево
+    if (shift_count > 0) {
+        // Сдвиг влево
         if (shift_count >= 16) {
-            shift_count = 16;
+            c   = reg_val & 1;
+            res = 0;
+        } else {
+            c   = (word_t)((res >> (16 - shift_count)) & 1);
+            res = (word_t)((res << shift_count) & 0xFFFF);
         }
-        PRINT_RESULT("\nshift_count__3 = %d\n", shift_count);
-        c   = (word_t)((res >> 15) & 1);
-        res = (word_t)((res << shift_count) & 0xFFFF);
-
-    } else if (shift_count < 0) { // Сдвиг вправо
+    } else if (shift_count < 0) {
+        // Сдвиг вправо (Арифметический)
         int count = -shift_count;
-        PRINT_RESULT("\nshift_count__3- = %d\n", count);
         if (count > 16)
             count = 16;
-        c   = (word_t)((res >> 15) & 1);
-        res = (word_t)((res >> count) & 0xFFFF);
-    }
-    temp_res_for = res;
-    for (int i = 15; i >= 0; i--) {
-        PRINT_RESULT("%o", (temp_res_for >> i) & 1);
-    }
-    PRINT_RESULT("\nRes = %o\n", res);
-    PRINT_RESULT("\nRes_C = %o\n", c);
-    pdp_reg_set_var(pdp, opcode.r_reg, res);
-    PRINT_RESULT("R%d ", opcode.r_reg);
 
-    word_t v
-        = ((reg_val >> 8) & 1) ^ ((res >> 8) & 1); // Изменился лизнаковый бит
+        // Сначала запоминаем последний выдвинутый бит для флага C
+        c = (word_t)((res >> (count - 1)) & 1);
+
+        // Выполняем арифметический сдвиг, приводя к знаковому типу short
+        res = (word_t)(((short) res >> count) & 0xFFFF);
+    }
+
+    pdp_reg_set_var(pdp, opcode.r_reg, (int) res);
+
+    word_t v = ((reg_val >> 15) & 1)
+               ^ ((res >> 15) & 1); // Изменился лизнаковый бит
+
     set_flag_V(v);
+
     if (shift_count != 0)
         set_flag_C(c);
-    set_flag_NZ(res);
 
-    // (void) addr;
-    // (void) params;
-    // (void) word_command;
-    // (void) pdp;
+    set_flag_NZ(res);
+    PRINT_RESULT("R%d", opcode.r_reg);
 }
 //##########################################################################
