@@ -7,6 +7,8 @@ enum { size_buffer_default = 0xffff };
 typedef unsigned char      byte_t;
 typedef char               text_t;
 typedef unsigned short int word_t;
+typedef int                word_32_t;
+typedef unsigned int       uword_32_t;
 
 typedef int                bool_t;
 typedef FILE               file_t;

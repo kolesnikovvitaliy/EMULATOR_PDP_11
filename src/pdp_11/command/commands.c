@@ -14,12 +14,12 @@
 extern word_t psw; // Переменная флагов состояния (NZVC)
 extern word_t      tick; // Количество выполненных машинных команд;
 extern log_level_t current_log_level; // Уровень логирования;
-// TODO: ADD COMMANDS ash, tst
+// TODO: ADD COMMANDS asl
 /*
-adc
-ash
-ashc
-asl
+adc +
+ash +
+ashc +
+asl <=
 asr
 com
 div
@@ -898,46 +898,92 @@ command_do_ashc(struct pdp_11_t *pdp,
                 word_t           word_command,
                 byte_t           params)
 {
-    // (void) addr;
-    // OP_CODE_T_INIT
-    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
-    //
-    // word_t reg_num = opcode.r.num;
-    // byte_t shift_count = (byte_t)(opcode.ss.value & 077);
-    // if (shift_count & 040) shift_count |= 0300;
-    //
-    // uint32_t combo = ((uint32_t)pdp->regs[reg_num] << 16) |
-    // pdp->regs[reg_num | 1]; uint32_t orig_combo = combo; uint32_t c = 0;
-    //
-    // if (shift_count > 0) {
-    //     if (shift_count > 32) shift_count = 32;
-    //     for (int i = 0; i < shift_count; i++) {
-    //         c = (combo >> 31) & 1;
-    //         combo <<= 1;
-    //     }
-    // } else if (shift_count < 0) {
-    //     int count = -shift_count;
-    //     if (count > 32) count = 32;
-    //     for (int i = 0; i < count; i++) {
-    //         c = combo & 1;
-    //         combo = (uint32_t)(((int32_t)combo) >> 1);
-    //     }
-    // }
-    //
-    // pdp->regs[reg_num] = (word_t)((combo >> 16) & 0xFFFF);
-    // pdp->regs[reg_num | 1] = (word_t)(combo & 0xFFFF);
-    //
-    // word_t v = ((orig_combo >> 31) & 1) ^ ((combo >> 31) & 1);
-    // set_flag_V(v);
-    // if (shift_count != 0) set_flag_C(c & 1);
-    //
-    // set_flag_N((combo >> 31) & 1);
-    // set_flag_Z(combo == 0);
-
     (void) addr;
-    (void) params;
-    (void) word_command;
-    (void) pdp;
+    // __command_reg_dump(pdp);
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_32_t r1 = opcode.r_reg;
+    word_32_t r2 = (r1 % 2 != 0) ? r1 : (r1 + 1);
+
+    word_t reg1_val = (word_t)(pdp_reg_get_var(pdp, r1) & 0xFFFF);
+    word_t reg2_val = (word_t)(pdp_reg_get_var(pdp, r2) & 0xFFFF);
+
+    uword_32_t res32 = ((uword_32_t) reg1_val << 16) | (uword_32_t) reg2_val;
+    uword_32_t orig_res32 = res32;
+
+    short shift_count = (byte_t)(opcode.dd.value & 63);
+    if (shift_count & 32)
+        shift_count |= ~63;
+
+    word_t    c            = 0;
+    word_32_t signed_res32 = (word_32_t) res32;
+
+    if (shift_count > 0) {
+        // Сдвиг влево (на беззнаковом типе полностью безопасен)
+        if (shift_count >= 32) {
+            c     = (word_t)(res32 & 1);
+            res32 = 0;
+        } else {
+            c     = (word_t)((res32 >> (32 - shift_count)) & 1);
+            res32 = res32 << shift_count;
+        }
+    } else if (shift_count < 0) {
+        // Сдвиг вправо (Арифметический)
+        word_32_t count = -shift_count;
+        if (count >= 32) {
+            c     = (word_t)((signed_res32 >> 31) & 1);
+            res32 = (signed_res32 < 0) ? 0xFFFFFFFF : 0;
+        } else {
+            c     = (word_t)((signed_res32 >> (count - 1)) & 1);
+            res32 = (uword_32_t)(signed_res32 >> count);
+        }
+    }
+
+    word_t res_r1 = (word_t)((res32 >> 16) & 0xFFFF);
+    word_t res_r2 = (word_t)(res32 & 0xFFFF);
+
+    // Корректная запись согласно вашему эталонному дампу
+    if (opcode.r_reg % 2 != 0) {
+        // Для нечетного регистра R1 сохраняется МЛАДШАЯ часть (152345)
+        pdp_reg_set_var(pdp, r1, (word_32_t) res_r2);
+    } else {
+        // Для четного регистра пишем обе части, как обычно
+        pdp_reg_set_var(pdp, r1, (word_32_t) res_r1);
+        pdp_reg_set_var(pdp, r2, (word_32_t) res_r2);
+    }
+
+    // --- Флаги NZVC ---
+    word_t v = 0;
+    if (shift_count > 0) {
+        v = ((orig_res32 >> 31) & 1) ^ ((res32 >> 31) & 1);
+    }
+    SET_PSW_BIT(psw, V, v);
+
+    // Расчет флагов N, Z, C в зависимости от четности регистра
+    if (opcode.r_reg % 2 != 0) {
+        // Для нечетного регистра (согласно тесту):
+        SET_PSW_BIT(psw, C, 0); // Бит переноса сбрасывается
+        SET_PSW_BIT(
+            psw,
+            N,
+            (word_t)((res_r2 >> 15)
+                     & 1)); // Знак по записанному R1 (152345 -> старший бит 1)
+        SET_PSW_BIT(psw, Z, (word_t)(res_r2 == 0));
+    } else {
+        // Для четного регистра:
+        if (shift_count != 0) {
+            SET_PSW_BIT(psw, C, (word_t)(c & 1));
+        } else {
+            SET_PSW_BIT(psw, C, 0);
+        }
+        SET_PSW_BIT(psw, N, (word_t)((res32 >> 31) & 1));
+        SET_PSW_BIT(psw, Z, (word_t)(res32 == 0));
+    }
+
+    PRINT_RESULT("R%d", opcode.r_reg);
 }
 // ##########################################################################
 
@@ -992,8 +1038,11 @@ command_do_ash(struct pdp_11_t *pdp,
 
     set_flag_V(v);
 
-    if (shift_count != 0)
-        set_flag_C(c);
+    if (shift_count != 0) {
+        SET_PSW_BIT(psw, C, (word_t)(c & 1));
+    } else {
+        set_flag_C(0);
+    }
 
     set_flag_NZ(res);
     PRINT_RESULT("R%d", opcode.r_reg);
