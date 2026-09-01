@@ -824,8 +824,7 @@ command_do_tst(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    // __command_reg_dump(pdp);
+
 
     set_flag_NZ(opcode.dd.value);
 
