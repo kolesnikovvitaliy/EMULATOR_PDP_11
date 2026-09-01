@@ -37,6 +37,7 @@ command_t template_commands[] = {
     { 0177000, 0072000, (byte_t *) "ash", command_do_ash, HAS_R | HAS_DD },
     { 0177000, 0073000, (byte_t *) "ashc", command_do_ashc, HAS_R | HAS_DD },
     { 0177700, 0006300, (byte_t *) "asl", command_do_asl, HAS_DD },
+    { 0177700, 0106300, (byte_t *) "aslb", command_do_aslb, HAS_DD },
     { 0177700, 0006200, (byte_t *) "asr", command_do_asr, HAS_DD },
     { 0177700, 0005100, (byte_t *) "com", command_do_com, HAS_DD },
     { 0177000, 0071000, (byte_t *) "div", command_do_div, HAS_R | HAS_DD },
