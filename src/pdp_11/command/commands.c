@@ -14,14 +14,14 @@
 extern word_t psw; // Переменная флагов состояния (NZVC)
 extern word_t      tick; // Количество выполненных машинных команд;
 extern log_level_t current_log_level; // Уровень логирования;
-// TODO: ADD COMMANDS asl
+// TODO: ADD COMMANDS com
 /*
 adc +
 ash +
 ashc +
-asl <=
-asr
-com
+asl +
+asr +
+com <=
 div
 jmp
 mul
@@ -37,7 +37,7 @@ __command_reg_dump(struct pdp_11_t *pdp)
     reg_t *   ptr_reg = (reg_t *) ptr_pdp->regist;
 
     PRINT_RESULT("\nr0=%06o r2=%06o r4=%06o sp=%06o\nr1=%06o r3=%06o r5=%06o "
-                 "pc=%06o\n\npsw=%06o: cm=k pm=k pri=0     z  [%d]",
+                 "pc=%06o\n\npsw=%06o: cm=k pm=k pri=0     ",
                  ptr_reg->R0,
                  ptr_reg->R2,
                  ptr_reg->R4,
@@ -46,8 +46,13 @@ __command_reg_dump(struct pdp_11_t *pdp)
                  ptr_reg->R3,
                  ptr_reg->R5,
                  ptr_reg->PC,
-                 psw,
-                 tick);
+                 psw);
+    PRINT_RESULT("%c%c%c%c",
+                 ((psw >> 3) & 1) ? 'n' : ' ',
+                 ((psw >> 2) & 1) ? 'z' : ' ',
+                 ((psw >> 1) & 1) ? 'v' : ' ',
+                 (psw & 1) ? 'c' : ' ');
+    PRINT_RESULT(" [%d]", tick);
     PRINT_RESULT("\n", "");
 
     for (int i = 7; i >= 0; i--) {
@@ -100,23 +105,33 @@ set_flag_C(word_t value)
 void
 set_flag_NZ(word_t value)
 {
-    word_t res_neg  = 0;
-    word_t res      = 0;
-    byte_t shift    = 15;
-    word_t temp_val = value;
+    // word_t res_neg  = 0;
+    // word_t res      = 0;
+    // byte_t shift    = 15;
+    // word_t temp_val = value;
+    //
+    // res_neg = (word_t)(signed char) temp_val;
+    //
+    // if ((word_t) HAS_B && (!res_neg)) {
+    //     temp_val = (word_t)(temp_val & 0xFF);
+    //     shift    = 7;
+    // }
+    //
+    // res = (temp_val == 0) ? ONE : ZERO;
+    // SET_PSW_BIT(psw, Z, (word_t) res);
+    //
+    // res = (word_t)((temp_val >> shift) & ONE);
+    // SET_PSW_BIT(psw, N, (word_t) res);
 
-    res_neg = (word_t)(signed char) temp_val;
+    uword_16_t val16 = (uword_16_t)(value & 0xFFFF);
 
-    if ((word_t) HAS_B && (!res_neg)) {
-        temp_val = (word_t)(temp_val & 0xFF);
-        shift    = 7;
-    }
+    // Флаг Z: равен 1, если все 16 бит равны 0
+    word_t z = (val16 == 0) ? ONE : ZERO;
+    SET_PSW_BIT(psw, Z, z);
 
-    res = (temp_val == 0) ? ONE : ZERO;
-    SET_PSW_BIT(psw, Z, (word_t) res);
-
-    res = (word_t)((temp_val >> shift) & ONE);
-    SET_PSW_BIT(psw, N, (word_t) res);
+    // Флаг N: равен старшему (15-му) биту 16-битного слова
+    word_t n = (word_t)((val16 >> 15) & 1);
+    SET_PSW_BIT(psw, N, n);
 
     return;
 }
@@ -689,23 +704,75 @@ command_do_asr(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
 
     word_t dst = opcode.dd.value;
-    word_t res = (word_t)(((word_t) dst) >> 1);
 
+    // Сохраняем перенос (выталкиваемый младший бит)
+    word_t c = dst & 1;
+
+    // Арифметический сдвиг: приводим к знаковому int16_t, чтобы сохранить 15-й
+    // бит
+    word_t res = (word_t)((word_16_t) dst >> 1);
+
+    // Запись результата
     w_write(pdp, opcode.dd.addr, res);
     pdp_reg_set_var(pdp, opcode.dd.addr, res);
 
-    word_t c = dst & 1;
-    word_t n = (res >> 15) & 1;
+    word_t n = (res >> 15) & 1; // Старший знаковый бит байта
     word_t v = n ^ c;
+    word_t z = (res == 0);
 
-    set_flag_C(c);
-    set_flag_V(v);
-    set_flag_NZ(res);
+    SET_PSW_BIT(psw, C, (word_t) c);
+    SET_PSW_BIT(psw, V, (word_t) v);
+    SET_PSW_BIT(psw, N, (word_t) n);
+    SET_PSW_BIT(psw, Z, (word_t) z);
+}
+//----------------------------------------------------------------------------
+void
+command_do_asrb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+
+    if (pdp) {
+        opcode = __get_mr(
+            pdp,
+            word_command,
+            params); // Предполагается, что возвращает байт в dd.value
+    }
+
+    // Выделяем именно байт (8 бит)
+    byte_t dst = (byte_t)(opcode.dd.value & 0xFF);
+
+    // Сохраняем перенос
+    word_t c = dst & 1;
+
+    // Арифметический сдвиг байта: приводим к знаковоше int8_t, чтобы сохранить
+    // 7-й бит
+    byte_t res = (byte_t)((byte8_t) dst >> 1);
+
+    // Запись байта (используйте вашу функцию b_write для байт, если она есть)
+    b_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(
+        pdp, opcode.dd.addr, res); // Убедитесь, что эта функция корректно
+                                   // обрабатывает байты в регистрах
+
+    // Вычисление флагов для байта
+    word_t n = (res >> 7) & 1; // Старший знаковый бит байта
+    word_t v = n ^ c;
+    word_t z = (res == 0);
+
+    SET_PSW_BIT(psw, C, (word_t) c);
+    SET_PSW_BIT(psw, V, (word_t) v);
+    SET_PSW_BIT(psw, N, (word_t) n);
+    SET_PSW_BIT(psw, Z, (word_t) z);
 }
 //##########################################################################
 
@@ -824,7 +891,6 @@ command_do_tst(struct pdp_11_t *pdp,
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-
 
     set_flag_NZ(opcode.dd.value);
 
