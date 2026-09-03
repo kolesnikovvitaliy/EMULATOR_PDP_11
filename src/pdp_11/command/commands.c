@@ -21,8 +21,8 @@ ash +
 ashc +
 asl +
 asr +
-com <=
-div
+com +
+div <=
 jmp
 mul
 rol
@@ -869,6 +869,34 @@ command_do_rol(struct pdp_11_t *pdp,
     set_flag_V(v);
     set_flag_NZ(res);
 }
+//--------------------------------------------------------------------------
+void
+command_do_rolb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst   = opcode.dd.value;
+    word_t old_c = get_flag(C);
+    word_t res   = (word_t)((dst << 1) | (old_c & 1));
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = (dst >> 15) & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
 //##########################################################################
 
 //##########################################################################
@@ -877,6 +905,34 @@ command_do_ror(struct pdp_11_t *pdp,
                address_word_t   addr,
                word_t           word_command,
                byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_t dst   = opcode.dd.value;
+    word_t old_c = get_flag(C);
+    word_t res   = (word_t)((dst >> 1) | ((old_c & 1) << 15));
+
+    w_write(pdp, opcode.dd.addr, res);
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+
+    word_t c = dst & 1;
+    word_t n = (res >> 15) & 1;
+    word_t v = n ^ c;
+
+    set_flag_C(c);
+    set_flag_V(v);
+    set_flag_NZ(res);
+}
+//-------------------------------------------------------------------------
+void
+command_do_rorb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
 {
     (void) addr;
     OP_CODE_T_INIT
@@ -972,41 +1028,55 @@ command_do_div(struct pdp_11_t *pdp,
                word_t           word_command,
                byte_t           params)
 {
-    // (void) addr;
-    // OP_CODE_T_INIT
-    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
-    //
-    // int16_t src = (int16_t)opcode.ss.value;
-    // word_t reg_num = opcode.r.num & ~1; // Деление всегда начинается с
-    // четного регистра пары
-    //
-    // int32_t dividend = ((int32_t)pdp->regs[reg_num] << 16) |
-    // pdp->regs[reg_num | 1];
-    //
-    // if (src == 0) {
-    //     set_flag_V(1);
-    //     set_flag_C(1); // Деление на ноль
-    //     return;
-    // }
-    //
-    // int32_t quot = dividend / src;
-    // int32_t rem = dividend % src;
-    //
-    // if (quot < -32768 || quot > 32767) {
-    //     set_flag_V(1); // Переполнение частного
-    //     return;
-    // }
-    //
-    // pdp->regs[reg_num] = (word_t)(quot & 0xFFFF);
-    // pdp->regs[reg_num | 1] = (word_t)(rem & 0xFFFF);
-    //
-    // set_flag_V(0);
-    // set_flag_C(0);
-    // set_flag_NZ((word_t)quot);
     (void) addr;
-    (void) params;
-    (void) word_command;
-    (void) pdp;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+
+    word_16_t src = (word_16_t) opcode.dd.value;
+    if (src == 0) {
+        set_flag_V(1);
+        set_flag_C(1); // Деление на ноль
+        return;
+    }
+
+
+    uword_16_t reg_num = (uword_16_t)(opcode.r_reg & ~1);
+
+
+    uword_16_t high_word = (uword_16_t) pdp_reg_get_var(pdp, reg_num);
+    uword_16_t low_word  = (uword_16_t) pdp_reg_get_var(pdp, reg_num | 1);
+
+    word_32_t dividend
+        = (word_32_t)(((uword_32_t) high_word << 16) | low_word);
+
+    word_32_t quot = dividend / src;
+    word_32_t rem  = dividend % src;
+
+
+    if (quot < -32768 || quot > 32767) {
+        set_flag_V(1);
+        SET_PSW_BIT(psw,
+                    N,
+                    (word_t)(quot < 0
+                                 ? 1
+                                 : 0)); // Согласно спецификации PDP-11 при V=1
+        return;
+    }
+
+
+    pdp_reg_set_var(pdp, reg_num, (word_t)(quot & 0xFFFF)); // Частное в R2
+    pdp_reg_set_var(
+        pdp, (reg_num | 1), (word_t)(rem & 0xFFFF)); // Остаток в R3
+
+
+    SET_PSW_BIT(psw, V, 0);
+    SET_PSW_BIT(psw, C, 0);
+    set_flag_NZ((word_t)(quot & 0xFFFF));
+
+    PRINT_RESULT("R%d", opcode.r_reg);
 }
 //##########################################################################
 //##########################################################################

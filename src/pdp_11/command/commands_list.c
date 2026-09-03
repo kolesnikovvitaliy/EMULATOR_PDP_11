@@ -42,12 +42,16 @@ command_t template_commands[] = {
     { 0177700, 0106200, (byte_t *) "asrb", command_do_asrb, HAS_DD },
     { 0177700, 0005100, (byte_t *) "com", command_do_com, HAS_DD },
     { 0177700, 0105100, (byte_t *) "comb", command_do_comb, HAS_DD },
-
     { 0177000, 0071000, (byte_t *) "div", command_do_div, HAS_R | HAS_DD },
+
     { 0177700, 0000100, (byte_t *) "jmp", command_do_jmp, HAS_DD },
     { 0177000, 0070000, (byte_t *) "mul", command_do_mul, HAS_R | HAS_DD },
+
     { 0177700, 0006100, (byte_t *) "rol", command_do_rol, HAS_DD },
+    { 0177700, 0106100, (byte_t *) "rolb", command_do_rolb, HAS_DD },
+
     { 0177700, 0006000, (byte_t *) "ror", command_do_ror, HAS_DD },
+    { 0177700, 0106000, (byte_t *) "rorb", command_do_rorb, HAS_DD },
 
     // добавить остальные команды
 };
