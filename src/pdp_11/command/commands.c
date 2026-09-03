@@ -22,9 +22,9 @@ ashc +
 asl +
 asr +
 com +
-div <=
-jmp
-mul
+div +
+jmp +
+mul <=
 rol
 ror
 */
@@ -837,7 +837,7 @@ command_do_jmp(struct pdp_11_t *pdp,
         opcode = __get_mr(pdp, word_command, params);
     }
 
-    pdp_reg_set_var(pdp, 7, opcode.dd.addr);
+    pdp_reg_set_var(pdp, 7, (word_t)(opcode.dd.addr - 2));
 }
 //##########################################################################
 
@@ -976,11 +976,6 @@ command_do_tst(struct pdp_11_t *pdp,
     set_flag_V((word_t) 0);
     set_flag_C((word_t) 0);
 
-    // PRINT_RESULT("\n", "");
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x26);
-    // __command_reg_dump(pdp);
 }
 //##########################################################################
 
@@ -991,34 +986,36 @@ command_do_mul(struct pdp_11_t *pdp,
                word_t           word_command,
                byte_t           params)
 {
-    // (void) addr;
-    // OP_CODE_T_INIT
-    // if (pdp) { opcode = __get_mr(pdp, word_command, params); }
-    //
-    // int16_t src = (int16_t)opcode.ss.value; // Маска DD/SS зависит от вашей
-    // архитектуры парсера int16_t reg_val = (int16_t)pdp->regs[opcode.r.num];
-    //
-    // int32_t res = (int32_t)src * (int32_t)reg_val;
-    //
-    // word_t high = (word_t)((res >> 16) & 0xFFFF);
-    // word_t low = (word_t)(res & 0xFFFF);
-    //
-    // pdp->regs[opcode.r.num] = high;
-    // if ((opcode.r.num % 2) == 0) {
-    //     pdp->regs[opcode.r.num | 1] = low; // Если R четный, то результат в
-    //     R и Rv1
-    // }
-    //
-    // set_flag_C((res < -32768 || res > 32767) ? 1 : 0);
-    // set_flag_V(0);
-    //
-    // // Флаги N и Z выставляются по полному 32-битному результату
-    // set_flag_N((res >> 31) & 1);
-    // set_flag_Z(res == 0);
     (void) addr;
-    (void) params;
-    (void) word_command;
-    (void) pdp;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+
+    word_16_t src     = (word_16_t) opcode.dd.value;
+    word_16_t reg_val = (word_16_t) pdp_reg_get_var(pdp, opcode.r_reg);
+    //
+    word_32_t res = (word_32_t) src * (word_32_t) reg_val;
+    //
+    word_t high = (word_t)((res >> 16) & 0xFFFF);
+    word_t low  = (word_t)(res & 0xFFFF);
+    //
+
+    if ((opcode.r_reg % 2) == 0) {
+        pdp_reg_set_var(pdp, opcode.r_reg, high);
+        pdp_reg_set_var(pdp, (opcode.r_reg | 1), low);
+    } else {
+        pdp_reg_set_var(pdp, opcode.r_reg, low);
+    }
+
+    SET_PSW_BIT(psw, C, ((res < -32768 || res > 32767) ? 1 : 0));
+
+    SET_PSW_BIT(psw, V, 0);
+
+    SET_PSW_BIT(psw, N, ((res >> 31) & 1));
+    SET_PSW_BIT(psw, Z, (res == 0));
+
+    PRINT_RESULT("R%d", opcode.r_reg);
 }
 //##########################################################################
 //##########################################################################
@@ -1034,7 +1031,6 @@ command_do_div(struct pdp_11_t *pdp,
         opcode = __get_mr(pdp, word_command, params);
     }
 
-
     word_16_t src = (word_16_t) opcode.dd.value;
     if (src == 0) {
         set_flag_V(1);
@@ -1042,9 +1038,7 @@ command_do_div(struct pdp_11_t *pdp,
         return;
     }
 
-
     uword_16_t reg_num = (uword_16_t)(opcode.r_reg & ~1);
-
 
     uword_16_t high_word = (uword_16_t) pdp_reg_get_var(pdp, reg_num);
     uword_16_t low_word  = (uword_16_t) pdp_reg_get_var(pdp, reg_num | 1);
@@ -1054,7 +1048,6 @@ command_do_div(struct pdp_11_t *pdp,
 
     word_32_t quot = dividend / src;
     word_32_t rem  = dividend % src;
-
 
     if (quot < -32768 || quot > 32767) {
         set_flag_V(1);
@@ -1066,11 +1059,9 @@ command_do_div(struct pdp_11_t *pdp,
         return;
     }
 
-
     pdp_reg_set_var(pdp, reg_num, (word_t)(quot & 0xFFFF)); // Частное в R2
     pdp_reg_set_var(
         pdp, (reg_num | 1), (word_t)(rem & 0xFFFF)); // Остаток в R3
-
 
     SET_PSW_BIT(psw, V, 0);
     SET_PSW_BIT(psw, C, 0);
