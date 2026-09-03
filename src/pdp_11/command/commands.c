@@ -854,20 +854,26 @@ command_do_rol(struct pdp_11_t *pdp,
         opcode = __get_mr(pdp, word_command, params);
     }
 
-    word_t dst   = opcode.dd.value;
-    word_t old_c = get_flag(C);
-    word_t res   = (word_t)((dst << 1) | (old_c & 1));
+    uword_16_t dst   = opcode.dd.value;
+    word_t     old_c = get_flag(C);
+    uword_16_t res   = (uword_16_t)((dst << 1) | (old_c & 1));
 
-    w_write(pdp, opcode.dd.addr, res);
-    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+    // w_write(pdp, opcode.dd.addr, res);
+    // pdp_reg_set_var(pdp, opcode.dd.addr, res);
+    if (opcode.dd.addr < 8) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, res);
+    } else {
+        w_write(pdp, opcode.dd.addr, res);
+    }
 
     word_t c = (dst >> 15) & 1;
     word_t n = (res >> 15) & 1;
     word_t v = n ^ c;
 
-    set_flag_C(c);
-    set_flag_V(v);
-    set_flag_NZ(res);
+    SET_PSW_BIT(psw, C, c);
+    SET_PSW_BIT(psw, V, v);
+    SET_PSW_BIT(psw, N, n);
+    SET_PSW_BIT(psw, Z, (res == 0));
 }
 //--------------------------------------------------------------------------
 void
@@ -882,20 +888,24 @@ command_do_rolb(struct pdp_11_t *pdp,
         opcode = __get_mr(pdp, word_command, params);
     }
 
-    word_t dst   = opcode.dd.value;
+    byte_t dst   = (byte_t) opcode.dd.value;
     word_t old_c = get_flag(C);
-    word_t res   = (word_t)((dst << 1) | (old_c & 1));
+    byte_t res   = (byte_t)(((dst << 1) & 0xFF) | (old_c & 1));
 
-    w_write(pdp, opcode.dd.addr, res);
-    pdp_reg_set_var(pdp, opcode.dd.addr, res);
+    if (opcode.dd.addr < 8) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) res);
+    } else {
+        b_write(pdp, opcode.dd.addr, (byte_t) res);
+    }
 
-    word_t c = (dst >> 15) & 1;
-    word_t n = (res >> 15) & 1;
+    word_t c = (dst >> 7) & 1;
+    word_t n = (res >> 7) & 1;
     word_t v = n ^ c;
 
-    set_flag_C(c);
-    set_flag_V(v);
-    set_flag_NZ(res);
+    SET_PSW_BIT(psw, C, c);
+    SET_PSW_BIT(psw, V, v);
+    SET_PSW_BIT(psw, N, n);
+    SET_PSW_BIT(psw, Z, (res == 0));
 }
 //##########################################################################
 
@@ -975,7 +985,6 @@ command_do_tst(struct pdp_11_t *pdp,
 
     set_flag_V((word_t) 0);
     set_flag_C((word_t) 0);
-
 }
 //##########################################################################
 

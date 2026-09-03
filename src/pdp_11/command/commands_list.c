@@ -27,7 +27,7 @@ command_t template_commands[] = {
     { 0177400, 0000400, (byte_t *) "br", command_do_br, HAS_XX },
     { 0177400, 0001400, (byte_t *) "beq", command_do_beq, HAS_XX },
     { 0177400, 0100000, (byte_t *) "bpl", command_do_bpl, HAS_XX },
-    { 0177700, 0105700, (byte_t *) "tstb", command_do_tstb, HAS_DD },
+    { 0177700, 0105700, (byte_t *) "tstb", command_do_tstb, HAS_B | HAS_DD },
     { 0177000, 0004000, (byte_t *) "jsr", command_do_jsr, HAS_R | HAS_DD },
     { 0177770, 0000200, (byte_t *) "rts", command_do_rts, HAS_R },
 
@@ -37,21 +37,21 @@ command_t template_commands[] = {
     { 0177000, 0072000, (byte_t *) "ash", command_do_ash, HAS_R | HAS_DD },
     { 0177000, 0073000, (byte_t *) "ashc", command_do_ashc, HAS_R | HAS_DD },
     { 0177700, 0006300, (byte_t *) "asl", command_do_asl, HAS_DD },
-    { 0177700, 0106300, (byte_t *) "aslb", command_do_aslb, HAS_DD },
+    { 0177700, 0106300, (byte_t *) "aslb", command_do_aslb, HAS_B | HAS_DD },
     { 0177700, 0006200, (byte_t *) "asr", command_do_asr, HAS_DD },
-    { 0177700, 0106200, (byte_t *) "asrb", command_do_asrb, HAS_DD },
+    { 0177700, 0106200, (byte_t *) "asrb", command_do_asrb, HAS_B | HAS_DD },
     { 0177700, 0005100, (byte_t *) "com", command_do_com, HAS_DD },
-    { 0177700, 0105100, (byte_t *) "comb", command_do_comb, HAS_DD },
+    { 0177700, 0105100, (byte_t *) "comb", command_do_comb, HAS_B | HAS_DD },
     { 0177000, 0071000, (byte_t *) "div", command_do_div, HAS_R | HAS_DD },
 
     { 0177700, 0000100, (byte_t *) "jmp", command_do_jmp, HAS_DD },
     { 0177000, 0070000, (byte_t *) "mul", command_do_mul, HAS_R | HAS_DD },
 
     { 0177700, 0006100, (byte_t *) "rol", command_do_rol, HAS_DD },
-    { 0177700, 0106100, (byte_t *) "rolb", command_do_rolb, HAS_DD },
+    { 0177700, 0106100, (byte_t *) "rolb", command_do_rolb, HAS_B | HAS_DD },
 
     { 0177700, 0006000, (byte_t *) "ror", command_do_ror, HAS_DD },
-    { 0177700, 0106000, (byte_t *) "rorb", command_do_rorb, HAS_DD },
+    { 0177700, 0106000, (byte_t *) "rorb", command_do_rorb, HAS_B | HAS_DD },
 
     // добавить остальные команды
 };
