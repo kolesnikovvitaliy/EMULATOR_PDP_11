@@ -53,6 +53,13 @@ command_t template_commands[] = {
     { 0177700, 0006000, (byte_t *) "ror", command_do_ror, HAS_DD },
     { 0177700, 0106000, (byte_t *) "rorb", command_do_rorb, HAS_B | HAS_DD },
 
+    { 0170000, 0040000, (byte_t *) "bic", command_do_bic, HAS_SS | HAS_DD },
+    { 0170000,
+      0140000,
+      (byte_t *) "bicb",
+      command_do_bicb,
+      HAS_B | HAS_SS | HAS_DD },
+
     // добавить остальные команды
 };
 

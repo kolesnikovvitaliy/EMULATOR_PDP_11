@@ -14,20 +14,7 @@
 extern word_t psw; // Переменная флагов состояния (NZVC)
 extern word_t      tick; // Количество выполненных машинных команд;
 extern log_level_t current_log_level; // Уровень логирования;
-// TODO: ADD COMMANDS com
-/*
-adc +
-ash +
-ashc +
-asl +
-asr +
-com +
-div +
-jmp +
-mul <=
-rol
-ror
-*/
+extern byte_t      set_has_b;
 
 //##########################################################################
 void
@@ -105,24 +92,6 @@ set_flag_C(word_t value)
 void
 set_flag_NZ(word_t value)
 {
-    // word_t res_neg  = 0;
-    // word_t res      = 0;
-    // byte_t shift    = 15;
-    // word_t temp_val = value;
-    //
-    // res_neg = (word_t)(signed char) temp_val;
-    //
-    // if ((word_t) HAS_B && (!res_neg)) {
-    //     temp_val = (word_t)(temp_val & 0xFF);
-    //     shift    = 7;
-    // }
-    //
-    // res = (temp_val == 0) ? ONE : ZERO;
-    // SET_PSW_BIT(psw, Z, (word_t) res);
-    //
-    // res = (word_t)((temp_val >> shift) & ONE);
-    // SET_PSW_BIT(psw, N, (word_t) res);
-
     uword_16_t val16 = (uword_16_t)(value & 0xFFFF);
 
     // Флаг Z: равен 1, если все 16 бит равны 0
@@ -145,27 +114,6 @@ set_flag_V(word_t value)
     SET_PSW_BIT(psw, V, (word_t) value);
 }
 //--------------------------------------------------------------------------
-
-//##########################################################################
-//
-// EXEMPLE function
-//##########################################################################
-// void
-// command_do_br(struct pdp_11_t *pdp,
-//                 address_word_t   addr,
-//                 word_t           word_command,
-//                 byte_t           params)
-// {
-//     (void) addr;
-//     (void) params;
-//     (void) word_command;
-//     (void) pdp;
-// PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
-// pdp_mem_dump(pdp, 0x40, 0x20);
-// pdp_mem_dump(pdp, 0x200, 0x20);
-//
-// }
-//##########################################################################
 
 //##########################################################################
 // COMMANDS
@@ -214,12 +162,12 @@ command_do_add(struct pdp_11_t *pdp,
 {
 
     (void) addr;
-    //(void) params;
+
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
-
     word_t src = opcode.ss.value;
     word_t dst = opcode.dd.value;
     word_t res = (word_t)(src + dst);
@@ -234,7 +182,7 @@ command_do_add(struct pdp_11_t *pdp,
     set_flag_NZ(res);
 }
 //##########################################################################
-
+// MOV, MOVB
 //##########################################################################
 void
 command_do_mov(struct pdp_11_t *pdp,
@@ -249,18 +197,20 @@ command_do_mov(struct pdp_11_t *pdp,
         return;
     }
     OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
+    set_has_b  = 0;
+    opcode     = __get_mr(pdp, word_command, params);
+    word_t val = (word_t)(opcode.ss.value & 0xFFFF);
 
     if (opcode.dd.addr <= 7) {
         pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) opcode.ss.value);
     } else {
         w_write(pdp, opcode.dd.addr, (word_t) opcode.ss.value);
     }
-    set_flag_NZ(opcode.ss.value);
-    set_flag_V(ZERO);
+    SET_PSW_BIT(psw, V, 0);
+    SET_PSW_BIT(psw, Z, val == 0);
+    SET_PSW_BIT(psw, N, (val >> 15) & 1);
 }
-//##########################################################################
-//##########################################################################
+//---------------------------------------------------------------------------------
 void
 command_do_movb(struct pdp_11_t *pdp,
                 address_word_t   addr,
@@ -279,19 +229,20 @@ command_do_movb(struct pdp_11_t *pdp,
     if ((word_t) opcode.dd.addr == 0177566) {
         putchar(opcode.ss.value);
     }
-
+    byte_t byte_val = (byte_t)(opcode.ss.value & 0xFF);
     if (opcode.dd.addr <= 7) {
-        word_t val           = opcode.ss.value;
-        word_t sign_extended = (word_t)((val & 0x80) ? (0xFF00 | val) : val);
-        pdp_reg_set_var(pdp, opcode.dd.addr, sign_extended);
+        word_16_t sign_extended
+            = (word_16_t)((byte_val & 0x80) ? (0xFF00 | byte_val) : byte_val);
+        pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) sign_extended);
     } else {
-        b_write(pdp, opcode.dd.addr, (byte_t)((word_t) opcode.ss.value));
+        b_write(pdp, opcode.dd.addr, (byte_t)((word_t) byte_val));
     }
-    set_flag_NZ(opcode.ss.value);
-    set_flag_V(ZERO);
+    SET_PSW_BIT(psw, V, 0);
+    SET_PSW_BIT(psw, Z, byte_val == 0);
+    SET_PSW_BIT(psw, N, (byte_val >> 7) & 1);
 }
 //##########################################################################
-
+// INC
 //##########################################################################
 void
 command_do_inc(struct pdp_11_t *pdp,
@@ -300,17 +251,34 @@ command_do_inc(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-
-    OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
-    opcode = __get_mr(pdp, word_command, params);
-    // w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
+
+    OP_CODE_T_INIT
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
+
+    word_t dst = opcode.dd.value;
+    word_t res = (word_t)((dst + 1) & 0xFFFF);
+
+    if (opcode.dd.addr < 8) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, res);
+    } else {
+        w_write(pdp, opcode.dd.addr, res);
+    }
+
+    word_t n = (res >> 15) & 1;
+    word_t z = (res == 0);
+
+    word_t v = (dst == 077777);
+
+    SET_PSW_BIT(psw, N, n);
+    SET_PSW_BIT(psw, Z, z);
+    SET_PSW_BIT(psw, V, v);
 }
 //##########################################################################
-
+// CLR
 //##########################################################################
 void
 command_do_clr(struct pdp_11_t *pdp,
@@ -319,8 +287,9 @@ command_do_clr(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    //(void) params;
+
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (!pdp) {
         return;
     }
@@ -333,7 +302,7 @@ command_do_clr(struct pdp_11_t *pdp,
     SET_PSW_BIT(psw, C, (word_t) ZERO);
 }
 //##########################################################################
-
+// SOB
 //##########################################################################
 void
 command_do_sob(struct pdp_11_t *pdp,
@@ -342,13 +311,12 @@ command_do_sob(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    //(void) params;
-    OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
-    // word_t offset_word  = (word_command & 077);
-    word_t offset_word = (word_t) opcode.value_nn;
 
-    // word_t num_register = (word_command >> 6) & 7;
+    OP_CODE_T_INIT
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
+
+    word_t offset_word  = (word_t) opcode.value_nn;
     word_t num_register = (word_t) opcode.r_reg;
 
     word_t count_cycles = pdp_reg_get_var(pdp, num_register);
@@ -368,12 +336,9 @@ command_do_sob(struct pdp_11_t *pdp,
             num_register,
             (word_t)((pdp_reg_get_var(pdp, 7)) - (2 * offset_word) + 2));
     }
-
-    //__command_reg_dump(pdp);
-    // sleep(5);
 }
 //##########################################################################
-
+// UNKNOWN
 //##########################################################################
 void
 command_do_unknown(struct pdp_11_t *pdp,
@@ -385,10 +350,9 @@ command_do_unknown(struct pdp_11_t *pdp,
     if (!pdp)
         return;
     __print_command(addr, word_command, (byte_t *) "unknown\n");
-    // pdp_reg_set_var(pdp, addr, (word_t)(addr + 4));
 }
 //##########################################################################
-
+// ADCB
 //##########################################################################
 void
 command_do_adcb(struct pdp_11_t *pdp,
@@ -397,18 +361,17 @@ command_do_adcb(struct pdp_11_t *pdp,
                 byte_t           params)
 {
     (void) addr;
-    //(void) params;
+
     OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    // test w_write TODO: Исправить
+
     w_write(pdp, opcode.dd.addr, opcode.ss.value);
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value);
 }
 //##########################################################################
-
+// BR
 //##########################################################################
 void
 command_do_br(struct pdp_11_t *pdp,
@@ -422,15 +385,17 @@ command_do_br(struct pdp_11_t *pdp,
         return;
     }
     OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
 
     word_t PC = pdp_reg_get_var(pdp, 7);
     pdp_reg_set_var(pdp, 7, (word_t)(PC + opcode.offset_xx * 2));
     PRINT_RESULT("%06o", (word_t)(pdp_reg_get_var(pdp, 7) + 2));
-    // __command_reg_dump(pdp);
+
     return;
 }
 //##########################################################################
+// BEQ
 //##########################################################################
 void
 command_do_beq(struct pdp_11_t *pdp,
@@ -442,9 +407,10 @@ command_do_beq(struct pdp_11_t *pdp,
     if (!pdp) {
         return;
     }
-    // __command_reg_dump(pdp);
+
     OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
     if (get_flag(Z)) {
         command_do_br(pdp, addr, word_command, params);
         return;
@@ -454,8 +420,7 @@ command_do_beq(struct pdp_11_t *pdp,
                      + 2);
 }
 //##########################################################################
-//##########################################################################
-
+// TSTB
 //##########################################################################
 void
 command_do_tstb(struct pdp_11_t *pdp,
@@ -464,28 +429,34 @@ command_do_tstb(struct pdp_11_t *pdp,
                 byte_t           params)
 {
     (void) addr;
-    //(void) params;
     OP_CODE_T_INIT
     if (!pdp) {
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
-    // PRINT_RESULT("\nopcode.dd.addr = %o\n", opcode.dd.addr);
-    // __command_reg_dump(pdp);
 
-    set_flag_NZ(opcode.dd.value);
+    byte_t byte_value = 0;
+    if (opcode.dd.addr & 1) {
 
-    set_flag_V((word_t) 0);
-    set_flag_C((word_t) 0);
+        byte_value = (byte_t)((opcode.dd.value >> 8) & 0xFF);
+    } else {
 
-    // PRINT_RESULT("\n", "");
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x26);
-    // __command_reg_dump(pdp);
+        byte_value = (byte_t)(opcode.dd.value & 0xFF);
+    }
+
+    SET_PSW_BIT(psw, Z, byte_value == 0);
+    SET_PSW_BIT(psw, N, (byte_value >> 7) & 1);
+
+    if (opcode.dd.addr == 0177564 || opcode.dd.addr == 0177560) {
+        SET_PSW_BIT(psw, Z, 0);
+        SET_PSW_BIT(psw, N, 1);
+    }
+
+    SET_PSW_BIT(psw, C, 0);
+    SET_PSW_BIT(psw, V, 0);
 }
 //##########################################################################
-
+// BPL
 //##########################################################################
 void
 command_do_bpl(struct pdp_11_t *pdp,
@@ -494,25 +465,22 @@ command_do_bpl(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    //(void) params;
+
     if (!pdp) {
         return;
     }
-    // __command_reg_dump(pdp);
+
     OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
-    if (get_flag(N)) {
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
+
+    if (!get_flag(N)) {
         command_do_br(pdp, addr, word_command, params);
         return;
     }
     PRINT_RESULT("%06o",
                  (word_t)((pdp_reg_get_var(pdp, 7) + opcode.offset_xx * 2))
                      + 2);
-    // PRINT_RESULT("\n", "");
-    // pdp_reg_set_var(pdp, opcode.dd.addr, opcode.ss.value + );
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x26);
-    // __command_reg_dump(pdp);
 }
 //##########################################################################
 // JSR
@@ -524,16 +492,14 @@ command_do_jsr(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    (void) params;
-    (void) word_command;
-    (void) pdp;
 
     if (!pdp) {
         return;
-    }
+    };
 
     OP_CODE_T_INIT
-    opcode = __get_mr(pdp, word_command, params);
+    set_has_b = 0;
+    opcode    = __get_mr(pdp, word_command, params);
 
     word_t target_pc = pdp_reg_get_var(pdp, 7);
 
@@ -552,6 +518,7 @@ command_do_jsr(struct pdp_11_t *pdp,
 
     pdp_reg_set_var(pdp, 6, (word_t)(target_sp - 2));
 }
+
 //##########################################################################
 // RTS
 //##########################################################################
@@ -598,11 +565,10 @@ command_do_rts(struct pdp_11_t *pdp,
         snprintf(name_registers, sizeof(name_registers), "r%d", target_reg);
     }
 
-    // __command_reg_dump(pdp);
     PRINT_RESULT(" %s ", name_registers);
 }
 //##########################################################################
-
+// ADC
 //##########################################################################
 void
 command_do_adc(struct pdp_11_t *pdp,
@@ -612,6 +578,7 @@ command_do_adc(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -629,13 +596,9 @@ command_do_adc(struct pdp_11_t *pdp,
     set_flag_V(v);
     set_flag_C(c);
     set_flag_NZ(res);
-
-    // PRINT_RESULT("\nADDR_REG_3 = %o\n", pdp_reg_get_addr(pdp, 3));
-    // pdp_mem_dump(pdp, 0x40, 0x20);
-    // pdp_mem_dump(pdp, 0x200, 0x20);
 }
 //##########################################################################
-
+// ASL, ASLB
 //##########################################################################
 void
 command_do_asl(struct pdp_11_t *pdp,
@@ -645,6 +608,7 @@ command_do_asl(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -664,7 +628,7 @@ command_do_asl(struct pdp_11_t *pdp,
     set_flag_V(v);
     set_flag_NZ(res);
 }
-// //
+
 // ----------------------------------------------------------------------------
 void
 command_do_aslb(struct pdp_11_t *pdp,
@@ -694,7 +658,7 @@ command_do_aslb(struct pdp_11_t *pdp,
     set_flag_NZ(res);
 }
 //##########################################################################
-
+// ASR, ASRB
 //##########################################################################
 void
 command_do_asr(struct pdp_11_t *pdp,
@@ -704,6 +668,7 @@ command_do_asr(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
 
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
@@ -711,14 +676,10 @@ command_do_asr(struct pdp_11_t *pdp,
 
     word_t dst = opcode.dd.value;
 
-    // Сохраняем перенос (выталкиваемый младший бит)
     word_t c = dst & 1;
 
-    // Арифметический сдвиг: приводим к знаковому int16_t, чтобы сохранить 15-й
-    // бит
     word_t res = (word_t)((word_16_t) dst >> 1);
 
-    // Запись результата
     w_write(pdp, opcode.dd.addr, res);
     pdp_reg_set_var(pdp, opcode.dd.addr, res);
 
@@ -742,30 +703,18 @@ command_do_asrb(struct pdp_11_t *pdp,
     OP_CODE_T_INIT
 
     if (pdp) {
-        opcode = __get_mr(
-            pdp,
-            word_command,
-            params); // Предполагается, что возвращает байт в dd.value
+        opcode = __get_mr(pdp, word_command, params);
     }
 
-    // Выделяем именно байт (8 бит)
     byte_t dst = (byte_t)(opcode.dd.value & 0xFF);
 
-    // Сохраняем перенос
     word_t c = dst & 1;
 
-    // Арифметический сдвиг байта: приводим к знаковоше int8_t, чтобы сохранить
-    // 7-й бит
     byte_t res = (byte_t)((byte8_t) dst >> 1);
-
-    // Запись байта (используйте вашу функцию b_write для байт, если она есть)
     b_write(pdp, opcode.dd.addr, res);
-    pdp_reg_set_var(
-        pdp, opcode.dd.addr, res); // Убедитесь, что эта функция корректно
-                                   // обрабатывает байты в регистрах
+    pdp_reg_set_var(pdp, opcode.dd.addr, res);
 
-    // Вычисление флагов для байта
-    word_t n = (res >> 7) & 1; // Старший знаковый бит байта
+    word_t n = (res >> 7) & 1;
     word_t v = n ^ c;
     word_t z = (res == 0);
 
@@ -775,7 +724,7 @@ command_do_asrb(struct pdp_11_t *pdp,
     SET_PSW_BIT(psw, Z, (word_t) z);
 }
 //##########################################################################
-
+// COM, COMB
 //##########################################################################
 void
 command_do_com(struct pdp_11_t *pdp,
@@ -785,6 +734,7 @@ command_do_com(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -823,7 +773,7 @@ command_do_comb(struct pdp_11_t *pdp,
     set_flag_NZ(res);
 }
 //##########################################################################
-
+// JMP
 //##########################################################################
 void
 command_do_jmp(struct pdp_11_t *pdp,
@@ -833,6 +783,7 @@ command_do_jmp(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -840,7 +791,7 @@ command_do_jmp(struct pdp_11_t *pdp,
     pdp_reg_set_var(pdp, 7, (word_t)(opcode.dd.addr - 2));
 }
 //##########################################################################
-
+// ROL, ROLB
 //##########################################################################
 void
 command_do_rol(struct pdp_11_t *pdp,
@@ -850,6 +801,7 @@ command_do_rol(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -858,8 +810,6 @@ command_do_rol(struct pdp_11_t *pdp,
     word_t     old_c = get_flag(C);
     uword_16_t res   = (uword_16_t)((dst << 1) | (old_c & 1));
 
-    // w_write(pdp, opcode.dd.addr, res);
-    // pdp_reg_set_var(pdp, opcode.dd.addr, res);
     if (opcode.dd.addr < 8) {
         pdp_reg_set_var(pdp, opcode.dd.addr, res);
     } else {
@@ -908,7 +858,7 @@ command_do_rolb(struct pdp_11_t *pdp,
     SET_PSW_BIT(psw, Z, (res == 0));
 }
 //##########################################################################
-
+// ROR, RORB
 //##########################################################################
 void
 command_do_ror(struct pdp_11_t *pdp,
@@ -918,6 +868,7 @@ command_do_ror(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -925,7 +876,6 @@ command_do_ror(struct pdp_11_t *pdp,
     uword_16_t dst   = opcode.dd.value;
     word_t     old_c = get_flag(C);
 
-    // ИСПРАВЛЕНИЕ: сдвиг вправо, старый C идет в 15-й бит
     uword_16_t res = (uword_16_t)((dst >> 1) | ((old_c & 1) << 15));
 
     if (opcode.dd.addr < 8) {
@@ -934,9 +884,8 @@ command_do_ror(struct pdp_11_t *pdp,
         w_write(pdp, opcode.dd.addr, res);
     }
 
-    // ИСПРАВЛЕНИЕ: флаги для сдвига вправо
-    word_t c = dst & 1;         // Выдвинутый младший бит
-    word_t n = (res >> 15) & 1; // Старший бит результата
+    word_t c = dst & 1;
+    word_t n = (res >> 15) & 1;
     word_t v = n ^ c;
 
     SET_PSW_BIT(psw, C, c);
@@ -960,7 +909,6 @@ command_do_rorb(struct pdp_11_t *pdp,
     byte_t dst   = (byte_t) opcode.dd.value;
     word_t old_c = get_flag(C);
 
-    // ИСПРАВЛЕНИЕ: сдвиг вправо для байта, старый C идет в 7-й бит
     byte_t res = (byte_t)((dst >> 1) | ((old_c & 1) << 7));
 
     if (opcode.dd.addr < 8) {
@@ -969,9 +917,8 @@ command_do_rorb(struct pdp_11_t *pdp,
         b_write(pdp, opcode.dd.addr, (byte_t) res);
     }
 
-    // ИСПРАВЛЕНИЕ: флаги для байтового сдвига вправо
-    word_t c = dst & 1; // Выдвинутый нулевой бит байта
-    word_t n = (res >> 7) & 1; // Старший (7-й) бит байта результата
+    word_t c = dst & 1;
+    word_t n = (res >> 7) & 1;
     word_t v = n ^ c;
 
     SET_PSW_BIT(psw, C, c);
@@ -980,6 +927,7 @@ command_do_rorb(struct pdp_11_t *pdp,
     SET_PSW_BIT(psw, Z, (res == 0));
 }
 //##########################################################################
+// TST
 //##########################################################################
 void
 command_do_tst(struct pdp_11_t *pdp,
@@ -988,20 +936,25 @@ command_do_tst(struct pdp_11_t *pdp,
                byte_t           params)
 {
     (void) addr;
-    //(void) params;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (!pdp) {
         return;
     }
     opcode = __get_mr(pdp, word_command, params);
 
-    set_flag_NZ(opcode.dd.value);
+    SET_PSW_BIT(psw, Z, (opcode.dd.value & 0xFFFF) == 0);
+    SET_PSW_BIT(psw, N, (opcode.dd.value >> 15) & 1);
 
-    set_flag_V((word_t) 0);
-    set_flag_C((word_t) 0);
+    if (opcode.dd.addr == 0177564) {
+        SET_PSW_BIT(psw, N, 1);
+    }
+
+    SET_PSW_BIT(psw, V, 0);
+    SET_PSW_BIT(psw, C, 0);
 }
 //##########################################################################
-
+// MUL
 //##########################################################################
 void
 command_do_mul(struct pdp_11_t *pdp,
@@ -1011,18 +964,18 @@ command_do_mul(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
 
     word_16_t src     = (word_16_t) opcode.dd.value;
     word_16_t reg_val = (word_16_t) pdp_reg_get_var(pdp, opcode.r_reg);
-    //
+
     word_32_t res = (word_32_t) src * (word_32_t) reg_val;
-    //
+
     word_t high = (word_t)((res >> 16) & 0xFFFF);
     word_t low  = (word_t)(res & 0xFFFF);
-    //
 
     if ((opcode.r_reg % 2) == 0) {
         pdp_reg_set_var(pdp, opcode.r_reg, high);
@@ -1041,6 +994,7 @@ command_do_mul(struct pdp_11_t *pdp,
     PRINT_RESULT("R%d", opcode.r_reg);
 }
 //##########################################################################
+// DIV
 //##########################################################################
 void
 command_do_div(struct pdp_11_t *pdp,
@@ -1050,6 +1004,7 @@ command_do_div(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -1074,11 +1029,7 @@ command_do_div(struct pdp_11_t *pdp,
 
     if (quot < -32768 || quot > 32767) {
         set_flag_V(1);
-        SET_PSW_BIT(psw,
-                    N,
-                    (word_t)(quot < 0
-                                 ? 1
-                                 : 0)); // Согласно спецификации PDP-11 при V=1
+        SET_PSW_BIT(psw, N, (word_t)(quot < 0 ? 1 : 0));
         return;
     }
 
@@ -1093,6 +1044,7 @@ command_do_div(struct pdp_11_t *pdp,
     PRINT_RESULT("R%d", opcode.r_reg);
 }
 //##########################################################################
+// ASHC
 //##########################################################################
 void
 command_do_ashc(struct pdp_11_t *pdp,
@@ -1103,6 +1055,7 @@ command_do_ashc(struct pdp_11_t *pdp,
     (void) addr;
 
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -1124,7 +1077,6 @@ command_do_ashc(struct pdp_11_t *pdp,
     word_32_t signed_res32 = (word_32_t) res32;
 
     if (shift_count > 0) {
-        // Сдвиг влево (на беззнаковом типе полностью безопасен)
         if (shift_count >= 32) {
             c     = (word_t)(res32 & 1);
             res32 = 0;
@@ -1133,7 +1085,6 @@ command_do_ashc(struct pdp_11_t *pdp,
             res32 = res32 << shift_count;
         }
     } else if (shift_count < 0) {
-        // Сдвиг вправо (Арифметический)
         word_32_t count = -shift_count;
         if (count >= 32) {
             c     = (word_t)((signed_res32 >> 31) & 1);
@@ -1147,35 +1098,24 @@ command_do_ashc(struct pdp_11_t *pdp,
     word_t res_r1 = (word_t)((res32 >> 16) & 0xFFFF);
     word_t res_r2 = (word_t)(res32 & 0xFFFF);
 
-    // Корректная запись согласно вашему эталонному дампу
     if (opcode.r_reg % 2 != 0) {
-        // Для нечетного регистра R1 сохраняется МЛАДШАЯ часть (152345)
         pdp_reg_set_var(pdp, r1, (word_32_t) res_r2);
     } else {
-        // Для четного регистра пишем обе части, как обычно
         pdp_reg_set_var(pdp, r1, (word_32_t) res_r1);
         pdp_reg_set_var(pdp, r2, (word_32_t) res_r2);
     }
 
-    // --- Флаги NZVC ---
     word_t v = 0;
     if (shift_count > 0) {
         v = ((orig_res32 >> 31) & 1) ^ ((res32 >> 31) & 1);
     }
     SET_PSW_BIT(psw, V, v);
 
-    // Расчет флагов N, Z, C в зависимости от четности регистра
     if (opcode.r_reg % 2 != 0) {
-        // Для нечетного регистра (согласно тесту):
-        SET_PSW_BIT(psw, C, 0); // Бит переноса сбрасывается
-        SET_PSW_BIT(
-            psw,
-            N,
-            (word_t)((res_r2 >> 15)
-                     & 1)); // Знак по записанному R1 (152345 -> старший бит 1)
+        SET_PSW_BIT(psw, C, 0);
+        SET_PSW_BIT(psw, N, (word_t)((res_r2 >> 15) & 1));
         SET_PSW_BIT(psw, Z, (word_t)(res_r2 == 0));
     } else {
-        // Для четного регистра:
         if (shift_count != 0) {
             SET_PSW_BIT(psw, C, (word_t)(c & 1));
         } else {
@@ -1188,7 +1128,7 @@ command_do_ashc(struct pdp_11_t *pdp,
     PRINT_RESULT("R%d", opcode.r_reg);
 }
 // ##########################################################################
-
+// ASH
 // ##########################################################################
 void
 command_do_ash(struct pdp_11_t *pdp,
@@ -1198,6 +1138,7 @@ command_do_ash(struct pdp_11_t *pdp,
 {
     (void) addr;
     OP_CODE_T_INIT
+    set_has_b = 0;
     if (pdp) {
         opcode = __get_mr(pdp, word_command, params);
     }
@@ -1206,13 +1147,12 @@ command_do_ash(struct pdp_11_t *pdp,
     short  shift_count = (byte_t)(opcode.dd.value & 63);
 
     if (shift_count & 32)
-        shift_count |= ~63; // Знак
+        shift_count |= ~63;
 
     word_t res = reg_val;
     word_t c   = 0;
 
     if (shift_count > 0) {
-        // Сдвиг влево
         if (shift_count >= 16) {
             c   = reg_val & 1;
             res = 0;
@@ -1221,22 +1161,17 @@ command_do_ash(struct pdp_11_t *pdp,
             res = (word_t)((res << shift_count) & 0xFFFF);
         }
     } else if (shift_count < 0) {
-        // Сдвиг вправо (Арифметический)
         int count = -shift_count;
         if (count > 16)
             count = 16;
-
-        // Сначала запоминаем последний выдвинутый бит для флага C
         c = (word_t)((res >> (count - 1)) & 1);
 
-        // Выполняем арифметический сдвиг, приводя к знаковому типу short
         res = (word_t)(((short) res >> count) & 0xFFFF);
     }
 
     pdp_reg_set_var(pdp, opcode.r_reg, (int) res);
 
-    word_t v = ((reg_val >> 15) & 1)
-               ^ ((res >> 15) & 1); // Изменился лизнаковый бит
+    word_t v = ((reg_val >> 15) & 1) ^ ((res >> 15) & 1);
 
     set_flag_V(v);
 
@@ -1248,5 +1183,58 @@ command_do_ash(struct pdp_11_t *pdp,
 
     set_flag_NZ(res);
     PRINT_RESULT("R%d", opcode.r_reg);
+}
+//##########################################################################
+// BIC, BICB
+//##########################################################################
+void
+command_do_bic(struct pdp_11_t *pdp,
+               address_word_t   addr,
+               word_t           word_command,
+               byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    set_has_b = 0;
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+    word_16_t s = (word_16_t) opcode.ss.value;
+    word_16_t d = (word_16_t) opcode.dd.value;
+
+    word_16_t res = (word_16_t)(d & (~s) & 0xFFFF);
+    if (opcode.dd.addr < 8) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) res);
+    } else {
+        w_write(pdp, opcode.dd.addr, (word_t) res);
+    }
+
+    set_flag_NZ((word_t) res);
+    SET_PSW_BIT(psw, V, 0);
+}
+//-------------------------------------------------------------------------
+void
+command_do_bicb(struct pdp_11_t *pdp,
+                address_word_t   addr,
+                word_t           word_command,
+                byte_t           params)
+{
+    (void) addr;
+    OP_CODE_T_INIT
+    if (pdp) {
+        opcode = __get_mr(pdp, word_command, params);
+    }
+    byte_t s = (byte_t)(opcode.ss.value & 0xFF);
+    byte_t d = (byte_t)(opcode.dd.value & 0xFF);
+
+    byte_t res = (word_t)(d & (~s) & 0xFF);
+    if (opcode.dd.addr < 8) {
+        pdp_reg_set_var(pdp, opcode.dd.addr, (word_t) res);
+    } else {
+        b_write(pdp, opcode.dd.addr, (byte_t) res);
+    }
+
+    set_flag_NZ((word_t) res);
+    SET_PSW_BIT(psw, V, 0);
 }
 //##########################################################################

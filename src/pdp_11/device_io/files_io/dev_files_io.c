@@ -36,7 +36,7 @@ load_data_file(struct pdp_11_t *pdp, byte_t *filename)
         for (byte_t ind = 0x0; ind < count_str; ind++) {
             int res_fscanf __attribute__((unused));
             res_fscanf = fscanf(fp, "%hx", &data);
-            b_write(pdp, (address_byte_t)(addr | ind), (byte_t) data);
+            b_write(pdp, (address_byte_t)(addr + ind), (byte_t) data);
         }
         res_input = (word_t) fscanf(fp, "%hx%hx", &addr, &count_str);
     } while (res_input == res_input_data);
