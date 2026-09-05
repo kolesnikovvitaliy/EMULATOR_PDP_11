@@ -18,8 +18,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-word_t psw  = 0;
-word_t tick = 0;
+word_t             psw  = 0;
+word_t             tick = 0;
+extern void        __command_reg_dump(pdp_11_t *);
+extern log_level_t current_log_level; // Уровень логирования;
 
 /**
  * @brief Создает новый экземпляр структуры PDP-11.
@@ -266,5 +268,11 @@ do_command(pdp_11_t *pdp, command_t **commands, const address_word_t addr)
     }
     tick++;
     *ptr_pc = (word_t)(*ptr_pc + 2);
+    if (current_log_level == DEBUG_LOG) {
+        PRINT_RESULT("\n", "");
+        __command_reg_dump(pdp);
+        PRINT_RESULT("\n", "");
+    }
+
     return ptr_pc;
 }

@@ -360,11 +360,9 @@ __get_args(struct pdp_11_t *pdp, word_t word_command)
             if (set_has_b) {
                 byte_t raw_byte = b_read(pdp, (address_byte_t) res.addr);
                 if (raw_byte & 0x80) {
-                    res.value = (word_t)(
-                        0xFF00 | raw_byte);
+                    res.value = (word_t)(0xFF00 | raw_byte);
                 } else {
-                    res.value = (word_t)(
-                        0x00FF & raw_byte);
+                    res.value = (word_t)(0x00FF & raw_byte);
                 }
                 set_has_b = 0;
             } else {
